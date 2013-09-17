@@ -47,16 +47,21 @@ In this section, we will go through the steps needed to setup your environment.
 ** Version 1.6.x was used to create the examples used here
 ** Get the JDK, not the JRE
 ** Install according to vendor instructions
-** Be sure to set the ``JAVA_HOME'' environment variable correctly
+** Be sure to set the `JAVA_HOME` environment variable correctly
 
 * To set up Gradle for your environment, download
   http://www.gradle.org/downloads[Gradle] and follow the installation
   instructions.
 ** Version 1.4 and later is required for some examples in this tutorial
 ** Install according to vendor instructions
-** Be sure to set the ``GRADLE_HOME'' environment variable correctly
+** Be sure to set the `GRADLE_HOME` environment variable correctly
 
-* TODO: insert hadoop install here
+* Install a version of http://hadoop.apache.org[Apache Hadoop] in local mode or if you
+  want to have a full cluster to experiment with, use the
+  https://github.com/Cascading/vagrant-cascading-hadoop-cluster[Cascading Vagrant
+  Hadoop Cluster]. 
+** Please make sure, you install a stable version of hadoop from
+  the 1.x series and *not* hadoop 2.
 
 * Set up R and RStudio for your environment by visiting:
 ** http://cran.r-project.org/
@@ -79,12 +84,12 @@ location on your file system where you have space available to work.
 Step 3 - Model Creation
 -----------------------
 
-Navigate to the ``pattern'' directory, and then into its ``pattern-examples''
-subdirectory. There is an example R script in ``examples/r/rf_pmml.R'' that
+Navigate to the `pattern` directory, and then into its `pattern-examples`
+subdirectory. There is an example R script in `examples/r/rf_pmml.R` that
 creates a Random Forest model. This is representative of a predictive model for
 an anti-fraud classifier used in e-commerce apps.
 
-[source]
+[source,r]
 ----
 ## train a RandomForest model
 f <- as.formula("as.factor(label) ~ .")
@@ -115,7 +120,7 @@ Click the ``Source'' button in the upper middle section of the screen.
 image:r-studio.png[]
 
 This will execute the R script and create the predictive model. The last line
-saves the predictive model into a file called ``sample.rf.xml'' as PMML. If you
+saves the predictive model into a file called `sample.rf.xml` as PMML. If you
 take a look at that PMML, it’s XML and not optimal for humans to read, but
 efficient for machines to parse:
 
@@ -177,35 +182,35 @@ Step 4 - Cascading Build
 Now that we have a model created and exported as PMML, let’s work on running it
 at scale atop Apache Hadoop. 
 
-In the ``pattern-examples'' directory, execute the following Bash shell commands:
+In the `pattern-examples` directory, execute the following Bash shell commands:
 
     $ gradle clean jar
 
-That line invokes Gradle to run the build script ``build.gradle'', and compile
+That line invokes Gradle to run the build script `build.gradle`, and compile
 the Cascading Pattern example app.
 
-After that compiles look for the built app as a JAR file in the ``build/libs'' subdirectory:
+After that compiles look for the built app as a JAR file in the `build/libs` subdirectory:
 
     $ ls -lts build/libs/pattern-examples-*.jar
 
 
 Now we’re ready to run this Cascading Pattern example app on Apache Hadoop.
 First, we make sure to delete the output results (required by Hadoop). Then we
-run Hadoop: we specify the JAR file for the app, the PMML file using a ``--pmml''
-command line option, along with sample input data ``data/sample.tsv'' and the
+run Hadoop: we specify the JAR file for the app, the PMML file using a `--pmml`
+command line option, along with sample input data `data/sample.tsv` and the
 location of the output results:
 
     $ rm -rf out
     $ hadoop jar build/libs/pattern-examples-*.jar \
         data/sample.tsv out/classify --pmml data/sample.rf.xml
 
-After that runs, check the ``out/classify'' subdirectory. Look at the results
-of running the PMML model, which will be in the ``part-*'' partition files:
+After that runs, check the `out/classify` subdirectory. Look at the results
+of running the PMML model, which will be in the `part-*` partition files:
 
     $ less out/classify/part-*
 
 Let’s take a look at what we just built and ran. The source code for this
-example is located in the ``src/main/java/cascading/pattern/Main.java'' file:
+example is located in the `src/main/java/cascading/pattern/Main.java` file:
 
 [source,java]
 ----
@@ -220,6 +225,7 @@ public class Main
     // set up the config properties
     Properties properties = new Properties();
     AppProps.setApplicationJarClass( properties, Main.class );
+
     HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
 
     // create source and sink taps
@@ -262,7 +268,7 @@ public class Main
 
 Most of the code is the basic plumbing used for Cascading apps. The portions
 which are specific to Cascading Pattern and PMML are the few lines involving
-the ``pmmlPlanner'' object.
+the `pmmlPlanner` object.
 
 
 Additional Resources
