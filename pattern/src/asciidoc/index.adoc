@@ -184,14 +184,14 @@ at scale atop Apache Hadoop.
 
 In the `pattern-examples` directory, execute the following Bash shell commands:
 
-    $ gradle clean jar
+    > gradle clean jar
 
 That line invokes Gradle to run the build script `build.gradle`, and compile
 the Cascading Pattern example app.
 
 After that compiles look for the built app as a JAR file in the `build/libs` subdirectory:
 
-    $ ls -lts build/libs/pattern-examples-*.jar
+    > ls -lts build/libs/pattern-examples-*.jar
 
 
 Now we’re ready to run this Cascading Pattern example app on Apache Hadoop.
@@ -200,14 +200,14 @@ run Hadoop: we specify the JAR file for the app, the PMML file using a `--pmml`
 command line option, along with sample input data `data/sample.tsv` and the
 location of the output results:
 
-    $ rm -rf out
-    $ hadoop jar build/libs/pattern-examples-*.jar \
+    > rm -rf out
+    > hadoop jar build/libs/pattern-examples-*.jar \
         data/sample.tsv out/classify --pmml data/sample.rf.xml
 
 After that runs, check the `out/classify` subdirectory. Look at the results
 of running the PMML model, which will be in the `part-*` partition files:
 
-    $ less out/classify/part-*
+    > less out/classify/part-*
 
 Let’s take a look at what we just built and ran. The source code for this
 example is located in the `src/main/java/cascading/pattern/Main.java` file:
