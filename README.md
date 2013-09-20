@@ -21,9 +21,3 @@ To render all projects do this:
 This will render all tutorials, put them in the
 `<rootproject>/build/documentation/` directory. Each tutorial has its own
 subdirectory, which also contains a zip archive containing the tutorial.
-
-
-To upload the documentation into an S3 bucket do this:
-
-    > gradle s3Upload -Daws.properties=/path/to/aws.properties
-
