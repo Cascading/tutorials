@@ -4,6 +4,7 @@ This is a collection of tutorials for working with cascading and its related
 projects. In contains the following tutorials right now:
 
 * Pattern
+* Lingual-HBase
 
 The project is meant to make it simple to add new tutorials, without dealing
 with the setup of asciidoctor too much. All common parts like the CSS and the
