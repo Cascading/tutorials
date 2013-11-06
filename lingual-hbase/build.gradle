@@ -17,8 +17,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-include 'pattern'
-include 'lingual-hbase'
-
-rootProject.name = 'tutorials'
