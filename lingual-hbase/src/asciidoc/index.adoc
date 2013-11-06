@@ -6,12 +6,11 @@ http://www.cascading.org/lingual/[Cascading Lingual] using SQL.
 Introduction
 -------------
 
-HBase is a database system gaining more and more popularity amongst people
+HBase is a database system gaining more and more popularity among people
 adopting Hadoop. HBase is not a relational database and does not offer a SQL
-interface out of the box. When adopting HBase many organizations are faced with
-the challenge, that they have SQL based workflows, yet it makes sense to move
-away from relational databases towards HBase. Lingual is a way to bridge this
-gap and this tutorial shows how to approach such a situation.
+interface out of the box. When adopting HBase, many organizations are faced 
+with the challenge that their current workflows are SQL based. Lingual is a 
+way to bridge this gap and this tutorial shows how to approach such a situation.
 
 The tutorial assumes that you already understand the HBase architecture and data
 model and furthermore that you have read the
@@ -42,8 +41,8 @@ Customers are identified by their API-key within the system, which is a UUID.
 The service is a distributed system operating in multiple regions around the
 world (EU,US,ASIA).
 
-Nuage has a centralized billing departement, which is billing the customers
-based on their usage once a month. In order to do that they have to aggregate
+Nuage has a centralized billing departement which is billing the customers
+based on their usage once a month. In order to do that, they have to aggregate
 the usage of all customers and store the aggregates somewhere. This is where
 Hadoop, Lingual, and HBase come in.
 
@@ -55,7 +54,7 @@ lingual.
 Production logs
 ~~~~~~~~~~~~~~~
 
-As explained above the production systems are logging all interactions with the
+As explained above, the production systems are logging all interactions with the
 buckets. A typical log file coming from a production system in Europe might look
 like this:
 
@@ -72,7 +71,7 @@ like this:
 The first column is a timestamp (UTC), followed by the UUID of the customer owning
 the bucket. The next column identifies the region of the bucket, followed by the
 bucket name, on which the operation was done. The last two columns are the
-`HTTP` method and the key on wich an action was performed.
+`HTTP` method and the key on which an action was performed.
 
 
 Environment Setup
@@ -81,10 +80,10 @@ Environment Setup
 In this tutorial we are going to use the http://www.vagrantup.com/[Vagrant]
 based https://github.com/Cascading/vagrant-cascading-hadoop-cluster[Apache
 Hadoop cluster] coming from the Cascading project. This cluster makes it easy to
-start up Hadoop and HBase in an isolated environment, in which you can do the
+start up Hadoop and HBase in an isolated environment in which you can do the
 experiments. The
 https://github.com/Cascading/vagrant-cascading-hadoop-cluster/blob/2.2/README.md[README]
-explains the setup in detail, but basically these are the steps you can use to
+explains the setup in detail, however, these are the steps you can use to
 bring up a fully working Hadoop and HBase cluster.
 
 
@@ -109,11 +108,11 @@ the different web-interfaces to interact with it:
 - HBase Master: http://master.local:60010/master-status
 
 [NOTE] You don't have to use the vagrant based setup for following this tutorial,
-it works perfectly fine with any other Hadoop and HBase setup, as long as it is
+it works perfectly fine with any other Hadoop and HBase setup as long as it is
 http://www.cascading.org/support/compatibility/[compatible] with Cascading.
 
 For the rest of the tutorial we are going to work from the master of the
-Hadoop/HBase cluster, if you are using something else, change the pathes
+Hadoop/HBase cluster, if you are using something else, change the paths
 accordingly:
 
     > vagrant ssh master
@@ -124,7 +123,7 @@ Registering the log files in Lingual
 -------------------------------------
 
 For this tutorial we prepared some randomly generated log files from the three
-regions which the cloud service is operating in (US, EU, ASIA). You can get the
+regions in which the cloud service is operating (US, EU, ASIA). You can get the
 data from here:
 
     > wget http://data.cascading.org/nuage.tgz
@@ -138,9 +137,9 @@ Unpack the test data and copy it onto HDFS:
 We are using the catalog tool to register the log files as a lingual table.
 
 The first step is to set the platform to `hadoop` and telling lingual where the
-Hadoop namenode, the jobtracker and the Hbase quorum are. You can also put these
+Hadoop namenode, the jobtracker, and the Hbase quorum are. You can also put these
 values into your hadoop config files. If you are not using the vagrant cluster,
-you have to adjust them accordingly.
+you must adjust them accordingly.
 
     > export LINGUAL_PLATFORM=hadoop
     > export LINGUAL_CONFIG=fs.default.name=hdfs://master.local:9000,mapred.job.tracker=master.local:9001,hbase.zookeeper.quorum=hadoop1.local
@@ -309,9 +308,9 @@ You can of course also access the same data from the HBase shell:
 Wrapping up
 -----------
 
-We have seen an example of data processing, that could be coming from a real
-world service. We saw how easy it is to use Hadoop and HBase without writing an
-Java code. Anyone capable of writing SQL queries can do, what we just saw. You
+We have seen an example of data processing that could be coming from a real
+world service. We saw how easy it is to use Hadoop and HBase without writing any
+Java code. Anyone capable of writing SQL queries can do what we just saw. You
 can also imagine how the aggregated stats are further used to calculate the
 actual billing statements. You could introduce another table holding the costs
 of each operation and write those results into yet another table. This is left
