@@ -29,6 +29,8 @@ buildscript {
     }
 }
 
+apply plugin: 'idea'
+apply plugin: 'eclipse'
 apply from: "${rootDir}/etc/s3Upload.gradle"
 
 subprojects {
@@ -50,10 +52,10 @@ subprojects {
             'source-highlighter': 'highlightjs',
             'highlightjs-theme': 'zenburn',
             'linkcss!': '',
-            stylesdir: "src/site/stylesheets/", 
+            stylesdir: "src/site/stylesheets/",
             stylesheet: 'cascading.css',
             'data-uri': '',
-            imagesdir: "${project.name}/src/site/images/", 
+            imagesdir: "${project.name}/src/site/images/",
             //artifactsurl: project.s3Bucket,
             //docsurl: project.s3BucketDocs,
             //projectroot: project.rootDir,
@@ -88,5 +90,4 @@ subprojects {
 
     rootProject.s3UploadDocs.dependsOn docDist
   }
-
 }

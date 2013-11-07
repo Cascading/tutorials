@@ -1,3 +1,17 @@
 .gradle
 build
 .sw[a-z]
+junitvm*.properties
+build.properties
+gradle.properties
+.DS_Store
+lib
+dist
+out
+javadoc
+*.tmproj
+.idea
+*.iml
+*.iws
+*.ipr
+.gradle

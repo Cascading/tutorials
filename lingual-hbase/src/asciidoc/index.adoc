@@ -8,8 +8,8 @@ Introduction
 
 HBase is a database system gaining more and more popularity among people
 adopting Hadoop. HBase is not a relational database and does not offer a SQL
-interface out of the box. When adopting HBase, many organizations are faced 
-with the challenge that their current workflows are SQL based. Lingual is a 
+interface out of the box. When adopting HBase, many organizations are faced
+with the challenge that their current workflows are SQL based. Lingual is a
 way to bridge this gap and this tutorial shows how to approach such a situation.
 
 The tutorial assumes that you already understand the HBase architecture and data
@@ -41,7 +41,7 @@ Customers are identified by their API-key within the system, which is a UUID.
 The service is a distributed system operating in multiple regions around the
 world (EU,US,ASIA).
 
-Nuage has a centralized billing departement which is billing the customers
+Nuage has a centralized billing department which is billing the customers
 based on their usage once a month. In order to do that, they have to aggregate
 the usage of all customers and store the aggregates somewhere. This is where
 Hadoop, Lingual, and HBase come in.
