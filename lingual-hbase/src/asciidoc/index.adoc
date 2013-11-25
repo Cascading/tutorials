@@ -210,7 +210,7 @@ Column Family to rows as well.
 
 The first thing we have to do, is installing the HBase provider in lingual:
 
-    > lingual catalog --provider --add cascading:cascading-hbase:2.2.0-+:provider
+    > lingual catalog --provider --add cascading:cascading-hbase:2.2.0:provider
 
 This will download the provider from http://conjars.org[conjars] and install it
 in your lingual catalog.
