@@ -1,0 +1,485 @@
+# Data processing with Oracle database via Cascading Lingual
+
+A tutorial for accessing Oracle database from
+http://www.cascading.org/lingual/[Cascading Lingual] using SQL.
+
+
+Introduction
+------------
+
+Cascading and Lingual frameworks; developed by http://www.concurrentinc.com/[Concurrent Inc]; offer an unique way of building Big Data Enterprise workflows which can be executed on top of Hadoop.
+In this blog, I will walk you through a simple scenario creating a workflow allowing exporting data from Oracle database server into Hadoop. The workflow code is written in SQL and executes in Hadoop on top of Lingual and Cascading libraries.
+
+The tutorial assumes that you are already familiar with Oracle database and furthermore that you have read the http://docs.cascading.org/lingual/1.0/[Lingual user guide].
+
+In order to run this tutorial, you need an Oracle XE database and a Hadoop cluster. If you are missing either one, look at steps “Optional 1” and “Optional 2” at the beginning of this tutorial, which allow setting them up. Another possibility for setting Hadoop is to use Vagrant based Cascading available https://github.com/Cascading/vagrant-cascading-hadoop-cluster[here].
+
+Let’s get started...
+
+
+Optional 1: Set up VM running Ubuntu with Oracle XE using Vagrant
+-----------------------------------------------------------------
+
+This step requires installing: +
+- Vagrant: http://downloads.vagrantup.com/[Download] +
+- VirtualBox: https://www.virtualbox.org/wiki/Downloads[Download] +
+The Ubuntu/Oracle XE VM setup is available https://github.com/hilverd/vagrant-ubuntu-oracle-xe[here].
+
+- Check out the project:
+[source]
+----
+git clone https://github.com/hilverd/vagrant-ubuntu-oracle-xe.git
+----
+
+- Check out and install vbguest:
+[source]
+----
+git clone https://github.com/dotless-de/vagrant-vbguest.git
+vagrant plugin install vagrant-vbguest
+----
+
+Download http://www.oracle.com/technetwork/products/express-edition/downloads/index.html[Oracle Database 11g Express Edition] for Linux x64. +
+Place the file oracle-xe-11.2.0-1.0.x86_64.rpm.zip in the directory modules/oracle/files
+
+- From the base directory of this project, run:
+[source]
+----
+vagrant up
+----
+It will take a few minutes to complete.
+
+You should now be able to connect to the database at localhost:1521/XE using system/manager
+
+If you need to setup SqlPlus (following instructions are OS X specific):
+http://www.oracle.com/technetwork/topics/intel-macsoft-096467.html[download] and install Basic and SQL*Plus client Packages and set up library path such as:
+[source]
+----
+export DYLD_LIBRARY_PATH=/xxx/instantclient_11_2/
+----
+
+- Test connection by logging in with Sqlplus:
+[source]
+----
+./sqlplus system/manager@//localhost:1521/XE
+----
+
+
+Optional 2: Setup Hadoop in VM (based on Optional 1 step)
+---------------------------------------------------------
+
+- Login to Ubuntu (password is vagrant):
+[source]
+----
+ssh -p 2203 vagrant@localhost 
+----
+[NOTE]
+Hadoop is dependent on Java so http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u45-oth-JPR[download] and install Java SE 6; I used 6u45 Linux x64.
+
+- You can download to the host OS and add a shared folder in Virtual Box (Settings / Shared Folders); then mount that folder in Ubuntu:
+[source]
+----
+sudo mount -t vboxsf -o uid=1000 sharedfolder /tmp
+----
+
+- Set up environment variables (adjust as appropriate):
+[source]
+----
+export JAVA_HOME=/home/vagrant/jdk1.6.0_45
+export PATH=${JAVA_HOME}/bin:${PATH}
+----
+
+- To test Java, run:
+[source]
+----
+java -version
+----
+
+Download and Install Hadoop
+See preferred configurations http://www.cascading.org/support/compatibility/[here]. I used Apache Hadoop 1.2.1
+
+- Edit conf/hadoop-env.sh to have:
+[source]
+----
+export JAVA_HOME=/home/vagrant/jdk1.6.0_45
+----
+
+Create hadoopdata directory in /home/vagrant/
+
+- Edit conf/core-site.xml to include after <configuration>:
+[source]
+----
+ <property>
+   <name>fs.default.name</name>
+   <value>hdfs://localhost:9000</value>
+ </property>
+ <property>
+   <name>hadoop.tmp.dir</name>
+   <value>/home/vagrant//hadoopdata</value>
+   <description>A base for other temporary directories.</description>
+ </property>
+
+Edit conf/mapred-site.xml to include after <configuration>:
+<property>
+  <name>mapred.job.tracker</name>
+  <value>localhost:9001</value>
+  <description>The host and port that the MapReduce job tracker runs
+  at.  If "local", then jobs are run in-process as a single map
+  and reduce task.
+  </description>
+</property>
+
+Edit conf/hdfs-site.xml to include after <configuration>:
+<property>
+  <name>dfs.replication</name>
+  <value>1</value>
+  <description>Default block replication.
+  The actual number of replications can be specified when the file is created.
+  The default is used if replication is not specified in create time.
+  </description>
+</property>
+----
+
+- Make sure Hadoop environment variables are set up (adjust as appropriate):
+[source]
+----
+export HADOOP_HOME=/home/vagrant/hadoop-1.2.1
+export PATH=${HADOOP_HOME}/bin:${PATH}
+----
+
+- Format namenode:
+[source]
+----
+hadoop namenode -format
+----
+
+- Start Hadoop:
+[source]
+----
+start-all.sh
+----
+
+- To Test Hadoop, run of the examples such as:
+[source]
+----
+hadoop jar hadoop-examples-1.2.1.jar pi 10 50
+----
+
+Step 0: Pre-requisites
+----------------------
+
+http://www.gradle.org/downloads[Download] and Install gradle
+
+- Setup environment variables (adjust as appropriate):
+[source]
+----
+export GRADLE_HOME=/home/vagrant/gradle-1.8/bin
+export PATH=${GRADLE_HOME}:${PATH}
+----
+
+Step 1: Install Lingual
+-----------------------
+[NOTE]
+(This step is compatible with Optional 1 & 2 steps so please adapt the paths to your Oracle XE and Hadoop installations)
+
+- Install Lingual:
+[source]
+----
+curl http://files.concurrentinc.com/lingual/1.0/lingual-client/install-lingual-client.sh | bash
+----
+
+- Setup environment variables (adjust as appropriate):
+[source]
+----
+export LINGUAL_HOME=/home/vagrant/.lingual-client
+export PATH=${LINGUAL_HOME}/bin:${PATH}
+export LINGUAL_PLATFORM=hadoop
+----
+
+- Register Lingual catalog in Hadoop:
+[source]
+----
+lingual catalog --platform hadoop --init
+----
+
+Please refer to Per Lingual installation http://docs.cascading.org/lingual/1.0/#install[instructions] if you encounter issues.
+
+
+Step 2: Set up Lingual / Oracle JDBC driver
+-------------------------------------------
+
+This step details how to rebuild cascading-jdbc with oracle support as oracle driver cannot be redistributed in Lingual.
+
+- Download and install JDBC driver:
+[source]
+----
+git clone https://github.com/Cascading/cascading-jdbc.git
+----
+
+- Go inside Oracle jdbc directory: /home/vagrant/cascading-jdbc/ then download the odbc6.jar file from http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html[oracle technet]. It is also available in the sqlplus directory if you have installed it. +
+- Install it in your local maven repo
+[source]
+----
+mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar -Dfile=ojdbc6.jar -DgeneratePom=true
+----
+- Build the project against an existing oracle database. The user has to be able to create and delete tables, in order for the tests to work.
+[source]
+----
+gradle cascading-jdbc-oracle:build -Dcascading.jdbc.url.oracle='jdbc:oracle:thin:hr/hr@localhost:1521:XE'
+----
+
+- Last step is set up lingual catalog with the oracle provider:
+[source]
+----
+lingual catalog --provider -add ~/cascading-jdbc/cascading-jdbc-oracle/build/libs/cascading-jdbc-oracle-2.2.0-wip-dev-provider.jar
+----
+
+- You can verify that the provider has been added properly using:
+[source]
+----
+lingual catalog --provider
+----
+
+Please refer to Cascading Oracle JDBC https://github.com/cascading/cascading-jdbc#oracle[documentation] if you encounter issues.
+
+Step 3: Set up data
+-------------------
+
+For this tutorial, I will use the sample HR database which comes pre-loaded with Oracle XE and which simply needs to be unlocked.
+
+- In SQLPlus, enter the following statement to unlock the HR account: 
+[source]
+----
+ALTER USER hr ACCOUNT UNLOCK;
+----
+- Then enter the following statement to specify the password that you want for the HR user:
+[source]
+----
+ALTER USER hr IDENTIFIED BY hr;
+----
+
+- You can look at the hr tables with:
+[source]
+----
+select table_name from user_tables;
+----
+
+If you are interested in looking at the schema model for the HR database, it is available in the Appendix section.
+
+See Oracle http://docs.oracle.com/cd/E17781_01/admin.112/e18585/toc.htm[documentation] for additional information on Oracle Database Express Edition.
+
+
+Step 4: Build a workflow using Lingual
+--------------------------------------
+
+Please refer to the Appendix Lingual section for more information about Lingual.
+
+For this tutorial, I will build a simple workflow, which will extract some employee information based on job salary history from Oracle database, and write it to Hadoop into a CSV file.
+
+- First we need to create a schema called workflow:
+[source]
+----
+lingual catalog --schema workflow --add
+----
+
+- Next we define a stereotype for this schema:
+[source]
+----
+lingual catalog --schema workflow --stereotype employees --add --columns last_name,salary --types string,int
+----
+
+- Next we register the oracle jdbc protocol in the working schema:
+[source]
+----
+lingual catalog --schema workflow --protocol jdbc --add --properties=”tabledesc.tablename=employees,tabledesc.columnnames=last_name:salary,tabledesc.columndefs=varchar(100) not null:int not null" --provider oracle
+----
+
+- Next we register the oracle format in the schema:
+[source]
+----
+lingual catalog --schema workflow --format oracle --add --provider oracle
+----
+
+- And finally we register the table in lingual:
+[source]
+----
+lingual catalog --schema workflow --table employees_summary --stereotype employees --add "jdbc:oracle:thin:hr/hr@localhost:1521:XE" --protocol jdbc  --format oracle
+----
+
+- We will then configure Lingual to write to Hadoop CSV file:
+
+[source]
+----
+lingual catalog --schema output --add
+lingual catalog --schema output --stereotype employees --add --columns last_name,salary --types string,int
+lingual catalog --schema output --table specific_employees --stereotype employees -add working/specific_employees.csv
+----
+
+We are now ready to run the workflow.
+
+- Let’s start the Lingual shell:
+[source]
+----
+lingual shell –verbose
+----
+
+- We can now run a simple SQL query which will select employees with a salary greater than 5000 from Oracle database and export that data into a Hadoop CSV file:
+
+[source]
+----
+insert into "output"."specific_employees" select "last_name", "salary" from "workflow"."employees_summary" where "salary" > 5000;
+----
+
+- The execution should look like this:
+
+[source]
+----
+0: jdbc:lingual:hadoop> select * from "workflow"."employees_summary" where "salary" > 5000;
++-------------+---------+
+|  last_name  | salary  |
++-------------+---------+
+| Olsen       | 8000    |
+| Cambrault   | 7500    |
+| Tuvault     | 7000    |
+| King        | 10000   |
+| Sully       | 9500    |
+| McEwen      | 9000    |
+| Smith       | 8000    |
+| Doran       | 7500    |
+| Sewall      | 7000    |
+| Vishney     | 10500   |
+| Greene      | 9500    |
+| Marvins     | 7200    |
+| Lee         | 6800    |
+| Ande        | 6400    |
+| Banda       | 6200    |
+| Ozer        | 11500   |
+| Bloom       | 10000   |
+| Fox         | 9600    |
+| Smith       | 7400    |
+| Bates       | 7300    |
+| Kumar       | 6100    |
+| Abel        | 11000   |
+| Hutton      | 8800    |
+| Taylor      | 8600    |
+| Livingston  | 8400    |
+| Grant       | 7000    |
+| Johnson     | 6200    |
+| Hartstein   | 13000   |
+| Fay         | 6000    |
+| Mavris      | 6500    |
+| Baer        | 10000   |
+| Higgins     | 12008   |
+| Gietz       | 8300    |
+| King        | 24000   |
+| Kochhar     | 17000   |
+| De Haan     | 17000   |
+| Hunold      | 9000    |
+| Ernst       | 6000    |
+| Greenberg   | 12008   |
+| Faviet      | 9000    |
+| Chen        | 8200    |
+| Sciarra     | 7700    |
+| Urman       | 7800    |
+| Popp        | 6900    |
+| Raphaely    | 11000   |
+| Weiss       | 8000    |
+| Fripp       | 8200    |
+| Kaufling    | 7900    |
+| Vollman     | 6500    |
+| Mourgos     | 5800    |
+| Russell     | 14000   |
+| Partners    | 13500   |
+| Errazuriz   | 12000   |
+| Cambrault   | 11000   |
+| Zlotkey     | 10500   |
+| Tucker      | 10000   |
+| Bernstein   | 9500    |
+| Hall        | 9000    |
++-------------+---------+
+58 rows selected (10.144 seconds)
+0: jdbc:lingual:hadoop> insert into "output"."specific_employees" select "last_name", "salary" from "workflow"."employees_summary" where "salary" > 5000;
++-----------+
+| ROWCOUNT  |
++-----------+
+| 58        |
++-----------+
+1 row selected (10.478 seconds
+----
+
+
+- You can verify that the file is in Hadoop by doing:
+[source]
+----
+hadoop dfs -ls working/
+
+Found 1 items
+drwxr-xr-x   - alexisroos supergroup          0 2013-11-12 22:03 /user/alexisroos/working/specific_employees.csv
+----
+
+
+Voila!
+
+Wrapping up
+-----------
+This is clearly a simple workflow and we could make it more complex/realistic by using additional Oracle tables and joining with additional external data sources.
+
+
+Please send comments and questions to alexis@concurrentinc.com +
+
+
+
+Appendix: Oracle HR schema
+--------------------------
+
+image:HR_Schema.png[]
+ 
+
+Appendix: Lingual Reference
+---------------------------
+
+In Lingual, a schema is a collection of tables; a stereotype represents a table definition; a protocol defines how a table URI is accessed (file, HDFS, JDBC, etc.) and a format defines the file format or encoding of a Table URI.
+
+The Data Provider mechanism allows Lingual to integrate multiple systems, including Hadoop, into a single JDBC based application. This tremendously simplifies building integration and http://en.wikipedia.org/wiki/Extract,_transform,_load[ETL] (extract, transform, and load) types of applications. It also allows JDBC Client applications (Web based BI tools, GUI SQL Clients, etc.) to execute queries on Hadoop with any data format or back end system. For example, a web based reporting tool can join relational data (from Oracle) with data on HDFS to generate a report without the use of any additional tools to migrate or modify data from the database or read the Avro files.
+This is accomplished by adding new protocols and formats dynamically to a Lingual query through a packaged jar file hosted locally or from Maven. This jar is automatically added, on demand, to any Lingual queries executed from the Lingual JDBC Driver.
+
+To troubleshoot creating definitions, you can use some of the following commands:
+// provider
+[source]
+----
+lingual catalog --provider
+----
+// schema
+[source]
+----
+lingual catalog --schema
+lingual catalog --schema workflow --show
+----
+// table
+[source]
+----
+lingual catalog --schema workflow --table
+lingual catalog --schema workflow --table employees_summary --show
+----
+// stereotype
+[source]
+----
+lingual catalog --schema workflow --stereotype
+lingual catalog --schema workflow --stereotype employees --show
+----
+// format
+[source]
+----
+lingual catalog --format
+lingual catalog --schema workflow --format oracle --show
+----
+// protocol
+[source]
+----
+lingual catalog --protocol
+lingual catalog --schema workflow --protocol 
+lingual catalog --schema workflow --protocol jdbc --show
+----
+
+Please refer to the Lingual http://docs.cascading.org/lingual/1.0/[documentation] for more information about the Lingual platform.
+
+
