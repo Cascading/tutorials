@@ -18,16 +18,28 @@
  * limitations under the License.
  */
 
-buildscript {
-    repositories {
-      mavenRepo name: 'Bintray Asciidoctor repo', url: 'http://dl.bintray.com/content/aalmiray/asciidoctor'
-      mavenRepo name: 'Bintray JCenter', url: 'http://jcenter.bintray.com'
-    }
 
-    dependencies {
-      classpath 'org.asciidoctor:asciidoctor-gradle-plugin:0.5.0'
-    }
+buildscript {
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    mavenRepo name: 'conjars', url: 'http://conjars.org/repo/'
+    mavenRepo name: 'Bintray Asciidoctor repo', url: 'http://dl.bintray.com/content/aalmiray/asciidoctor'
+    mavenRepo name: 'Bintray JCenter', url: 'http://jcenter.bintray.com'
+  }
+
+  dependencies {
+    classpath 'org.asciidoctor:asciidoctor-gradle-plugin:0.5.0'
+    classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
+  }
+
 }
+
+ext.redshiftPostgresVersion = '8.0-318.jdbc3'
+ext.hadoopVersion = "1.2.1"
+ext.cascadingVersion = '2.2.1'
+ext.cascadingJDBCVersion = '2.2.0-wip-+'
+ext.slf4jVersion = '1.7.2'
 
 apply plugin: 'idea'
 apply plugin: 'eclipse'
@@ -38,6 +50,33 @@ subprojects {
   apply plugin: 'asciidoctor'
   apply plugin: 'idea'
   apply plugin: 'eclipse'
+  apply plugin: 'fatjar'
+
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    mavenRepo name: 'conjars', url: 'http://conjars.org/repo/'
+    mavenRepo name: 'Bintray Asciidoctor repo', url: 'http://dl.bintray.com/content/aalmiray/asciidoctor'
+    mavenRepo name: 'Bintray JCenter', url: 'http://jcenter.bintray.com'
+  }
+
+  dependencies {
+
+    compile group: 'cascading', name: 'cascading-jdbc-redshift', version: cascadingJDBCVersion
+    compile group: 'postgresql', name: 'postgresql', version: redshiftPostgresVersion
+
+    compile group: 'cascading', name: 'cascading-core', version: cascadingVersion
+    compile group: 'cascading', name: 'cascading-hadoop', version: cascadingVersion
+    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+
+    compile( group: 'org.apache.hadoop', name: 'hadoop-core', version: hadoopVersion ) {
+      exclude group: 'ant'
+      exclude group: 'junit'
+      exclude group: 'hsqldb'
+      exclude group: 'oro'
+    }
+
+  }
 
   asciidoctor {
 

@@ -17,3 +17,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
+fatJar {
+  classifier = 'provider'
+  exclude 'META-INF/*.DSA'
+  exclude 'META-INF/LICENSE*'
+  exclude '**/SampleFlow.class'
+}
+
+task sampleCode(type: Jar, dependsOn: ['fatJar']) {
+  archiveName = 'lingual-redshift-sample.jar'
+  from zipTree("${fatJar.archivePath}")
+  from ( sourceSets.main.output ) {
+    include '**/SampleFlow.class'
+  }
+  from ( "${sourceSets.main.runtimeClasspath}" ) {
+    include '**/*'
+  }
+  from ( "${sourceSets.main.compileClasspath}" ) {
+    include '**/*'
+  }
+
+  manifest {
+    attributes( "Main-Class": "redshift/SampleFlow" )
+  }
+}

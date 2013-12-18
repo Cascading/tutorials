@@ -29,24 +29,24 @@ Gradle:
 
 `compile group: 'cascading', name: 'cascading-redshift', version: '2.2'`
 
-The source code is available via `git clone https://github.com/Cascading/cascading-jdbc` and the following files from that repo should be sufficient for Cascading and Lingual
-users who want to know cascading-redshift specific features.
+The source code is available via `git clone https://github.com/Cascading/cascading-jdbc` and the tutorial files from the tutorial project available via
+ `git clone https://github.com/Cascading/tutorial` should be sufficient for Cascading and Lingual users who want to know cascading-redshift specific features.
 
 All other users should see the steps in the more detailed Example Code sections below.
 
 Running as a Cascading Flow:
-https://github.com/Cascading/cascading-jdbc/blob/wip-2.2/cascading-jdbc-redshift/src/main/java/redshift/SampleFlow.java[cascading-jdbc-redshift/src/main/java/redshift/SampleFlow.java]
+https://github.com/Cascading/tutorial/lingual-redshift/src/main/java/redshift/SampleFlow.java[SampleFlow.java]
 
 Running in EMR:
-https://github.com/Cascading/cascading-jdbc/blob/wip-2.2/cascading-jdbc-redshift/src/main/resources/emrExample.sh[cascading-jdbc-redshift/src/main/resources/emrExample.sh]
+https://github.com/Cascading/tutorial/lingual-redshift/src/main/resources/emrExample.sh[emrExample.sh]
 
 Running as a Lingual provider:
-https://github.com/Cascading/cascading-jdbc/blob/wip-2.2/cascading-jdbc-redshift/src/main/resources/lingualShellExample.sh[cascading-jdbc-redshift/src/main/resources/lingualShellExample.sh]
+https://github.com/Cascading/tutorial/lingual-redshift/src/src/main/resources/lingualShellExample.sh[lingualShellExample.sh]
 
 ## Example Code and Detailed Installation
 
-To run the sample code,`git clone https://github.com/Cascading/cascading-jdbc` and compile the code with the command:
-`gradle sampleCode`
+To run the sample code,`git clone https://github.com/Cascading/tutorial` and compile the code with the command:
+`gradle :lingual-redshift:sampleCode`
 
 This will build all the components needed for the examples. The compile has been tested against http://www.gradle.org/[Gradle 1.9 and 1.6] but since it doesn't make use of any
 complex Gradle tasks beyond the basic compile it is likely to compile properly with any Gradle version. The code supports JDK 1.6.
@@ -80,7 +80,7 @@ Before running this code make sure that you have set up AWS and that you have in
 
 The file SampleFlow.java contains three flows to demonstrate integration with Cascading and Cascading's HFS Tap.
 You can compile the code and launch an EMR instance by running the following from the `cascading-jdbc` base directory:
-`./cascading-jdbc-redshift/src/main/resources/emrExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password] [S3 bucket to read and write data in] [AWS availability zone]`
+`./lingual-redshift/src/main/resources/emrExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password] [S3 bucket to read and write data in] [AWS availability zone]`
 
 If the task completes successfully, you will have two tables in S3 "results" and "results2" a file in your S3 bucket name sampleData.csv and a directory in your S3 bucket named sampleData.csv.out containing
 the part-XXXX files from the M/R job that extracted and transformed the DB data.
@@ -95,7 +95,7 @@ Running the sample assumes that you do not have an existing Lingual catalog that
 since this sample will re-initialize the catalog from scratch.
 
 To compile and run the lingual example execute the following from the `cascading-jdbc` base directory:
-`/cascading-jdbc-redshift/src/main/resources/lingualShellExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password]`
+`/lingual-redshift/src/main/resources/lingualShellExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password]`
 
 This script registers the provider and issues a `"SELECT * FROM results"` query to the command line.
 
