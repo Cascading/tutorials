@@ -108,16 +108,16 @@ Create hadoopdata directory in /home/vagrant/
 - Edit conf/core-site.xml to include after <configuration>:
 [source]
 ----
- <property>
-   <name>fs.default.name</name>
-   <value>hdfs://localhost:9000</value>
- </property>
- <property>
-   <name>hadoop.tmp.dir</name>
-   <value>/home/vagrant//hadoopdata</value>
-   <description>A base for other temporary directories.</description>
- </property>
- ----
+<property>
+  <name>fs.default.name</name>
+  <value>hdfs://localhost:9000</value>
+</property>
+<property>
+  <name>hadoop.tmp.dir</name>
+  <value>/home/vagrant//hadoopdata</value>
+  <description>A base for other temporary directories.</description>
+</property>
+----
 
 Edit conf/mapred-site.xml to include after <configuration>:
 [source]
