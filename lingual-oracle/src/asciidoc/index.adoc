@@ -117,8 +117,11 @@ Create hadoopdata directory in /home/vagrant/
    <value>/home/vagrant//hadoopdata</value>
    <description>A base for other temporary directories.</description>
  </property>
+ ----
 
 Edit conf/mapred-site.xml to include after <configuration>:
+[source]
+----
 <property>
   <name>mapred.job.tracker</name>
   <value>localhost:9001</value>
@@ -127,8 +130,11 @@ Edit conf/mapred-site.xml to include after <configuration>:
   and reduce task.
   </description>
 </property>
+----
 
 Edit conf/hdfs-site.xml to include after <configuration>:
+[source]
+----
 <property>
   <name>dfs.replication</name>
   <value>1</value>
