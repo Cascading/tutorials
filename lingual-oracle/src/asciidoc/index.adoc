@@ -119,7 +119,7 @@ Create hadoopdata directory in /home/vagrant/
 </property>
 ----
 
-Edit conf/mapred-site.xml to include after <configuration>:
+- Edit conf/mapred-site.xml to include after <configuration>:
 [source]
 ----
 <property>
@@ -132,7 +132,7 @@ Edit conf/mapred-site.xml to include after <configuration>:
 </property>
 ----
 
-Edit conf/hdfs-site.xml to include after <configuration>:
+- Edit conf/hdfs-site.xml to include after <configuration>:
 [source]
 ----
 <property>
