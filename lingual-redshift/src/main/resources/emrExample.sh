@@ -12,7 +12,7 @@ REDSHIFT_PASSWORD=$3
 BUCKET=$4
 ZONE=$5
 
-gradle :cascading-jdbc-redshift:clean :cascading-jdbc-redshift:sampleCode -Dcascading.jdbc.url.redshift="${REDSHIFT_URL}?user=${REDSHIFT_USER}&password=${REDSHIFT_PASSWORD}" -x test
+gradle :lingual-redshift:clean :lingual-redshift:sampleCode -Dcascading.jdbc.url.redshift="${REDSHIFT_URL}?user=${REDSHIFT_USER}&password=${REDSHIFT_PASSWORD}" -x test
 
 NAME=lingual-redshift-sample.jar
 BUILD=cascading-jdbc-redshift/build/libs
