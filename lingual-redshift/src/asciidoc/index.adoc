@@ -76,7 +76,7 @@ job-conf and will automatically be picked up from there.
 ### Example: Running Redshift in Cascading
 
 An example with Cascading to sink data to Redshift, coping data from one Redshift table to another, and extracting data from Redshift to S3-backed HFS.
-Before running this code make sure that you have set up AWS and that you have installed the http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-cli-install.html[EMR Command Line Tools].
+Before running this code make sure that you have set up AWS and that you have installed the http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-cli-install.html[EMR Command Line Tools] and have installed and configured http://s3tools.org/s3cmd[s3cmd]
 
 The file SampleFlow.java contains three flows to demonstrate integration with Cascading and Cascading's HFS Tap.
 You can compile the code and launch an EMR instance by running the following from the `cascading-jdbc` base directory:
@@ -95,7 +95,7 @@ Running the sample assumes that you do not have an existing Lingual catalog that
 since this sample will re-initialize the catalog from scratch.
 
 To compile and run the lingual example execute the following from the `cascading-jdbc` base directory:
-`/lingual-redshift/src/main/resources/lingualShellExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password]`
+`./lingual-redshift/src/main/resources/lingualShellExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password]`
 
 This script registers the provider and issues a `"SELECT * FROM results"` query to the command line.
 

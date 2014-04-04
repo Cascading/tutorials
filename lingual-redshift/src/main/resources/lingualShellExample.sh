@@ -9,7 +9,7 @@ REDSHIFT_URL="$1"
 REDSHIFT_USER="$2"
 REDSHIFT_PASSWORD="$3"
 
-gradle :cascading-jdbc-redshift:clean :cascading-jdbc-redshift:sampleCode -Dcascading.jdbc.url.redshift="${REDSHIFT_URL}?user=${REDSHIFT_USER}&password=${REDSHIFT_PASSWORD}" -x test
+gradle :lingual-redshift:clean :lingual-redshift:sampleCode -Dcascading.jdbc.url.redshift="${REDSHIFT_URL}?user=${REDSHIFT_USER}&password=${REDSHIFT_PASSWORD}" -x test
 
 export LINGUAL_PLATFORM=hadoop
 CATALOG_PATH=/user/$USER/.lingual
