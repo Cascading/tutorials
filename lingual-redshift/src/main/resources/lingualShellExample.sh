@@ -24,7 +24,7 @@ set -e
 echo ""
 $LINGUAL_COMMAND catalog --init
 echo ""
-$LINGUAL_COMMAND catalog --provider --add ./cascading-jdbc-redshift/build/libs/lingual-redshift-sample.jar
+$LINGUAL_COMMAND catalog --provider --add ./lingual-redshift/build/libs/lingual-redshift-sample.jar
 echo ""
 $LINGUAL_COMMAND catalog  --schema example --add
 echo ""

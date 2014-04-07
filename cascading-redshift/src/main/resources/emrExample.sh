@@ -12,14 +12,13 @@ REDSHIFT_PASSWORD=$3
 BUCKET=$4
 ZONE=$5
 
-gradle :lingual-redshift:clean :lingual-redshift:sampleCode -Dcascading.jdbc.url.redshift="${REDSHIFT_URL}?user=${REDSHIFT_USER}&password=${REDSHIFT_PASSWORD}" -x test
+gradle :cascading-redshift:clean :cascading-redshift:sampleCode -Dcascading.jdbc.url.redshift="${REDSHIFT_URL}?user=${REDSHIFT_USER}&password=${REDSHIFT_PASSWORD}" -x test
 
-NAME=lingual-redshift-sample.jar
-BUILD=lingual-redshift/build/libs
+NAME=cascading-redshift-sample.jar
+BUILD=cascading-redshift/build/libs
 DATAFILE="sampledata.csv"
 
 echo using AWS_ACCESS_KEY: $AWS_ACCESS_KEY
-echo using AWS_SECRET_KEY: $AWS_SECRET_KEY
 
 HDFS_TMP=$BUCKET/tmp
 
@@ -27,11 +26,11 @@ HDFS_TMP=$BUCKET/tmp
 s3cmd del -r s3://$BUCKET/$DATAFILE
 s3cmd del -r s3://$BUCKET/$NAME
 
-s3cmd put lingual-redshift/src/main/resources/$DATAFILE s3://$BUCKET/$DATAFILE
+s3cmd put cascading-redshift/src/main/resources/$DATAFILE s3://$BUCKET/$DATAFILE
 s3cmd put $BUILD/$NAME s3://$BUCKET/$NAME
 
 # launch cluster and run
-elastic-mapreduce --create --name "lingual-redshift-example" \
+elastic-mapreduce --create --name "cascading-redshift-example" \
   --visible-to-all-users \
   --num-instances 1 \
   --slave-instance-type m1.medium \
