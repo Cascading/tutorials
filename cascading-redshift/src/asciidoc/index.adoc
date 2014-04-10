@@ -1,4 +1,4 @@
-# Tutorial for using Cascading and Lingual with Redshift
+# Tutorial for using Cascading and Lingual with Amazon Redshift
 
 Introduction
 ------------
@@ -22,8 +22,6 @@ on your computer.
 2. The code of this tutorial is hosted on
 https://github.com/Cascading/tutorials[github]. Please clone it onto your local
 disk:
-
-NOTE: Code not yet pushed to cascading. Use ConcurrentCore for now to pull data
 
     $ git clone https://github.com/Cascading/tutorials.git
     $ cd tutorials
@@ -69,10 +67,64 @@ The file SampleFlow.java contains three flows to demonstrate Redshift’s integr
 
 Compile the code and launch an EMR instance by running the following from the `tutorials` base directory.
 
-    $ ./lingual-redshift/src/main/resources/emrExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password] [S3 bucket to read and write data in] [AWS availability zone]
+    $ ./cascading-redshift/src/main/resources/emrExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password] [S3 bucket to read and write data in] [AWS availability zone]
 
 If the task completes successfully, you will have two tables in S3 "results" and "results2" a file in your S3 bucket name sampleData.csv and a directory in your S3 bucket named sampleData.csv.out containing
 the part-XXXX files from the M/R job that extracted and transformed the DB data.
+
+Understanding the Code
+~~~~~~~~~~~~~~~~~~~~~~
+
+Let's start by inspecting the script file `./cascading-redshift/src/main/resources/emrExample.sh`
+
+We start with putting sampledata.csv and the compiled jar file in the S3 bucket. 
+
+[source,shell]
+----
+s3cmd put cascading-redshift/src/main/resources/$DATAFILE s3://$BUCKET/$DATAFILE
+s3cmd put $BUILD/$NAME s3://$BUCKET/$NAME
+----
+
+Next, the shell invokes the elastic-mapreduce command to run the compiled jar file. Let's look inside `./cascading-redshift/src/main/java/redshift/SampleFlow.java`. We will not cover the basics of Cascading (and recommend that you use the http://docs.cascading.org/impatient/[Impatient Series tutorial] for that). Instead, we will focus on specifics for creating a Redshift tap.
+
+First, we need to import the following packages.
+
+[source,java]
+----
+import cascading.jdbc.AWSCredentials;
+import cascading.jdbc.RedshiftScheme;
+import cascading.jdbc.RedshiftTableDesc;
+import cascading.jdbc.RedshiftTap;
+----
+
+Next, we set the properties from the parameters passed into the application.
+
+[source,java]
+----
+String accessKey = args[ 5 ];
+String secretKey = args[ 6 ];
+
+Properties properties = new Properties();
+properties.setProperty( "fs.s3n.awsAccessKeyId", accessKey );
+properties.setProperty( "fs.s3n.awsSecretAccessKey", secretKey );
+----
+
+Finally, we create the Redshift tap.
+
+[source,java]
+----
+String targetRedshiftTable = "results";
+
+RedshiftTableDesc redshiftTableDesc = new RedshiftTableDesc( targetRedshiftTable, fieldNames, fieldTypes, distributionKey, sortKeys );
+
+RedshiftScheme redshiftScheme = new RedshiftScheme( sampleFields, redshiftTableDesc );
+
+AWSCredentials awsCredentials = new AWSCredentials( accessKey, secretKey );
+
+Tap outputTableTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, tempPath, awsCredentials, redshiftTableDesc, redshiftScheme, SinkMode.REPLACE, true, false );
+----
+
+Once the tap is created, all data-transformation steps remain the same for Cascading! 
 
 Example: Running Redshift as a Lingual Provider
 -----------------------------------------------
@@ -97,6 +149,31 @@ Ensure that you get no errors. If you do, check that you have the Hadoop cluster
     $ ./cascading-redshift/src/main/resources/lingualShellExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password]
 
 You should see the results of the query `"SELECT * FROM results"` displayed on your console. 
+
+Understanding the Code
+~~~~~~~~~~~~~~~~~~~~~~
+
+Let's start by inspecting the script file `./cascading-redshift/src/main/resources/lingualShellExample.sh`
+
+Again, we will not cover the basics of Lingual, which are covered in a different https://www.youtube.com/watch?v=0g6hlBJroRE&list=PLJQ_tjFEDMB8x4kRzGxk5BJ9b43-P8lyp[tutorial].
+
+First, ensure that LINGUAL_PLATFORM is set to `hadoop` and that your cluster is up. 
+
+[source,shell]
+----
+export LINGUAL_PLATFORM=hadoop
+CATALOG_PATH=/user/$USER/.lingual
+LINGUAL_COMMAND="lingual"
+----
+
+Next, register the Redshift provider.
+
+[source,shell]
+----
+$LINGUAL_COMMAND catalog --provider --add ./cascading-redshift/build/libs/cascading-redshift-sample.jar
+----
+
+The rest of the steps are similar to connecting with any other database provider.
 
 Again, feel free to contact us through the https://groups.google.com/forum/#!forum/lingual-user[Lingual User Group] for any questions.
 
