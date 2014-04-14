@@ -2,15 +2,33 @@
 
 Introduction
 ------------
-http://aws.amazon.com/redshift/[Amazon Redshift] allows you to develop and manage large-scale data warehouses using your existing business intelligence skill sets in the cloud, bringing all the benefits of Amazon’s powerful cloud infrastructure to meet the demands of your BI infrastructure. In addition, by using the AWS infrastructure to manage the compute intensive data-transformation activities, and then moving the data to the enterprise data warehouses (EDW), you have the opportunity to use each analytical platform for its intended purpose — EDW for business analysis, and a Map Reduce framework for efficiently preparing the data using http://cascading.org[Cascading] and http://cascading.org/lingual[Lingual], the software platform most widely used to build and deploy Big Data applications.
+http://aws.amazon.com/redshift/[Amazon Redshift] allows you to develop and manage 
+large-scale data warehouses using your existing business intelligence skill sets 
+in the cloud, bringing all the benefits of Amazon’s powerful cloud infrastructure 
+to meet the demands of your BI infrastructure. In addition, by using the AWS 
+infrastructure to manage the compute intensive data-transformation activities, and 
+then moving the data to the enterprise data warehouses (EDW), you have the opportunity 
+to use each analytical platform for its intended purpose — EDW for business analysis, 
+and a Map Reduce framework for efficiently preparing the data using 
+http://cascading.org[Cascading] and http://cascading.org/lingual[Lingual], the 
+software platform most widely used to build and deploy Big Data applications.
 
 In this tutorial, you will be able to do the following:
 
-1. Leverage Cascading to move data from one Redshift table to another, and then copy it to S3-backed HFS. This example is particularly relevant when one wants to offload data from an enterprise data warehouse to the Hadoop cluster to do bulk transformations or data processing steps. Cascading allows you to operationalize the entire flow through a single application, if required.
+1. Leverage Cascading to move data from one Redshift table to another, and then 
+copy it to S3-backed HFS. This example is particularly relevant when one wants to 
+offload data from an enterprise data warehouse to the Hadoop cluster to do bulk 
+transformations or data processing steps. Cascading allows you to operationalize 
+the entire flow through a single application, if required.
 
-2. Use Lingual to write ANSI-compliant SQL to select data from Redshift table. While any sqlclient (such as SQL Workbench) can connect to Redshift to get data, Lingual allows you to select data by merging inputs from multiple sources (source A in EDW, source B in HDFS), enabling the user to develop federated queries. In this tutorial, we will only select data from the Redshift data source.
+2. Use Lingual to write ANSI-compliant SQL to select data from Redshift table. 
+While any sqlclient (such as SQL Workbench) can connect to Redshift to get data, 
+Lingual allows you to select data by merging inputs from multiple sources (source A 
+in EDW, source B in HDFS), enabling the user to develop federated queries. In this 
+tutorial, we will only select data from the Redshift data source.
 
-Finally, feel free to contact us through the https://groups.google.com/forum/#!forum/lingual-user[Lingual User Group] for any questions.
+Finally, feel free to contact us through the 
+https://groups.google.com/forum/#!forum/lingual-user[Lingual User Group] for any questions.
 
 Prerequisites
 -------------
@@ -32,60 +50,89 @@ Ensure that code compiles.
 Setup AWS and Redshift
 ----------------------
 
-Redshift is an AWS-specific tool and hence all the example code makes use of AWS. This tutorial does not cover starting up a Redshift Database, AWS permission rules, and general EC2 management. See the http://aws.amazon.com/redshift/[Redshift Documentation] for details on how to set that up. In particular, if you are using EMR to run the flow your EMR instances will need to be in a security group that has access to the database and it is strongly suggested that you run your EMR instances in the same availability zone your Redshift database is running in.
+Redshift is an AWS-specific tool and hence all the example code makes use of AWS. This 
+tutorial does not cover starting up a Redshift Database, AWS permission rules, and 
+general EC2 management. See the http://aws.amazon.com/redshift/[Redshift Documentation] 
+for details on how to set that up. In particular, if you are using EMR to run the flow 
+your EMR instances will need to be in a security group that has access to the database 
+and it is strongly suggested that you run your EMR instances in the same availability 
+zone your Redshift database is running in.
 
 1. Signup and create an http://aws.amazon.com/s3/[S3 instance]
 
-2. Ensure that you have launched the Redshift cluster by http://docs.aws.amazon.com/redshift/latest/gsg/rs-gsg-prereq.html[completing the Getting Started Guide]. Note down the JDBC URL, the database user name, and the database password. You will need it later.
+2. Ensure that you have launched the Redshift cluster by 
+http://docs.aws.amazon.com/redshift/latest/gsg/rs-gsg-prereq.html[completing the 
+Getting Started Guide]. Note down the JDBC URL, the database user name, and the 
+database password. You will need it later.
 
-3. Create https://console.aws.amazon.com/iam/home?#users[AWS access key for a new user]. Ensure that you give the right permissions to the user to run map reduce jobs on the Amazon cluster.
+3. Create https://console.aws.amazon.com/iam/home?#users[AWS access 
+key for a new user]. Ensure that you give the right permissions to the user to run 
+map reduce jobs on the Amazon cluster.
 
-4. Since Redshift reads the data initially from S3, you have to provide the AWS access-key/secret-key combination obtained from the previous step:
+4. Since Redshift reads the data initially from S3, you have to provide the 
+AWS access-key/secret-key combination obtained from the previous step:
 
     $ export AWS_ACCESS_KEY=<your AWS user access key>
     $ export AWS_SECRET_KEY=<your AWS user secret key>
 
-5. Next, install and configure http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-cli-install.html[EMR Command Line Tools]. Add the tool to your path
+5. Next, install and configure 
+http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-cli-install.html[EMR 
+Command Line Tools]. Add the tool to your path
 
     $ ./elastic-mapreduce --version
     $ export PATH=[path]/elastic-mapreduce-cli:$PATH
 
-6. Finally, install and configure http://s3tools.org/s3cmd[s3cmd]. Ensure that you download the latest version of the tool
+6. Finally, install and configure http://s3tools.org/s3cmd[s3cmd]. Ensure that you 
+download the latest version of the tool
 
     $ s3cmd --configure
 
 Running Redshift in Cascading
 -----------------------------
 
-The file SampleFlow.java contains three flows to demonstrate Redshift’s integration with Cascading and Cascading's HFS Tap, demonstrating the entire lifecycle when data is moved from EDW to Hadoop for bulk cleansing, and data is loaded back into EDW
+The file SampleFlow.java contains three flows to demonstrate Redshift’s integration 
+with Cascading and Cascading's HFS Tap, demonstrating the entire lifecycle when data 
+is moved from EDW to Hadoop for bulk cleansing, and data is loaded back into EDW
 
-1. Write data from S3-backed HFS to Redshift. This is important in use cases where after all the transformations are done on Hadoop, data is moved to an enterprise database hosting business intelligence applications.
+1. Write data from S3-backed HFS to Redshift. This is important in use cases where 
+after all the transformations are done on Hadoop, data is moved to an enterprise 
+database hosting business intelligence applications.
 
 2. Write data from one Redshift table to another.
 
 3. Write data from Redshift to S3-based HFS. 
 
-Compile the code and launch an EMR instance by running the following from the `tutorials` base directory.
+Compile the code and launch an EMR instance by running the following from the 
+`tutorials` base directory.
 
-    $ ./cascading-redshift/src/main/resources/emrExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password] [S3 bucket to read and write data in] [AWS availability zone]
+    $ ./cascading-redshift/src/scripts/emrExample.sh [JDBC URL] [Redshift 
+    DB user] [Redshift DB password] [S3 bucket to read and write data in] [AWS availability 
+    zone]
 
-If the task completes successfully, you will have two tables in S3 "results" and "results2" a file in your S3 bucket name sampleData.csv and a directory in your S3 bucket named sampleData.csv.out containing
-the part-XXXX files from the M/R job that extracted and transformed the DB data.
+If the task completes successfully, you will have two tables in S3 "results" and 
+"results2" a file in your S3 bucket name sampleData.csv and a directory in your S3 
+bucket named sampleData.csv.out containing the part-XXXX files from the M/R job that 
+extracted and transformed the DB data.
 
 Understanding the Code
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Let's start by inspecting the script file `./cascading-redshift/src/main/resources/emrExample.sh`
+Let's start by inspecting the script file 
+`./cascading-redshift/src/scripts/emrExample.sh`
 
 We start with putting sampledata.csv and the compiled jar file in the S3 bucket. 
 
 [source,shell]
 ----
-s3cmd put cascading-redshift/src/main/resources/$DATAFILE s3://$BUCKET/$DATAFILE
+s3cmd put cascading-redshift/src/scripts/$DATAFILE s3://$BUCKET/$DATAFILE
 s3cmd put $BUILD/$NAME s3://$BUCKET/$NAME
 ----
 
-Next, the shell invokes the elastic-mapreduce command to run the compiled jar file. Let's look inside `./cascading-redshift/src/main/java/redshift/SampleFlow.java`. We will not cover the basics of Cascading (and recommend that you use the http://docs.cascading.org/impatient/[Impatient Series tutorial] for that). Instead, we will focus on specifics for creating a Redshift tap.
+Next, the shell invokes the elastic-mapreduce command to run the compiled jar file. Let's 
+look inside `./cascading-redshift/src/main/java/redshift/SampleFlow.java`. We will not 
+cover the basics of Cascading (and recommend that you use the 
+http://docs.cascading.org/impatient/[Impatient Series tutorial] for that). Instead, 
+we will focus on specifics for creating a Redshift tap.
 
 First, we need to import the following packages.
 
@@ -115,13 +162,16 @@ Finally, we create the Redshift tap.
 ----
 String targetRedshiftTable = "results";
 
-RedshiftTableDesc redshiftTableDesc = new RedshiftTableDesc( targetRedshiftTable, fieldNames, fieldTypes, distributionKey, sortKeys );
+RedshiftTableDesc redshiftTableDesc = new RedshiftTableDesc( targetRedshiftTable, fieldNames, 
+                                                             fieldTypes, distributionKey, sortKeys );
 
 RedshiftScheme redshiftScheme = new RedshiftScheme( sampleFields, redshiftTableDesc );
 
 AWSCredentials awsCredentials = new AWSCredentials( accessKey, secretKey );
 
-Tap outputTableTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, tempPath, awsCredentials, redshiftTableDesc, redshiftScheme, SinkMode.REPLACE, true, false );
+Tap outputTableTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, 
+                                      tempPath, awsCredentials, redshiftTableDesc, 
+                                      redshiftScheme, SinkMode.REPLACE, true, false );
 ----
 
 Once the tap is created, all data-transformation steps remain the same for Cascading! 
@@ -129,15 +179,24 @@ Once the tap is created, all data-transformation steps remain the same for Casca
 Example: Running Redshift as a Lingual Provider
 -----------------------------------------------
 
-In this example, we will use the Lingual shell to query Redshift. As mentioned before, using this example, you can write federated queries on Lingual joining data sets from Redshift and S3-backed cluster. This tutorial will only take you through selecting data from Redshift, and can be extended to correlate data from other sources.
+In this example, we will use the Lingual shell to query Redshift. As mentioned before, 
+using this example, you can write federated queries on Lingual joining data sets from 
+Redshift and S3-backed cluster. This tutorial will only take you through selecting data 
+from Redshift, and can be extended to correlate data from other sources.
 
-Ensure that you have installed http://docs.cascading.org/lingual/1.0/[Lingual], the AWS tools described above, and have run the first section in this tutorial.
+Ensure that you have installed http://docs.cascading.org/lingual/1.0/[Lingual], the AWS 
+tools described above, and have run the first section in this tutorial.
 
-NOTE: The script will reinitiatize your catalog; if you have an existing catalog, make sure that you complete a backup before running the tutorial
+NOTE: The script will reinitiatize your catalog; if you have an existing catalog, make 
+sure that you complete a backup before running the tutorial
 
-To compile and run the Lingual example execute the following from the `tutorials` base directory:
+To compile and run the Lingual example execute the following from the `tutorials` 
+base directory:
 
-NOTE: The Redshift provider requires that your LINGUAL_PLATFORM is set to ‘hadoop’. This example is based on the scenario that you will run the shell from EC2 instance with Hadoop running. You will not be able to complete this section if you do not have the Hadoop cluster running
+NOTE: The Redshift provider requires that your LINGUAL_PLATFORM is set to ‘hadoop’. 
+This example is based on the scenario that you will run the shell from EC2 instance 
+with Hadoop running. You will not be able to complete this section if you do not 
+have the Hadoop cluster running
 
 Make sure that lingual shell works
 
@@ -146,16 +205,18 @@ Make sure that lingual shell works
 
 Ensure that you get no errors. If you do, check that you have the Hadoop cluster running.
 
-    $ ./cascading-redshift/src/main/resources/lingualShellExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password]
+    $ ./cascading-redshift/src/scripts/lingualShellExample.sh [JDBC URL] [Redshift DB user] [Redshift DB password]
 
 You should see the results of the query `"SELECT * FROM results"` displayed on your console. 
 
 Understanding the Code
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Let's start by inspecting the script file `./cascading-redshift/src/main/resources/lingualShellExample.sh`
+Let's start by inspecting the script file 
+`./cascading-redshift/src/scripts/lingualShellExample.sh`
 
-Again, we will not cover the basics of Lingual, which are covered in a different https://www.youtube.com/watch?v=0g6hlBJroRE&list=PLJQ_tjFEDMB8x4kRzGxk5BJ9b43-P8lyp[tutorial].
+Again, we will not cover the basics of Lingual, which are covered in a different 
+https://www.youtube.com/watch?v=0g6hlBJroRE&list=PLJQ_tjFEDMB8x4kRzGxk5BJ9b43-P8lyp[tutorial].
 
 First, ensure that LINGUAL_PLATFORM is set to `hadoop` and that your cluster is up. 
 
@@ -180,7 +241,11 @@ Again, feel free to contact us through the https://groups.google.com/forum/#!for
 Reference for Advanced AWS and Cascading Users
 ----------------------------------------------
 
-Users who are already familiar with Redshift, Cascading and Lingual can make use of this by adding the compiled library to their existing projects. Libraries for `cascading-redshift` are hosted on http://conjars.org[conjars.org] and can be included in an existing Maven or Gradle project by adding the conjars repo `http://conjars.org/repo/` to your repo list and then adding either
+Users who are already familiar with Redshift, Cascading and Lingual can make use of 
+this by adding the compiled library to their existing projects. Libraries for 
+`cascading-redshift` are hosted on http://conjars.org[conjars.org] and can be included 
+in an existing Maven or Gradle project by adding the conjars repo 
+`http://conjars.org/repo/` to your repo list and then adding either
 
 Maven:
 

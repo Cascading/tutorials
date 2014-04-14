@@ -26,7 +26,7 @@ HDFS_TMP=$BUCKET/tmp
 s3cmd del -r s3://$BUCKET/$DATAFILE
 s3cmd del -r s3://$BUCKET/$NAME
 
-s3cmd put cascading-redshift/src/main/resources/$DATAFILE s3://$BUCKET/$DATAFILE
+s3cmd put cascading-redshift/src/scripts/$DATAFILE s3://$BUCKET/$DATAFILE
 s3cmd put $BUILD/$NAME s3://$BUCKET/$NAME
 
 # launch cluster and run
