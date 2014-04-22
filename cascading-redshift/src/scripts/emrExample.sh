@@ -12,7 +12,7 @@ REDSHIFT_PASSWORD=$3
 BUCKET=$4
 ZONE=$5
 
-gradle :cascading-redshift:clean :cascading-redshift:sampleCode -Dcascading.jdbc.url.redshift="${REDSHIFT_URL}?user=${REDSHIFT_USER}&password=${REDSHIFT_PASSWORD}" -x test
+gradle :cascading-redshift:clean :cascading-redshift:jar -Dcascading.jdbc.url.redshift="${REDSHIFT_URL}?user=${REDSHIFT_USER}&password=${REDSHIFT_PASSWORD}" -x test
 
 NAME=cascading-redshift-sample.jar
 BUILD=cascading-redshift/build/libs
@@ -26,7 +26,7 @@ HDFS_TMP=$BUCKET/tmp
 s3cmd del -r s3://$BUCKET/$DATAFILE
 s3cmd del -r s3://$BUCKET/$NAME
 
-s3cmd put cascading-redshift/src/scripts/$DATAFILE s3://$BUCKET/$DATAFILE
+s3cmd put cascading-redshift/data/$DATAFILE s3://$BUCKET/$DATAFILE
 s3cmd put $BUILD/$NAME s3://$BUCKET/$NAME
 
 # launch cluster and run

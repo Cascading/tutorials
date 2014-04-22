@@ -140,11 +140,12 @@ public class SampleFlow
     LOG.info( "copying data to S3 bucket: {}", exportFilesTap.getIdentifier() );
     LOG.info( "-------------------------------------------------------------" );
 
-    FlowDef flowDefExport = FlowDef.flowDef();
-    flowDefExport.setName( "redshift-flow-export" );
-    flowDefExport.addSource( debugPipe, redshiftInputTap );
-    flowDefExport.addTailSink( debugPipe, exportFilesTap );
-    flowDefExport.setDebugLevel( DebugLevel.VERBOSE );
+    // connect the taps, pipes, etc., into a flow
+    FlowDef flowDefExport = FlowDef.flowDef()
+     .setName( "redshift-flow-export" )
+     .addSource( debugPipe, redshiftInputTap )
+     .addTailSink( debugPipe, exportFilesTap )
+     .setDebugLevel( DebugLevel.VERBOSE );
 
     HadoopFlowConnector exportFlowConnector = new HadoopFlowConnector( properties );
     Flow exportFlow = exportFlowConnector.connect( flowDefExport );
