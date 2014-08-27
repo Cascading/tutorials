@@ -31,8 +31,10 @@ s3cmd put $BUILD/$NAME s3://$BUCKET/$NAME
 
 # launch cluster and run
 elastic-mapreduce --create --name "cascading-redshift-example" \
+  --ami-version 3.2.0 \
   --visible-to-all-users \
   --num-instances 1 \
+  --master-instance-type m1.medium \
   --slave-instance-type m1.medium \
   --debug \
   --enable-debugging \

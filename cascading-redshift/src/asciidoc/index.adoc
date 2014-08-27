@@ -19,7 +19,7 @@ Prerequisites
 -------------
 
 1. In order to follow the tutorial, you will also have to have
-http://gradle.org[gradle] installed
+Java 7 as well as http://gradle.org[gradle] < v2.0 installed
 on your computer.
 
 2. The code of this tutorial is hosted on
@@ -48,7 +48,9 @@ zone your Redshift database is running in.
 2. Ensure that you have launched the Redshift cluster by 
 http://docs.aws.amazon.com/redshift/latest/gsg/rs-gsg-prereq.html[completing the 
 Getting Started Guide]. Note down the JDBC URL, the database user name, and the 
-database password. You will need it later.
+database password. You will need it later. If you will be using Elastic Map
+Reduce, please ensure that you have authorized both the EMR master and slave
+security groups within the Redshift cluster security group.
 
 3. Create https://console.aws.amazon.com/iam/home?#users[AWS access 
 key for a new user]. Ensure that you give the right permissions to the user to run 
@@ -94,7 +96,7 @@ Compile the code and launch an EMR instance by running the following from the
     DB user] [Redshift DB password] [S3 bucket to read and write data in] [AWS availability 
     zone]
 
-If the task completes successfully, you will have two tables in S3 "results" and 
+If the task completes successfully, you will have two tables in Redshift "results" and 
 "results2" a file in your S3 bucket name sampleData.csv and a directory in your S3 
 bucket named sampleData.csv.out containing the part-XXXX files from the M/R job that 
 extracted and transformed the DB data.
