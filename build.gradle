@@ -23,22 +23,22 @@ buildscript {
   repositories {
     mavenLocal()
     mavenCentral()
-    mavenRepo name: 'conjars', url: 'http://conjars.org/repo/'
-    mavenRepo name: 'Bintray Asciidoctor repo', url: 'http://dl.bintray.com/content/aalmiray/asciidoctor'
-    mavenRepo name: 'Bintray JCenter', url: 'http://jcenter.bintray.com'
+    maven{ url 'http://conjars.org/repo/' }
+    maven{ url 'http://dl.bintray.com/content/aalmiray/asciidoctor' }
+    maven{ url 'http://jcenter.bintray.com' }
   }
 
   dependencies {
     classpath 'org.asciidoctor:asciidoctor-gradle-plugin:0.5.0'
-    classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
+    classpath 'eu.appsatori:gradle-fatjar-plugin:0.2'
   }
 
 }
 
 ext.redshiftPostgresVersion = '8.0-318.jdbc3'
 ext.hadoopVersion = "1.2.1"
-ext.cascadingVersion = '2.2.1'
-ext.cascadingJDBCVersion = '2.2.0-wip-+'
+ext.cascadingVersion = '2.5.5'
+ext.cascadingJDBCVersion = '2.5.4'
 ext.slf4jVersion = '1.7.2'
 
 apply plugin: 'idea'
@@ -55,9 +55,9 @@ subprojects {
   repositories {
     mavenLocal()
     mavenCentral()
-    mavenRepo name: 'conjars', url: 'http://conjars.org/repo/'
-    mavenRepo name: 'Bintray Asciidoctor repo', url: 'http://dl.bintray.com/content/aalmiray/asciidoctor'
-    mavenRepo name: 'Bintray JCenter', url: 'http://jcenter.bintray.com'
+    maven{ url 'http://conjars.org/repo/' }
+    maven{ url 'http://dl.bintray.com/content/aalmiray/asciidoctor' }
+    maven{ url 'http://jcenter.bintray.com' }
   }
 
   dependencies {
