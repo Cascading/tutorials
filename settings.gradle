@@ -22,5 +22,6 @@ include 'pattern'
 include 'lingual-hbase'
 include 'lingual-oracle'
 include 'cascading-redshift'
+include 'cascading-teradata'
 
 rootProject.name = 'tutorials'

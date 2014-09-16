@@ -63,6 +63,7 @@ subprojects {
   dependencies {
 
     compile group: 'cascading', name: 'cascading-jdbc-redshift', version: cascadingJDBCVersion
+    /*compile group: 'cascading', name: 'cascading-jdbc-teradata', version: cascadingJDBCVersion*/
     compile group: 'postgresql', name: 'postgresql', version: redshiftPostgresVersion
 
     compile group: 'cascading', name: 'cascading-core', version: cascadingVersion
