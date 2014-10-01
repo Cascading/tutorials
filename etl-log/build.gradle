@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
@@ -32,14 +33,21 @@ buildscript {
   }
 
   dependencies {
-    classpath 'concurrentinc:cascading-asciidoc:1.0.0'
+    classpath 'concurrentinc:cascading-asciidoc:1.0.0-wip-6'
   }
 
 }
 
 
 createDocs {
-      sourceDir = new File( project.projectDir, 'etl-log-docs/src/asciidoc' )
-      def attributes = [ imagesdir : "etl-log-docs/src/asciidoc/images" ]
-      def options = [ attributes : attributes ]
+     sourceDir = new File( project.projectDir, 'etl-log-docs/src/asciidoc' )
+     def attributes = [
+            stylesdir: "src/site/stylesheets/",
+            stylesheet: 'cascading.css',
+            imagesdir: "etl-log-docs/src/asciidoc/images/"
+    ]
+    options = [
+            template_dir: 'src/templates/',
+            attributes: attributes
+    ]
 }

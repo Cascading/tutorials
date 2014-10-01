@@ -1,0 +1,214 @@
+= Java developers guide to ETL
+
+== ETL (Extract, Transform, and Load) is a set of software processes that facilitate the population of data warehouses
+ 
+Any data warehouse, such as a Hadoop-based information-management (IM) system, 
+typically collects data from several external systems to provide integrated and 
+manageable information to its business users. These external systems can be 
+existing IM systems distributed within the enterprise landscape such as mainframes, 
+data warehouses, OLTP systems, and RDBMS.
+
+Data extracted from these different sources inherently suffers from quality issues 
+during the migration process due to inconsistent semantic representation. Therefore, 
+for implementing data migration successfully within the enterprise, one must ensure a 
+consistent schema that adheres to best-practices in data management. A major part of 
+data management is having the flexibility to detect bad data and apply cleansing 
+and transformation routines. 
+
+Each enterprise has their unique business needs which require specific usage of 
+data management from their IM system. Thus, the notion that an ETL system can provide 
+pre-built packaged functions to address all data engineering processes (cleansing, 
+manipulation, and migration) is a fallacy in that one size fits all. 
+
+One size does not fit all -- what is required is a comprehensive framework that can 
+scale to meet all data engineering needs of your business, which provides the capability 
+of auditing for governance, monitoring operations, balance and control, data and application 
+lineage - just to name a few. There are other operational needs that are outside the scope
+ of this tutorial, but will be touched in future tutorials.
+
+Data migration in production-grade applications, coupled with the transformations required 
+to produce the final data set, is a complex task that must adhere to best-practices and 
+engineering protocols. This tutorial addresses the key principles for ETL tasks and includes 
+working examples using Cascading and Driven to solve your data engineering  challenges.
+
+== Resilient and Enterprise-grade ETL systems must satisfy specific needs
+ 
+An ETL system must provide more capabilities than what its name alludes – 
+Extract, Transform and Load.
+ 
+=== Integration with External Systems
+
+Integration is one of many requirements for an ETL system -- 
+the ability to source the data for a workflow process from an external system and then push the 
+final data set to an external system such as elasticsearch, HBase, Solr, or Teradata. Since the 
+data is constantly updated in the (source) production system that populates the Hadoop cluster 
+(data warehouse), it is necessary to update the warehouse so that it can provide up-to-date information. 
+In order to implement “incremental” updates, care has to be taken to track that no records are 
+dropped (the number of input tuples should be the same as output tuples), data is 
+correctly organized and “indexed” (binning) in a time-series fashion, ensure that workflow computation 
+is decoupled from the temporary availability of external systems (abstraction from integration). In 
+other words, it is equally important to understand how your ETL framework integrates 
+with external systems as it is to implement data transformations. 
+ 
+=== Data Transformation and Engineering Functions
+
+Data manipulation and filtering functions are important to: 
+identify and track bad data, correct data sets and enrich records with additional information where possible. 
+What comes out from a data-transformation workflow process is a data product that can be consumed by the end-user. 
+It is practically impossible to forecast all the transformations and cleansing that a designer might ever need. 
+So, instead of having a closed set of transformations, what is more important to have extensibility of the 
+models with transformations that are defined by the data engineer.
+ 
+It is easy to be fooled by the enticement of an ETL solution doing simple things simply, but nothing more. One 
+major reason for the failure of ETL deployments in production systems is the selection of a tool that is unable 
+to easily provide the extensibility to integrate business-specific transformation steps. While starting with 
+simple tasks (filters, aggregations) seem simple with such tools, extending them to support enterprise-grade ETL 
+workflows proves to be expensive and unstable. One such example is the use of SQL-like scripts to perform ETL 
+tasks, only to realize that SQL primitives do not support one-to-many mappings (one transformation produces 
+many output tuples), complex transformations which require coding in Java, and other real-world transformations 
+resulting in spaghetti code where callouts to user-defined functions (UDF) are interspersed with Java code, 
+making the code unmonitorable and unsupportable.
+ 
+Some examples of data-transformation functions include aggregations (count, average), filtering, various 
+kinds of joins (in-memory lookup, large data sets on either side), merging, and custom functions (masking). What 
+is required is a framework that provides commonly used data-transformation functions out-of-the-box, 
+and then makes it simple to extend and add custom transformation functions.
+ 
+=== Ontology to define the workflow processes
+
+Ontology represents knowledge within a domain. Any real-world ETL 
+workflow must have multiple steps in producing a data product. Historically, creating a data application without 
+developing a model (to capture the flow from source to the final product) will result in a system 
+that becomes unmanageable and unsupportable. In other words, what is required is an overall architecture graph 
+that is a logical-level description of the data flow 
+in an ETL process. Each node of such a graph represents activities and the affected attributes.
+ 
+image:driven-part2.png[]
+
+*Figure 1: A simple ontology of a word count application rendered through
+Driven. You can explore this particular application by clicking on this 
+https://driven.cascading.io/driven/56AB59A8C83E4ABAB50A617B2512600F[link]*.
+
+=== Orchestration framework to sense dependencies
+
+ETL workflow instances or data applications rarely exist in 
+isolation. The output of one data flow is typically the source for another data flow. In a real-world ETL deployment, 
+there are many requirements that arise as a result.
+
+First, the ETL framework must be able to automatically determine dependencies between the flows. Many orchestration 
+frameworks exist, but are hampered from deployment due to their complexity of use; ease of use – and ideally, 
+the ability to automatically sense dependencies is a vital requirement. 
+
+Second, to optimize the compute resources of the Hadoop cluster, the system must be intelligent to only execute 
+downstream data flows if the source data has been updated (otherwise, the downstream flow will execute to create 
+an identical result set from its previous run, wasting resources). 
+
+Third, in case of an error in a system with many dependent flows, the framework should be intelligent enough 
+not to start from the beginning, but from the last successfully-completed flow in the dependency graph (checkpoints).
+
+=== Support for Operational Visibility
+
+An ETL flow deployed for production use must satisfy strict contracts 
+(Service Level Agreements – SLA) that can relate to quality, time to complete the job, etc. In addition, a 
+successfully-delivered data-processing flow -- or an ETL application --  will spend more time in the lifecycle 
+being deployed and monitored than being developed. Yet, little attention is initially paid to supporting operational 
+visibility required to support the deployment and monitoring the ability of the ETL flow to meet its SLA. What is 
+required in the ETL framework is the ability to visualize application tuning, monitoring, trending for capacity and compute use, 
+and getting insights into when and how the applications miss their SLAs. In addition to visualizing operational 
+needs around monitoring SLAs, the framework must provide audit artifacts to track erroneous data fields 
+(data quality), number of transactions or records that were processed (balance and controls), and identify 
+the input data that is the originator of a given record (data lineage).
+ 
+== Using Cascading with Driven is the comprehensive platform for developing ETL flows
+ 
+=== Cascading framework with its Unix “pipes” model is ideal for building ETL flows
+
+The Cascading processing model is 
+based on a "pipes and filters" metaphor. You can use the standard operations in the Cascading library to 
+create powerful and robust applications by combining them in chains (much like Unix operations such as sed, grep, sort, 
+uniq, and awk). Use the Cascading APIs to assemble pipelines that split, merge, group, or join streams of data 
+while applying operations to each data record or groups of records.
+ 
+In Cascading, a data record is called a *tuple*, a pipeline is called a *pipe assembly*, and a series of tuples passing 
+through a pipe assembly is called a *tuple stream*.
+ 
+Pipe assemblies are assembled independently from what data they will process. This is a very valuable and an important feature.
+You can develop your application code independant of the system from where the data will be imported, and where the final
+data set is stored. This abstraction to the integration system is achieved through *Taps*. What this also means is that you
+can change your integration points (for example push final data set to a Hive table instead of HBase) without requiring
+any change to the application logic. The process of binding pipe assemblies to sources and sinks(taps) results in a *flow*. 
+Flows can be executed on a data cluster like Hadoop. 
+
+Finally, many flows can be grouped together and executed as a single process. If one flow depends on the output of 
+another flow, it will not be executed until all its data dependencies are satisfied (the underlying Cascading framework 
+manages these dependencies) This collection of flows is called a *Cascade*.
+ 
+image:driven1.png[“Driven”,height=126]
+
+*Figure 2: Visualization of an ETL application constructed of different 
+flows with their associated dependencies. Play with live Driven at 
+http://driven.cascading.io/index.html#/apps/EDBCF3EA41E645FEBD2583005BE2AFB5[link].*  
+
+=== Cascading provides rich capabilities to develop ETL flows
+
+As discussed, one of the requirements for a 
+comprehensive framework for developing ETL flows is providing rich set of out-of-box functionality to manipulate 
+data, and the ease to add custom data transformation functions. Cascading has developed a robust 
+set of data transformation functions as part of supporting the community to develop ETL flows since 2007. For more 
+information about the availability of the 
+functions, visit the *http://docs.cascading.org/cascading/2.5/userguide/html[Cascading Users Guide]*. 
+
+In addition, with the “pipes” metaphor and Java APIs, it is very easy to add custom functions. Unlike writing 
+user-defined functions (UDF) for scripting languages, the entire Cascading application, including custom functions, 
+compiles into one JAR file, and can be visualized and monitored as a single application 
+with integrated steps.
+
+=== Cascading leverages software best-practices to help build enterprise-grade ETL flows
+
+First, Cascading applications are easy to test. Cascading supports constructs 
+associated with Test Driven Development (TDD) such as debug statements, assert, exceptions or failure traps, 
+and checkpoints. This tutorial discusses how to use some of these primitives. 
+
+Second, with Cascading, you can test your application in local in-memory mode, and deploy it on Hadoop mode 
+without (necessarily) recoding your application. 
+
+Third, Cascading applications are easy to deploy — Cascading applications get deployed as a single JAR file 
+(versus a collection of scripts and UDF JAR files strung together by shell scripts), making stepping through 
+the code and tracking stack traces feasible — a key requirement for supporting data applications in 
+production. 
+
+Fourth, Cascading decouples application logic from underlying computational fabric. What this means is that you can 
+write your code on one platform (such as MapReduce) and migrate it to another platform supported by Cascading without 
+requiring any recoding, thus making your application future-proof. 
+
+Last, the Cascading query planner — a sophisticated rules engine that maps the higher-level data flows into calls 
+into computational fabric such as MapReduce – helps you develop applications that are scale free. Your ETL flow 
+does not need to worry about the size of the data or the cluster. In addition, the query planner is deterministic 
+which means that even in a distributed environment such as a Hadoop cluster, the application will behave the same which makes 
+debugging easier.
+ 
+=== Driven provides operational visibility into the entire ETL lifecycle
+
+Driven is an Application Performance Management (APM) tool -- when developing an ETL workflow with 
+Cascading, Cascading develops a run-time state model of your workflow, enabling you to visually debug, tune, deploy 
+and monitor your application, providing analysis at a level of fidelity not available through 
+the Hadoop job dashboard. With Driven, you can compare the performance of your ETL workflow with historical 
+averages, providing insights about potential inefficiencies in your application, thus giving insight to do capacity 
+planning and other governance and compliance tasks. Additionally, to visualize various metrics that help 
+provide 10x developer productivity, you can consolidate the monitoring of your ETL flows from your 
+enterprise monitoring tools by integrating with Driven through its Command Line Interface (CLI).
+ 
+image:driven-part4-b.png[]
+
+*Figure 3: An example of the performance view in Driven that provides
+visibility from the logical flow down to operational insights. You can
+explore interactively the performance view of this application by clicking
+this https://driven.cascading.io/driven/1AE69BD0641146EFB926DE7AC83B94B0[link].*
+ 
+You can register 
+to use the service from *http://cascading.io/driven*. Also, 
+you can watch (screencast) tutorials of Driven at 
+*http://cascading.io/driven/#Get_Started*.
+
+== Next: 
+link:prerequisites.html[Checking for Prerequisites]

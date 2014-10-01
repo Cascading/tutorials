@@ -1,0 +1,84 @@
+= Java Developers Guide to ETL with Cascading
+
+== Part 2: Using Filters to extract data patterns
+ 
+=== What You Will See 
+In Part 2 of the tutorial, we will create a simple filter to remove log entries
+ that have match a specific pattern (tuples with no size). Filter are easy to implement and are powerful Cascading constructs, 
+ which are used for multiple data patterns to:
+
+* Separate unwanted data and store it to a different file for separate analysis
+* Implement in-line data quality checks
+* Perform different processing logic based on content (you can use 
+filters to create multiple branches from the incoming pipe, 
+a topic we will cover in the later parts of the tutorial)
+ 
+=== Run and Validate Your Program
+ 
+*Step1 :* Compile your program
+ 
+    $ cd etl-log/part2 
+    $ gradle clean jar
+ 
+*Step 2:* If you have not done it already from the previous part, copy the log file to Hadoop:
+ 
+    $ hadoop dfs -mkdir /logs 
+    $ hadoop dfs -put ../data/NASA_access_log_Aug95.txt /logs
+ 
+*Step 3:* Run your ETL flow
+ 
+    $ hadoop jar ./build/libs/etl.jar /logs/NASA_access_log_Aug95.txt /output
+ 
+*Step 4:* View the execution of your ETL flow in real-time through Driven
+
+Depending on how you configured your Driven Plugin, either click the Driven 
+URL from your console or log into the Driven application.
+
+    
+    14/08/28 12:01:53 INFO state.AppStats: shutdown hook finished. +
+    14/08/28 12:01:53 INFO rest.DrivenDocumentService: *http://localhost:8080/driven/3B8BE330F87B4DF9BA9C7CABB3E1BC16* +
+    14/08/28 12:01:53 INFO rest.DrivenDocumentService: messaging version 1.0-eap-57:JSON
+ 
+Attached is a live https://driven.cascading.io/driven/8777DC6180F44623B65DE50B33311E2B[link]
+ to execute Part 2 exercise on the Driven cloud service.
+ 
+image:etl-part-2.png[]
+
+*Figure 1: An example of the performance view in Driven.*
+
+*Step 5:* View contents of the tab-separated data does not contain any rows with zero size
+ 
+    $ hadoop dfs -cat /output/part-00000
+ 
+=== What’s Going On?
+ 
+We will only cover the parts in the code that are different from the previous section.
+ 
+A http://docs.cascading.org/cascading/2.5/javadoc/cascading/operation/Filter.html[filter] is 
+responsible for testing teach tuple to see if it should be removed from the stream. A filter 
+either discards the input tuple or returns it intact.
+ 
+[source,java]
+----
+// We have to filter out the tuples with no size (- instead) such as the one with 404 and 30x response codes +
+ExpressionFilter filterResponse = 
+    new ExpressionFilter("size.equals(\"-\")", String.class); 
+
+processPipe = new Each(processPipe, new Fields("size"), filterResponse);
+----
+
+=== References
+ 
+For more details about the particular operations or to understand how 
+some of these steps can be modified for your use case, use the following resources:
+ 
+*Filters:* http://docs.cascading.org/cascading/2.5/userguide/html/ch05s03.html
+ 
+*Expression Filters:* http://docs.cascading.org/cascading/1.2/javadoc/cascading/operation/expression/ExpressionFilter.html
+ 
+*Java Expressions and Cascading:* http://docs.cascading.org/cascading/2.1/userguide/html/ch08s07.html
+
+== Next
+link:part3.html[Part 3 - Merging multiple source in an ETL flow]
+
+

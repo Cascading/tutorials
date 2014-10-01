@@ -1,0 +1,9 @@
+To build:
+
+$ cd part6
+$ gradle clean fatjar
+
+To run: 
+
+$ java -cp './build/libs/etl-fat.jar' etl.Main ../data/NASA_access_log_Aug95_head_5k.txt ../data/GeoIPCountryWhoisQuoteCleansed.csv output/out.txt
+
