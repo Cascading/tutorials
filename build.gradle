@@ -24,12 +24,11 @@ buildscript {
     mavenLocal()
     mavenCentral()
     maven{ url 'http://conjars.org/repo/' }
-    maven{ url 'http://dl.bintray.com/content/aalmiray/asciidoctor' }
     maven{ url 'http://jcenter.bintray.com' }
   }
 
   dependencies {
-    classpath 'org.asciidoctor:asciidoctor-gradle-plugin:0.5.0'
+    classpath 'concurrentinc:cascading-asciidoc:1.0.0-wip-6'
     classpath 'eu.appsatori:gradle-fatjar-plugin:0.2'
   }
 
@@ -45,9 +44,9 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply from: "${rootDir}/etc/s3Upload.gradle"
 
-subprojects {
+subprojects { subproject ->
   apply plugin: 'java'
-  apply plugin: 'asciidoctor'
+  apply plugin: 'cascadingasciidoc'
   apply plugin: 'idea'
   apply plugin: 'eclipse'
   apply plugin: 'fatjar'
@@ -56,7 +55,6 @@ subprojects {
     mavenLocal()
     mavenCentral()
     maven{ url 'http://conjars.org/repo/' }
-    maven{ url 'http://dl.bintray.com/content/aalmiray/asciidoctor' }
     maven{ url 'http://jcenter.bintray.com' }
   }
 
@@ -79,52 +77,25 @@ subprojects {
 
   }
 
-  asciidoctor {
-
-    //sourceDocumentName = file( 'src/asciidoc/index.adoc' )
-
-    // http://asciidoc.org/userguide.html#X88
-    // attributed must all be lowercase
-
-    def attributes = [
-            toc2: '',
-            //revnumber: version,
-            'source-highlighter': 'highlightjs',
-            'highlightjs-theme': 'zenburn',
-            'linkcss!': '',
-            stylesdir: "src/site/stylesheets/",
-            stylesheet: 'cascading.css',
-            'data-uri': '',
-            imagesdir: "${project.name}/src/site/images/",
-            //artifactsurl: project.s3Bucket,
-            //docsurl: project.s3BucketDocs,
-            //projectroot: project.rootDir,
-            analyticsid: System.properties[ 'analytics.id' ],
-            analyticsdomain: System.properties[ 'analytics.domain' ]
-
-            // disabled till attributes in docinfo is supported
-  //          docinfo1: '',
-    ]
-    options = [
-            template_dir: 'src/templates/',
-            eruby: 'erubis',
-            attributes: attributes
-    ]
+  if (subproject.name == 'etl-log') {
+    createDocs {
+       File sourceDir = new File('etl-log/etl-log-docs/src/asciidoc')
+    }
   }
-
-  task zipDocs( type: Zip, dependsOn: asciidoctor ){
+  
+  task zipDocs( type: Zip, dependsOn: createDocs ){
     baseName = "${project.name}"
-    from (asciidoctor.outputDir){
+    from (createDocs.outputDir){
         include '*.*'
     }
     into "${project.name}"
   }
 
 
-  task docDist( type: Copy, dependsOn: [ asciidoctor, zipDocs ] ) {
+  task docDist( type: Copy, dependsOn: [ createDocs, zipDocs ] ) {
     description = "publish documentation"
 
-    from asciidoctor.outputDir
+    from createDocs.outputDir
     from zipDocs.archivePath
     into "${rootProject.s3UploadDocs.source}/${project.name}"
 
