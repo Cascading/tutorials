@@ -1,0 +1,41 @@
+= Java Developers Guide to Hive with Cascading
+
+Welcome to the Java Developer's Guide to using https://hive.apache.org/[Apache Hive] with http://www.cascading.org/[Cascading],
+a tutorial that will take you through implementing Apache Hive workflows within Cascading Flows and Cascades.
+
+The coding examples in each part refers to a commonly-used operation in ETL, 
+and can be referred directly; you do not need to complete previous parts to 
+use a given example. 
+
+Also, while we give references to http://docs.cascading.org/cascading/2.5/userguide/html[Cascading Users Guide]
+for the APIs used to implement these tasks, this tutorial is not intended to
+serve as an introduction to Cascading. For that, we recommend that you follow
+the http://docs.cascading.org/impatient[Cascading for the Impatient] tutorial.
+
+If you have a question or run into any problems send an email to 
+the https://groups.google.com/forum/#!forum/cascading-user[cascading-user-list].
+
+This tutorial discusses the following topics, which include exercises and links to resource material:
+
+== link:prerequisites.html[Prerequisites]
+* Install Hive, Cascading-Hive, Driven, Gradle, IDE and other software for running the tutorial
+
+== link:part1.html[Part 1: File Copy]
+* Simple application that copies a file from HDFS to Hive
+* Creates an Hfs tap and HiveTap
+* Automatically creates new Hive table based on HiveTableDescriptor
+* Prints HQL query results to console
+
+== link:part2.html[Part 2: Intro to HiveFlow]
+* Create several Hive taps and tables
+* Filter out unwanted fields
+* Create and run several HQL queries within a Cascading HiveFlow
+
+== link:part3.html[Part 3: Hive flows within a Cascade]
+* Filters data to exclude it from processing (bad or unwanted data)
+* Performs several hashjoins, cogroups, functions
+* Links several flows (both Cascading and Hive) into one Cascade
+* Implements a standard TPC-DS workflow
+
+== Next: 
+link:prerequisites.html[Checking for Prerequisites]

@@ -77,6 +77,19 @@ subprojects { subproject ->
 
   }
 
+  createDocs {
+  def attributes = [
+            stylesdir: "${project.rootDir}/src/site/stylesheets/",
+            stylesheet: 'cascading.css',
+            imagesdir: "src/site/images/"
+    ]
+    options = [
+            template_dir: 'src/templates/',
+            attributes: attributes
+    ]
+
+  }
+
   if (subproject.name == 'etl-log') {
     createDocs {
        File sourceDir = new File('etl-log/etl-log-docs/src/asciidoc')
