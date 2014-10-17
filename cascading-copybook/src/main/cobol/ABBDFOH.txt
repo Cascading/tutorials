@@ -1,0 +1,10 @@
+      ******************************************************************
+      * EXTRACT HEADER OUT OF KCBDFOR                                  *
+      ******************************************************************
+      *      03  BDFO-FILE-HEADER.
+       01  BDFO-FILE-HEADER.
+                 05  BDFO-RUNDATE      PIC  XX.
+                 05  BDFO-FILE-ID      PIC  X(8).
+                 05  BDFO-CENTRE-ID    PIC  X.
+                 05  BDFO-SBI-FILE-IND PIC  X(50).
+                 05  BDFO-DEN-RETURNED PIC  XXX.

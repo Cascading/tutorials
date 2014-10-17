@@ -82,7 +82,19 @@ subprojects { subproject ->
        File sourceDir = new File('etl-log/etl-log-docs/src/asciidoc')
     }
   }
-  
+
+  if (subproject.name == 'cascading-hive') {
+    createDocs {
+       File sourceDir = new File('cascading-hive/cascading-hive-docs/src/asciidoc')
+    }
+  }
+
+  if (subproject.name == 'cascading-copybook') {
+   createDocs {
+     File sourceDir = new File('cascading-copybook/src/asciidoc/')
+   }
+  }
+
   task zipDocs( type: Zip, dependsOn: createDocs ){
     baseName = "${project.name}"
     from (createDocs.outputDir){
@@ -90,7 +102,6 @@ subprojects { subproject ->
     }
     into "${project.name}"
   }
-
 
   task docDist( type: Copy, dependsOn: [ createDocs, zipDocs ] ) {
     description = "publish documentation"

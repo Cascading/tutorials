@@ -1,0 +1,98 @@
+= Scalable COBOL Copybooks Processing using Cascading
+
+== Prerequisites
+
+It is important that your environment
+is configured correctly before we get started. Here are the components that
+we want to make that you have installed correctly before we get started with
+development:
+
+=== GitHub
+
+The code of this tutorial is hosted on
+https://github.com/Cascading/tutorials[GitHub].
+Clone the code onto your local disk like so:
+
+[source,bash]
+----
+$ git clone https://github.com/Cascading/tutorials
+----
+
+=== Gradle
+
+To compile your ETL flows, you will need http://gradle.org[Gradle]
+
+NOTE: Ensure that you install version 1.09 or 1.11. This exercise is
+currently *not* compatible with gradle 2.x.
+
+You can check your version of gradle like this:
+
+[source,bash]
+----
+$ gradle -v
+------------------------------------------------------------ +
+    Gradle 1.9 +
+------------------------------------------------------------ +
+...
+----
+
+=== Hadoop
+We will be running the ETL on the Hadoop distribution of your
+choice. Cascading is supported on all major Hadoop distributions.
+Install the latest stable version from the 2.x series.
+
+[source,bash]
+----
+$ hadoop version +
+Hadoop 2.2.0 +
+...
+----
+
+Cascading is compatible with a number of hadoop distributions and versions.
+You can see on the http://www.cascading.org/support/compatibility[compatibility page]
+to see if your distribution is supported.
+
+=== Driven
+
+Use Driven to develop and debug ETL flows. You do not need to make any changes
+to your existing Cascading applications to integrate with the Driven application.
+
+The cloud version of Driven is free to use for development. Visit
+http://cascading.io/try/[Try Driven] to access all the
+developer features and gain visibility into your ETL flows.
+
+NOTE: We will use the cloud-based Driven product for the purposes of this
+tutorial. Driven will receive the data from your application to help you
+monitor and visualize the development and the execution of your application.
+To use the cloud version of Driven, the Driven plugin must be visible to your Cascading
+application. In addition, your Cascading application must have network access
+to the Internet so it may send data to the domain name "driven.cascading.io"
+over port 443 (the default SSL port for HTTP). Note that the client side of
+Cascading will be the only Java process attempting to make a remote network
+connection.
+
+You can learn more about using Driven for your Cascading application
+at http://docs.cascading.io/driven/1.0/getting-started/[Getting Started with Driven].
+
+=== JDK
+
+Make sure that you are running the tutorial with JDK 1.7. Currently, we are deprecating
+support for version 1.6 and do not support JDK 1.8.
+
+=== IDE Support
+
+While an IDE is not strictly required to follow the
+tutorials, it is certainly useful. You can easily create an
+http://www.jetbrains.com/idea/[IntelliJ IDEA] compatible project in each part of the tutorial like this:
+
+[source,bash]
+----
+$ gradle ideaModule
+----
+
+If you prefer https://www.eclipse.org/[eclipse], you can run:
+
+[source,bash]
+----
+$ gradle eclipse
+----

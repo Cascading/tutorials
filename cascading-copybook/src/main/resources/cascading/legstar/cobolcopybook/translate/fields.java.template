@@ -1,0 +1,23 @@
+package {{package_name}};
+
+import java.lang.reflect.Type;
+
+import cascading.tuple.Fields;
+
+public class {{class_name}} extends Fields {
+
+    private static final long serialVersionUID = -1L;
+
+    public {{class_name}}() {
+        super(
+               new Comparable[] {
+{{~#each field_names}}
+                  {{#if @index}}, {{/if}}"{{this}}"{{/each}}
+                }, new Type[] {
+{{~#each field_types}}
+                  {{#if @index}}, {{/if}}{{this}}.class{{/each}}
+               }
+             );
+    }
+
+}

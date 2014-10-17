@@ -1,0 +1,8 @@
+      ******************************************************************
+      * EXTRACT COMMON DATA OUT OF KCBDFOR                             *
+      ******************************************************************
+      *      03  BDFO-COMMON-DATA.
+       01  BDFO-COMMON-DATA.
+                 05  BDFO-LEN          PIC  S9999      COMP.
+                 05  BDFO-KEY          PIC  S9(13)     COMP-3.
+                 05  BDFO-PARM-NO      PIC  999.

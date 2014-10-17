@@ -1,0 +1,64 @@
+      ******************************************************************
+      * DATE: 13/03/2000           TIME: 14:01:17            USER: KB2 *
+      * OBJECT CLASS:   Record                                         *
+      * OBJECT NAME :   RE-WB-P16V05-COBOL-REC                         *
+      * COPYBOOK    :   KCP16V05             00003594.01               *
+      ******************************************************************
+         01  KCP16V05-PROD-AGREE-STMT-HIST.
+             03  KCP16V05-STATEMENT-HIST-DATA.
+                 05  KCP16V05-NO-OF-NOTIFICATIONS
+                                       PIC  99.
+                 05  KCP16V05-NOTIFICATION-TABLE
+                                       OCCURS  10  TIMES
+                DEPENDING ON  KCP16V05-NO-OF-NOTIFICATIONS.
+                     07  KCP16V05-NOTIFICAT-TYPE-CODE
+                                       PIC  X.
+                     07  KCP16V05-NOTIFICAT-SUB-TYPE-CD
+                                       PIC  X.
+                     07  KCP16V05-NOTIFICATION-PROD-DAT
+                                       PIC  XX.
+                     07  KCP16V05-STMT-FIRST-SHEET
+                                       PIC  S9(5)      COMP-3.
+                     07  KCP16V05-STMT-LAST-SHEET
+                                       PIC  S9(5)      COMP-3.
+                     07  KCP16V05-SPECIAL-SHEET-NUMBER
+                                       PIC  S9(5)      COMP-3.
+                     07  KCP16V05-STMT-DEST
+                                       PIC  X.
+                     07  KCP16V05-STMT-DUP-DEST
+                                       PIC  X.
+                     07  KCP16V05-STMT-STDTE
+                                       PIC  XX.
+                     07  KCP16V05-STMT-ENDDTE
+                                       PIC  XX.
+                     07  KCP16V05-STMT-CIND
+                                       PIC  X.
+                     07  KCP16V05-DISSENTER
+                                       PIC  X.
+                     07  KCP16V05-STMT-REASNO
+                                       PIC  S999       COMP-3.
+                     07  KCP16V05-STMT-ISSREAS
+                                       OCCURS  10  TIMES
+                                       PIC  X.
+                     07  KCP16V05-DR-SUPP-LISTNO
+                                       PIC  S9         COMP-3.
+                     07  KCP16V05-DR-SUPP-LIST
+                                       OCCURS  4  TIMES.
+                         09  KCP16V05-SUPP-DR-PRT
+                                       PIC  X.
+                         09  KCP16V05-NO-OF-DR-TYPES
+                                       PIC  9.
+                         09  KCP16V05-SUPP-LIST-DRTYPES
+                                       OCCURS  4  TIMES
+                                       PIC  X.
+                     07  KCP16V05-CR-SUPP-LISTNO
+                                       PIC  S9         COMP-3.
+                     07  KCP16V05-CR-SUPP-LIST
+                                       OCCURS  9  TIMES.
+                         09  KCP16V05-SUPP-CR-PRT
+                                       PIC  X.
+                         09  KCP16V05-NO-OF-CR-TYPES
+                                       PIC  9.
+                         09  KCP16V05-SUPP-LIST-CRTYPES
+                                       OCCURS  9  TIMES
+                                       PIC  X.

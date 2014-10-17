@@ -1,0 +1,21 @@
+      ******************************************************************
+      * DATE: 13/03/2000           TIME: 12:01:42            USER: KB2 *
+      * OBJECT CLASS:   Record                                         *
+      * OBJECT NAME :   RE-WB-P08V05-COBOL-REC                         *
+      * COPYBOOK    :   KCP08V05             00003594.01               *
+      ******************************************************************
+         01  KCP08V05-AUTH-LIMITS.
+             03  KCP08V05-AUTH-LIMIT-DATA.
+                 05  KCP08V05-OP-LIMIT-IND
+                                       PIC  9.
+                 05  KCP08V05-NO-OF-LIMS
+                                       PIC  999.
+                 05  KCP08V05-LIMIT-TABLE
+                                       OCCURS  10  TIMES
+                DEPENDING ON  KCP08V05-NO-OF-LIMS.
+                     07  KCP08V05-LIMIT-IDENT
+                                       PIC  S999       COMP-3.
+                     07  KCP08V05-LIMIT
+                                       PIC  S9(13)V99  COMP-3.
+                     07  KCP08V05-LIMIT-SUB-CODE
+                                       PIC  X.

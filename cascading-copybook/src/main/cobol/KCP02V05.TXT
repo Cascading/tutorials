@@ -1,0 +1,53 @@
+      ******************************************************************
+      * DATE: 20/03/2000           TIME: 11:58:11            USER: KB2 *
+      * OBJECT CLASS:   Record                                         *
+      * OBJECT NAME :   RE-WB-P02V05-COBOL-REC                         *
+      * COPYBOOK    :   KCP02V05             00003594.04               *
+      ******************************************************************
+         01  KCP02V05-ACCOUNT-STATUS.
+             03  KCP02V05-ACCOUNT-STATUS-DATA.
+                 05  KCP02V05-STATUS   PIC  S9         COMP-3.
+                 05  KCP02V05-OPDATE   PIC  XX.
+                 05  KCP02V05-CLDATE   PIC  XX.
+                 05  KCP02V05-CHDATE   PIC  XX.
+                 05  KCP02V05-REOPEN-DATE
+                                       PIC  XX.
+                 05  KCP02V05-TRANSFER-DATE
+                                       PIC  XX.
+                 05  KCP02V05-BAD-DOUBT
+                                       PIC  S9         COMP-3.
+                 05  KCP02V05-OPEN-PRIME-RC
+                                       PIC  S999       COMP-3.
+                 05  KCP02V05-OPEN-SUPPLEM-RC
+                                       PIC  S999       COMP-3.
+                 05  KCP02V05-FROM-FIN-INST-REF
+                                       PIC  S9(7)      COMP-3.
+                 05  KCP02V05-FROM-FIN-INST-SCODE
+                                       PIC  9(6).
+                 05  KCP02V05-CLOSE-PRIME-RC
+                                       PIC  S999       COMP-3.
+                 05  KCP02V05-CLOSE-SUPPLEM-RC
+                                       PIC  S999       COMP-3.
+                 05  KCP02V05-TO-FIN-INST-REF
+                                       PIC  S9(7)      COMP-3.
+                 05  KCP02V05-TO-FIN-INST-SORT-CODE
+                                       PIC  9(6).
+                 05  KCP02V05-TRANSFER-TO-SORT-CODE
+                                       PIC  9(6).
+                 05  KCP02V05-TRANSFR-TO-ACC-NUMBER
+                                       PIC  9(8).
+                 05  KCP02V05-TRANSF-FROM-SORT-CODE
+                                       PIC  9(6).
+                 05  KCP02V05-TRANSFER-FROM-ACC-NUM
+                                       PIC  9(8).
+                 05  KCP02V05-NEW-CHANGE-DATE
+                                       PIC  XX.
+                 05  KCP02V05-OLD-CHANGE-DATE
+                                       PIC  XX.
+                 05  KCP02V05-MERGE-INDICATOR
+                                       PIC  X.
+                 05  KCP02V05-DORMANCY.
+                     07  KCP02V05-DORMANCY-LAST-UPDATE
+                                       PIC  XX.
+                     07  KCP02V05-DORMANCY-IND
+                                       PIC  S9         COMP-3.

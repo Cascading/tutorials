@@ -1,0 +1,27 @@
+      ******************************************************************
+      * DATE: 28/03/2000           TIME: 17:45:17            USER: KB2 *
+      * OBJECT CLASS:   Record                                         *
+      * OBJECT NAME :   RE-WB-P96V05-COBOL-REC                         *
+      * COPYBOOK    :   KCP96V05             00003594.03               *
+      ******************************************************************
+         01  KCP96V05-ACC-LEVEL-DRINT.
+             03  KCP96V05-ACC-LEVEL-DRINT-DATA.
+                 05  KCP96V05-CUT-OFF-IND
+                                       PIC  X.
+                 05  KCP96V05-NO-OF-TIERS2
+                                       PIC  S999       COMP-3.
+                 05  KCP96V05-INTEREST-LIMIT-DATA.
+                     07  KCP96V05-TIER-LIMIT-DATA
+                                       OCCURS  3  TIMES.
+                         09  KCP96V05-LIMIT-TIER-NUMBER
+                                       PIC  S999       COMP-3.
+                         09  KCP96V05-XS-LIMIT-CHANGES-IND
+                                       PIC  X.
+                         09  KCP96V05-NO-OF-LIMIT-CHANGES
+                                       PIC  9.
+                         09  KCP96V05-HISTORICAL-TIER-DATA
+                                       OCCURS  4  TIMES.
+                             11  KCP96V05-LIMIT-EFFECTIVE-DATE
+                                       PIC  XX.
+                             11  KCP96V05-TIER-UPPER-LIMIT
+                                       PIC  S9(9)      COMP-3.

@@ -1,0 +1,1 @@
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://beans.cobolcopybook.legstar.cascading/kcp96v05", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED) package cascading.legstar.cobolcopybook.beans.kcp96v05;

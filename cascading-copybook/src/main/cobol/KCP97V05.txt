@@ -1,0 +1,45 @@
+      ******************************************************************
+      * DATE: 24/03/2000           TIME: 08:42:07            USER: GF6 *
+      * OBJECT CLASS:   Record                                         *
+      * OBJECT NAME :   RE-WB-P97V05-COBOL-REC                         *
+      * COPYBOOK    :   KCP97V05             00003594.03               *
+      ******************************************************************
+         01  KCP97V05-DRINT-RATES.
+             03  KCP97V05-DRINT-RATE-DATA.
+                 05  KCP97V05-NO-OF-TIERS
+                                       PIC  S999       COMP-3.
+                 05  KCP97V05-INTEREST-RATE-DATA.
+                     07  KCP97V05-TIER-RATE-DATA
+                                       OCCURS  4  TIMES
+                                       INDEXED  KCP97V05-I01.
+                         09  KCP97V05-RATE-TIER-NUMBER
+                                       PIC  S999       COMP-3.
+                         09  KCP97V05-XS-RATE-CHANGE-IND
+                                       PIC  X.
+                         09  KCP97V05-NO-OF-CHANGES
+                                       PIC  S999       COMP-3.
+                         09  KCP97V05-HISTORICAL-RATE-DATA
+                                       OCCURS  4  TIMES
+                                       INDEXED  KCP97V05-I02.
+                             11  KCP97V05-RATE-EFFECTIVE-DATE
+                                       PIC  XX.
+                             11  KCP97V05-EFFECTIVE-RATE
+                                       PIC  S99V999    COMP-3.
+                             11  KCP97V05-RATE-CODE
+                                       PIC  X.
+                             11  KCP97V05-DEFAULT-RATE-CODE
+                                       PIC  X.
+                             11  KCP97V05-MINIMUM-RATE
+                                       PIC  S99V999    COMP-3.
+                             11  KCP97V05-RATE-LINK
+                                       PIC  S99V999    COMP-3.
+                             11  KCP97V05-RATE-CONSISTENCY-IND
+                                       PIC  X.
+                             11  KCP97V05-RATE-NAME
+                                       PIC  X(15).
+                             11  KCP97V05-ZERO-RATE-CODE
+                                       PIC  X.
+                             11  KCP97V05-DRINT-TYPE
+                                       PIC  S999       COMP-3.
+                         09  KCP97V05-DEFAULT-RATE-T006-KEY
+                                       PIC  XXXX.

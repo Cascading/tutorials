@@ -1,0 +1,33 @@
+      ******************************************************************
+      * DATE: 20/03/2000           TIME: 15:13:41            USER: GF6 *
+      * OBJECT CLASS:   Record                                         *
+      * OBJECT NAME :   RE-WB-P17V05-COBOL-REC                         *
+      * COPYBOOK    :   KCP17V05             00003594.01               *
+      ******************************************************************
+         01  KCP17V05-ACC-ADDRESSES.
+             03  KCP17V05-ADDRESS-DATA.
+                 05  KCP17V05-NO-OF-ADDRESSES
+                                       PIC  99.
+                 05  KCP17V05-ADDRESS-DTLS
+                                       OCCURS  10  TIMES
+                DEPENDING ON  KCP17V05-NO-OF-ADDRESSES.
+                     07  KCP17V05-ADD-IDENT
+                                       PIC  S9         COMP-3.
+                     07  KCP17V05-START-DATE
+                                       PIC  XX.
+                     07  KCP17V05-END-DATE
+                                       PIC  XX.
+                     07  KCP17V05-ADDRESS-POST-CODE
+                                       PIC  X(8).
+                     07  KCP17V05-ADDRESS-L1
+                                       PIC  X(34).
+                     07  KCP17V05-ADDRESS-L2
+                                       PIC  X(34).
+                     07  KCP17V05-ADDRESS-L3
+                                       PIC  X(34).
+                     07  KCP17V05-ADDRESS-L4
+                                       PIC  X(34).
+                     07  KCP17V05-ADDRESS-L5
+                                       PIC  X(34).
+                     07  KCP17V05-ADDRESS-L6
+                                       PIC  X(24).

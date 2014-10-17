@@ -24,5 +24,7 @@ include 'lingual-oracle'
 include 'cascading-redshift'
 include 'cascading-teradata'
 include 'etl-log'
+include 'cascading-hive'
+include 'cascading-copybook'
 
 rootProject.name = 'tutorials'
