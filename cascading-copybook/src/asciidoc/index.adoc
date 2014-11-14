@@ -106,16 +106,6 @@ image:architecture.png[]
 
 === Discussion about Mainframe Data Format
 
-The format of the data we are trying to read is specified by the copybooks present under the _src/main/cobol_ directory.
-A fundamental characteristic of this data is that the layout of the records is not uniform -- each record can be of varying
-length with nested records and variable length arrays. Data pertaining to a logical entity (in this case a customer account)
- can span multiple physical records.
-
-Cascading applications use Taps to connect to a data source, and each Tap wraps a Scheme specifying the data format.
-Since a Cascading Tap is associated with a single Scheme, this means that we will have to manually build
-a Scheme (by picking fields from the various records) and write it in a way that it outputs one logical record
-while reading several physical records.
-
 The code for this tutorial can be divided into two broad components:
 
 1. Set of classes for handling the low level parsing of copybooks.
@@ -142,8 +132,7 @@ that JAXB generates. Once JAXB classes are produced, cob2trans invokes the Java 
 set of classes called binding classes. These classes are key to the COBOL to Java transformation runtime performances--they
 avoid the cost of reflection at runtime.
 
-We have done this step offline, but have provided the resulting Java beans classes in the beans subpackage. The copybooks are
-present in the src/main/cobol directory.
+We have done this step offline, but have provided the resulting Java beans classes in the beans subpackage. 
 
 
 *Step 2:* Translate XML Schemas to Cascading Fields
@@ -202,8 +191,7 @@ we have provided the classes in their source code form.
 A http://docs.cascading.org/cascading/2.5/javadoc/cascading/scheme/Scheme.html[Scheme] in Cascading represents the
 format of the data an application is trying to read or write. Given that we
 are able to parse the cobol copybooks and translate them into Cascading Field classes, we are now in a position to develop
-our Scheme. The Scheme we will be using is called BDFO27Scheme, corresponding to the BDE27 file format. This file format
-is specified by the ABBDFOC.txt file present in the src/main/cobol directory.
+our scheme.
 
 Let's examine the constructor of the Scheme class:
 
