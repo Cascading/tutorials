@@ -84,7 +84,7 @@ Cascading will be the only Java process attempting to make a remote network
 connection. 
 
 You can learn more about using Driven for your Cascading application 
-at http://docs.cascading.io/driven/1.0/getting-started/[Getting Started with Driven].
+at http://docs.cascading.io/driven/1.1/getting-started/[Getting Started with Driven].
 
 === JDK 
 

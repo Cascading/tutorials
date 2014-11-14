@@ -22,6 +22,9 @@ mainframe. To do that, we will implement a new http://docs.cascading.org/cascadi
  to be used by our existing Cascading file tap. The structure of this data is represented by Copybook text files
 containing Cobol code. Given a copybook, it is possible to parse the data from the EBCDIC stream.
 
+NOTE: The mainframe input data used in this tutorial was generated randomly by another program. It is not actual 
+customer data.  
+
 In this tutorial, we
 will develop a parser for translating one specific set of copybooks. Next, we will use the parser in a Cascading
 application to read sample data and display its contents on the screen. Along the way, we will also view the application
@@ -108,9 +111,6 @@ A fundamental characteristic of this data is that the layout of the records is n
 length with nested records and variable length arrays. Data pertaining to a logical entity (in this case a customer account)
  can span multiple physical records.
 
-.Mapping of logical to physical records
-image:record-layout.png[]
-
 Cascading applications use Taps to connect to a data source, and each Tap wraps a Scheme specifying the data format.
 Since a Cascading Tap is associated with a single Scheme, this means that we will have to manually build
 a Scheme (by picking fields from the various records) and write it in a way that it outputs one logical record
@@ -154,7 +154,7 @@ classes from it. We now need to convert the Cobol annotated XML schemas into Cas
 translator classes is present in the "translate" package. We invoked the Cob2Fields translator and placed
 the resulting Field classes in the fields subpackage.
 
-For instance, the copybook KC3OGP03.txt has been converted offline to the following Fields class:
+For instance, here's one of the copybooks converted offline to a Fields class:
 
 [source, java]
 ----
