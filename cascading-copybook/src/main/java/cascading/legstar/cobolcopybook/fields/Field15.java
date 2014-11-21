@@ -1,0 +1,223 @@
+package cascading.legstar.cobolcopybook.fields;
+
+import java.lang.reflect.Type;
+
+import cascading.tuple.Fields;
+
+public class Field15 extends Fields
+  {
+
+  private static final long serialVersionUID = -1L;
+
+  public Field15()
+    {
+    super(
+      new Comparable[]{
+        "Kcp17V05NoOfAddresses"
+        , "Kcp17V05AddIdent_0"
+        , "Kcp17V05StartDate_0"
+        , "Kcp17V05EndDate_0"
+        , "Kcp17V05AddressPostCode_0"
+        , "Kcp17V05AddressL1_0"
+        , "Kcp17V05AddressL2_0"
+        , "Kcp17V05AddressL3_0"
+        , "Kcp17V05AddressL4_0"
+        , "Kcp17V05AddressL5_0"
+        , "Kcp17V05AddressL6_0"
+        , "Kcp17V05AddIdent_1"
+        , "Kcp17V05StartDate_1"
+        , "Kcp17V05EndDate_1"
+        , "Kcp17V05AddressPostCode_1"
+        , "Kcp17V05AddressL1_1"
+        , "Kcp17V05AddressL2_1"
+        , "Kcp17V05AddressL3_1"
+        , "Kcp17V05AddressL4_1"
+        , "Kcp17V05AddressL5_1"
+        , "Kcp17V05AddressL6_1"
+        , "Kcp17V05AddIdent_2"
+        , "Kcp17V05StartDate_2"
+        , "Kcp17V05EndDate_2"
+        , "Kcp17V05AddressPostCode_2"
+        , "Kcp17V05AddressL1_2"
+        , "Kcp17V05AddressL2_2"
+        , "Kcp17V05AddressL3_2"
+        , "Kcp17V05AddressL4_2"
+        , "Kcp17V05AddressL5_2"
+        , "Kcp17V05AddressL6_2"
+        , "Kcp17V05AddIdent_3"
+        , "Kcp17V05StartDate_3"
+        , "Kcp17V05EndDate_3"
+        , "Kcp17V05AddressPostCode_3"
+        , "Kcp17V05AddressL1_3"
+        , "Kcp17V05AddressL2_3"
+        , "Kcp17V05AddressL3_3"
+        , "Kcp17V05AddressL4_3"
+        , "Kcp17V05AddressL5_3"
+        , "Kcp17V05AddressL6_3"
+        , "Kcp17V05AddIdent_4"
+        , "Kcp17V05StartDate_4"
+        , "Kcp17V05EndDate_4"
+        , "Kcp17V05AddressPostCode_4"
+        , "Kcp17V05AddressL1_4"
+        , "Kcp17V05AddressL2_4"
+        , "Kcp17V05AddressL3_4"
+        , "Kcp17V05AddressL4_4"
+        , "Kcp17V05AddressL5_4"
+        , "Kcp17V05AddressL6_4"
+        , "Kcp17V05AddIdent_5"
+        , "Kcp17V05StartDate_5"
+        , "Kcp17V05EndDate_5"
+        , "Kcp17V05AddressPostCode_5"
+        , "Kcp17V05AddressL1_5"
+        , "Kcp17V05AddressL2_5"
+        , "Kcp17V05AddressL3_5"
+        , "Kcp17V05AddressL4_5"
+        , "Kcp17V05AddressL5_5"
+        , "Kcp17V05AddressL6_5"
+        , "Kcp17V05AddIdent_6"
+        , "Kcp17V05StartDate_6"
+        , "Kcp17V05EndDate_6"
+        , "Kcp17V05AddressPostCode_6"
+        , "Kcp17V05AddressL1_6"
+        , "Kcp17V05AddressL2_6"
+        , "Kcp17V05AddressL3_6"
+        , "Kcp17V05AddressL4_6"
+        , "Kcp17V05AddressL5_6"
+        , "Kcp17V05AddressL6_6"
+        , "Kcp17V05AddIdent_7"
+        , "Kcp17V05StartDate_7"
+        , "Kcp17V05EndDate_7"
+        , "Kcp17V05AddressPostCode_7"
+        , "Kcp17V05AddressL1_7"
+        , "Kcp17V05AddressL2_7"
+        , "Kcp17V05AddressL3_7"
+        , "Kcp17V05AddressL4_7"
+        , "Kcp17V05AddressL5_7"
+        , "Kcp17V05AddressL6_7"
+        , "Kcp17V05AddIdent_8"
+        , "Kcp17V05StartDate_8"
+        , "Kcp17V05EndDate_8"
+        , "Kcp17V05AddressPostCode_8"
+        , "Kcp17V05AddressL1_8"
+        , "Kcp17V05AddressL2_8"
+        , "Kcp17V05AddressL3_8"
+        , "Kcp17V05AddressL4_8"
+        , "Kcp17V05AddressL5_8"
+        , "Kcp17V05AddressL6_8"
+        , "Kcp17V05AddIdent_9"
+        , "Kcp17V05StartDate_9"
+        , "Kcp17V05EndDate_9"
+        , "Kcp17V05AddressPostCode_9"
+        , "Kcp17V05AddressL1_9"
+        , "Kcp17V05AddressL2_9"
+        , "Kcp17V05AddressL3_9"
+        , "Kcp17V05AddressL4_9"
+        , "Kcp17V05AddressL5_9"
+        , "Kcp17V05AddressL6_9"
+      }, new Type[]{
+        int.class
+        , short.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , short.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , short.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , short.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , short.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , short.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , short.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , short.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , short.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , short.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+        , java.lang.String.class
+      }
+    );
+    }
+
+  }

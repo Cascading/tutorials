@@ -22,8 +22,8 @@ mainframe. To do that, we will implement a new http://docs.cascading.org/cascadi
  to be used by our existing Cascading file tap. The structure of this data is represented by Copybook text files
 containing Cobol code. Given a copybook, it is possible to parse the data from the EBCDIC stream.
 
-NOTE: The mainframe input data used in this tutorial was generated randomly by another program. It is not actual 
-customer data.  
+NOTE: The mainframe input data used in this tutorial was generated randomly by another program. It is not actual
+customer data.
 
 In this tutorial, we
 will develop a parser for translating one specific set of copybooks. Next, we will use the parser in a Cascading
@@ -132,7 +132,7 @@ that JAXB generates. Once JAXB classes are produced, cob2trans invokes the Java 
 set of classes called binding classes. These classes are key to the COBOL to Java transformation runtime performances--they
 avoid the cost of reflection at runtime.
 
-We have done this step offline, but have provided the resulting Java beans classes in the beans subpackage. 
+We have done this step offline, but have provided the resulting Java beans classes in the beans subpackage.
 
 
 *Step 2:* Translate XML Schemas to Cascading Fields
@@ -147,12 +147,12 @@ For instance, here's one of the copybooks converted offline to a Fields class:
 
 [source, java]
 ----
-public class Kc3ogp03 extends Fields
+public class Field4 extends Fields
   {
 
   private static final long serialVersionUID = -1L;
 
-  public Kc3ogp03()
+  public Field4()
     {
     super(
       new Comparable[]{
@@ -198,23 +198,23 @@ Let's examine the constructor of the Scheme class:
 [source, java]
 ----
 
-    private static final Bdfo27Config bdfo27Config = new Bdfo27Config();
+    private static final CopybookConfig COPYBOOK_CONFIG = new CopybookConfig();
 
     public Bdfo27Scheme()
       {
       super( Fields.merge(
       new Fields( "BdfoKey" ),
-      Fields.merge( bdfo27Config.getFields().values()
-        .toArray( new Fields[ bdfo27Config.getFields().size() ] ) ) ) );
+      Fields.merge( COPYBOOK_CONFIG.getFields().values()
+        .toArray( new Fields[ COPYBOOK_CONFIG.getFields().size() ] ) ) ) );
       }
 ----
 
-In the code shown above, we first instantiate a helper class Bdfo27Config which is a container for all the beans and fields
+In the code shown above, we first instantiate a helper class CopybookConfig which is a container for all the beans and fields
 specific to our copybooks. For some other copybook, the generated bean and field classes will be different, and this container
 will hold other beans. You can easily modify this class for your particular use case. In the scheme's constructor we use the
-Bdfo27Config object to discover the fields specific to this copybook, and append them to the account key field.
+CopybookConfig object to discover the fields specific to this copybook, and append them to the account key field.
 
-The main processing logic of the Bdfo27Scheme is encapsulated in the Source method which is responsible for accepting one
+The main processing logic of the CopybookScheme is encapsulated in the Source method which is responsible for accepting one
 input at a time, and converting it to a Cascading Tuple instance.
 
 *Step 2:* Use the Scheme to Read Mainframe Data and Display Results
@@ -224,27 +224,27 @@ a sample EBCIDC coded data and prints the values of some of the fields on the sc
 of the class app.Main.
 
 In Cascading, data connectivity is provided with Taps. A Tap can read or write data according to the Scheme it is bound with.
-With the Bdfo27Scheme, we first create an input tap to read the EBCDIC encoded copybook data:
+With the CopybookScheme, we first create an input tap to read the EBCDIC encoded copybook data:
 
 [source,java]
 ----
     String path = args[ 0 ];
-    Tap<Properties, InputStream, OutputStream> inTap = new FileTap(new Bdfo27Scheme(), path );
+    Tap<Properties, InputStream, OutputStream> inTap = new FileTap(new CopybookScheme(), path );
 ----
 
 Next, we create an output tap to print the values of some select fields on the screen. The sample data contains a lot of
 fields, but we will select and display the value of only some of them. The fields of interest are passed in to the constructor
 of the TextDelimited scheme, which is a class to print fields separated by a character separator. In this case, we use comma
-as the separator character. Note that while we used the Bdfo27Scheme to read data, we are using the in-built Cascading scheme,
+as the separator character. Note that while we used the CopybookScheme to read data, we are using the in-built Cascading scheme,
 TextDelimited for output.
 
 [source,java]
 ----
     SinkTap<Properties, OutputStream> outTap =
-             new StdOutTap(new TextDelimited( new Fields( "BdfoKey", "Kcp01V05Sname",
-            "Kcp01V05BicIndclass", "Kcp02V05TransfFromSortCode",
-            "Kcp07V05BalIdent_0", "Kcp07V05Bal_0",
-            "Kcp07V05BalIdent_1", "Kcp07V05Bal_1" ), true, "," ) );
+             new StdOutTap(new TextDelimited( new Fields( "Key", "Sname",
+            "BicIndclass", "TransfFromSortCode",
+            "BalIdent_0", "Bal_0",
+            "BalIdent_1", "Bal_1" ), true, "," ) );
 ----
 
 Finally, we connect these two taps using a copy pipe, create the flow and execute it:
