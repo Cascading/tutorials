@@ -1,0 +1,215 @@
+= Data Processing on Amazon Web Services (AWS)
+
+== Part 2: Simple ETL using Lingual JDBC with HDFS and Redshift
+
+=== What You Will See
+
+The file SampleFlow.java demonstrates SQL on Hadoop by using Lingual-Jdbc to perform
+ETL and data migration tasks between HDFS and Redshift.
+
+1. Read three data files from HDFS
+
+2. Strip extraneous fields from the data
+
+3. Perform and aggregation and joining operation across all three files using SQL
+
+4. Write results to S3.
+
+=== Run and Validate Your Program
+
+*Step 1:* If you have not done it already please refer to the prerequsites section to
+copy the required data files to Hadoop.
+
+*Step 2:* Compile your program
+
+[source,bash]
+----
+$ cd cascading-aws/part2
+$ gradle clean jar
+----
+
+*Step 3:* Run your flow on Hadoop using the following command. Please ensure that you have enabled access to the S3 directory and
+Redshift instance that you are passing to the application.
+
+[source,bash]
+----
+$ hadoop jar build/libs/cascading-aws-tutorials.jar {s3TempDir} {redshiftUrl} {redshiftUser} {redshiftPass} {awsAccesskey} {awsSecretKey}
+----
+
+*Step 4:* View the execution of your flow in real-time through Driven
+
+Depending on how you configured your Driven Plugin, either click the
+Driven URL from your console or log into the Driven application.
+
+You can also explore this application on the Driven cloud service here:
+https://driven.cascading.io/index.html#/apps/F7E041554B2F4983A122AF0B120F2CDE?view=element
+
+[source,bash]
+----
+14/11/28 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/F7E041554B2F4983A122AF0B120F2CDE?view=element*
+----
+
+image:images/part_2.png[]
+
+*Step 5:* View your new table in Redshift using SQLWorkbenchJ
+
+If the task completes successfully, you will have a new table in Redshift "part2_results" and
+3 new folders in your s3TempDir containing part-XXXX files from the M/R tasks.
+
+=== What’s Going On?
+
+First, let's instantiate our command line arguments.
+
+[source,java]
+----
+String hfsDataDir = args[0];
+String s3ResultsDir = args[1];
+String redshiftJdbcUrl = args[2];
+String redshiftUsername = args[3];
+String redshiftPassword  = args[4];
+String accessKey = args[5];
+String secretKey = args[6];
+----
+
+After ensuring our directory paths are properly formatted and instantiating our AWSCredentials object we need to declare
+our Field names and types for the incoming data.
+
+[source,java]
+----
+Fields DATE_DIM_FIELDS = new Fields( "d_date_sk", "d_date_id", "d_date", ... , "d_trailing_field" );
+Class[] DATE_DIM_TABLE_TYPES = new Class[]{Integer.class, String.class, ... , String.class};
+...
+----
+
+Then we define our SQL statement that will use to aggregate and join the data.
+
+[source,java]
+----
+String statement = ("select count(store_sales.\"ss_item_sk\") as sales_count, items.\"i_category\" as category, dates.\"d_day_name\" " +
+"from \"example\".\"dates\" as dates " +
+"join \"example\".\"store_sales\" as store_sales on dates.\"d_date_sk\" = store_sales.\"ss_sold_date_sk\" " +
+"join \"example\".\"items\" as items on items.\"i_item_sk\" = store_sales.\"ss_item_sk\" " +
+"where items.\"i_category\" is not null " +
+"group by items.\"i_category\", dates.\"d_day_name\" order by count(store_sales.\"ss_item_sk\") desc ");
+----
+
+Since we are only interested in a few of the Fields in the data file let's go ahead and filter out all the unnecessary to
+expedite the processing.
+
+[source,java]
+----
+//we only want these two fields from the dates file
+Fields retainDates = new Fields( "d_day_name", "d_date_sk" );
+//we only want these two fields from sales file
+Fields retainSales = new Fields( "ss_item_sk", "ss_sold_date_sk" );
+//we only want these two fields from items file
+Fields retainItems = new Fields( "i_category", "i_item_sk" );
+
+Pipe retainDatesPipe = new Pipe( "retainDates" );
+retainDatesPipe = new Retain( retainDatesPipe, retainDates );
+
+Pipe retainSalesPipe = new Pipe( "retainStoreSales" );
+retainSalesPipe = new Retain( retainSalesPipe, retainSales );
+
+Pipe retainItemsPipe = new Pipe( "retainItems" );
+retainItemsPipe = new Retain( retainItemsPipe, retainItems );
+----
+
+Now that we're working with our desired data set let's instantiate our source and sink Taps.
+
+[source,java]
+----
+// source taps
+Tap datesDataTap = new Hfs( new TextDelimited( DATE_DIM_FIELDS, "|",
+  DATE_DIM_TABLE_TYPES ), hfsDataDir + "/date_dim.dat" );
+Tap salesDataTap = new Hfs( new TextDelimited( STORE_SALES_FIELDS, "|",
+  STORE_SALES_TABLE_TYPES ), hfsDataDir + "/store_sales.dat" );
+Tap itemsDataTap = new Hfs( new TextDelimited( ITEM_FIELDS, "|",
+  ITEM_FIELDS_TYPES ), hfsDataDir + "/item.dat" );
+
+// sink taps
+Tap resultsDatesTap = new Hfs( new TextDelimited( new Fields( "d_day_name", "d_date_sk" ) ),
+  "s3n://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/dates", SinkMode.REPLACE );
+Tap resultsItemsTap = new Hfs( new TextDelimited( new Fields( "i_category", "i_item_sk" ) ),
+  "s3n://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/items", SinkMode.REPLACE );
+Tap resultsSalesTap = new Hfs( new TextDelimited( new Fields( "ss_item_sk", "ss_sold_date_sk" ) ),
+  "s3n://" + accessKey + ":" + secretKey + "@" + s3ResultsDir +  "/sales", SinkMode.REPLACE );
+
+// final results tap
+Tap resultsTap = new Hfs( new TextDelimited( Fields.ALL ), "s3n://" + accessKey +
+  ":" + secretKey + "@" + s3ResultsDir +  "/results", SinkMode.REPLACE );
+----
+
+With our Pipes and Taps in hand we can now create our Flow definitions.
+
+[source,java]
+----
+FlowDef flowDefSales = FlowDef.flowDef().setName( "retain sales info flow" )
+  .addSource( retainSalesPipe, salesDataTap )
+  .addTailSink( retainSalesPipe, resultsSalesTap );
+
+FlowDef flowDefItems = FlowDef.flowDef().setName( "retain items info flow" )
+  .addSource( retainItemsPipe, itemsDataTap )
+  .addTailSink( retainItemsPipe, resultsItemsTap );
+
+FlowDef flowDefDates = FlowDef.flowDef().setName( "retain dates info flow" )
+  .addSource( retainDatesPipe, datesDataTap )
+  .addTailSink( retainDatesPipe, resultsDatesTap );
+
+// Final flow that sources from the three previous flows
+FlowDef flowDef = FlowDef.flowDef().setName( "sql flow" )
+  .addSource( "example.store_sales", resultsSalesTap )      //declares SQL table name "example.store_sales"
+  .addSource( "example.items", resultsItemsTap )            //declares SQL table name "example.items"
+  .addSource( "example.dates", resultsDatesTap )            //declares SQL table name "example.dates"
+  .addSink( "part2_results", resultsTap );
+
+// Add SQLPlanner to final flow def
+SQLPlanner sqlPlanner = new SQLPlanner().setSql( statement );
+flowDef.addAssemblyPlanner( sqlPlanner );
+----
+
+All that's left to do now is connect our flows and run them in a Cascade.
+
+[source,java]
+----
+Flow flow1 = new HadoopFlowConnector().connect( flowDefSales );
+Flow flow2 = new HadoopFlowConnector().connect( flowDefItems );
+Flow flow3 = new HadoopFlowConnector().connect( flowDefDates );
+Flow flow4 = new HadoopFlowConnector().connect( flowDef );
+
+List<Flow> queryFlows = new ArrayList<Flow>();
+queryFlows.add( flow1 );
+queryFlows.add( flow2 );
+queryFlows.add( flow3 );
+queryFlows.add( flow4 );
+
+CascadeConnector connector = new CascadeConnector();
+Cascade cascade = connector.connect( queryFlows.toArray( new Flow[ 0 ] ) );
+cascade.complete();
+----
+
+Reference for Advanced AWS and Cascading Users
+----------------------------------------------
+
+Users who are already familiar with Redshift, Cascading and Lingual can make use of
+this by adding the compiled library to their existing projects. Libraries for
+`cascading-redshift` are hosted on http://conjars.org[conjars.org] and can be included
+in an existing Maven or Gradle project by adding the conjars repo
+`http://conjars.org/repo/` to your repo list and then adding either
+
+Maven:
+
+`<dependency>` +
+`<groupId>cascading</groupId>` +
+`<artifactId>cascading-jdbc-redshift</artifactId>` +
+`<version>2.6</version>` +
+`</dependency>` +
+
+Gradle:
+
+`compile group: 'cascading', name: 'cascading-redshift', version: '2.6'`
+
+Congratulations, you just ran SQL on Hadoop using Lingual-JDBC and Cascading!
+
+== Next:
+link:part3.html[ETL on EMR with Cascading on S3, HDFS and Redshift]

@@ -18,13 +18,9 @@
  * limitations under the License.
  */
 
-include 'pattern'
-include 'lingual-hbase'
-include 'lingual-oracle'
-include 'cascading-teradata'
-include 'etl-log'
-include 'cascading-hive'
-include 'cascading-copybook'
-include 'cascading-aws'
+//include 'part1'
+include 'part2'
+include 'part3'
+include 'cascading-aws-docs'
 
-rootProject.name = 'tutorials'
+rootProject.name = 'cascading-aws'

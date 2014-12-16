@@ -6,10 +6,10 @@ projects. In contains the following tutorials right now:
 * Pattern
 * Lingual-HBase
 * Lingual-Oracle
-* Cascading-Redshift
 * Cascading-Teradata
 * Cascading-Hive
 * Cascading-Copybook
+* Cascading-AWS
 
 This project is meant to make it simple to add new tutorials without dealing
 with the setup of asciidoctor too much. All common parts such as CSS and the

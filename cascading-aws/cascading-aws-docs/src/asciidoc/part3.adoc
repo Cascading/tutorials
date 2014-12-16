@@ -1,0 +1,306 @@
+= Data Processing on Amazon Web Services (AWS)
+
+== Part 3: ETL on EMR with Cascading on S3, HDFS and Redshift
+
+=== What You Will See
+In Part 3 of the tutorial, we will change things up a bit and dive into ETL with Cascading on AWS.
+We will use hashjoins, cogroups, filters, each pipes, subassemblies and several flows running within Cascades on
+bootstrap EMR clusters. You may also add the Driven bootstrap option to the EMR cluster to send your telemetry
+from EMR to https://driven.cascading.io[https://driven.cascading.io].
+
+=== Run and Validate Your Program
+
+*Step 1:* Compile your program
+
+[source,bash]
+----
+$ cd cascading-aws/part3
+$ gradle clean jar
+----
+
+*Step 2:* After building, please upload your program (in part3/build/libs) to an S3 bucket of your choice.
+Please also upload all the .dat files to the same bucket as you place the jar file. When you are done you should have
+the following files in a single bucket:
+
+* cascading-aws-tutorials.jar
+* date_dim.dat
+* customer_demographics.dat
+* store.dat
+* store_sales.dat
+* item.dat
+
+*Step 3:* To run this flow we will call a script (located in ./cascading-aws/part3/src/scripts/emrExample.sh)
+that will bootstrap our EMR cluster and trigger the job.
+
+    $ chmod +x ./src/scripts/emrExample.sh
+    $ ./src/scripts/emrExample.sh [REDSHIFT_URL] [REDSHIFT_USER] [REDSHIFT_PASSWORD]
+      [AWS_BUCKET] [AWS_ACCESS_KEY] [AWS_SECRET_KEY]
+
+*Step 4:* View the execution of your flow in real-time through Driven
+
+Depending on how you configured your Driven Plugin, either click the
+Driven URL from your console or log into the Driven application.
+
+You can also explore this application on the Driven cloud service here:
+https://driven.cascading.io/index.html#/apps/5B103897FE06452381AE8B8FDA7B0F47?view=element
+
+[source,bash]
+----
+14/11/28 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/5B103897FE06452381AE8B8FDA7B0F47?view=element*
+----
+
+image:images/part_3.png[]
+
+=== What’s Going On?
+
+Let's start by inspecting the script file
+`./cascading-aws/part3/src/scripts/emrExample.sh`
+
+This script consists of one primary call to elastic-mapreduce. It requires your Redshift connection information
+as well as the location of the data files and application jar on S3. When called, it spins up a 3 node EMR cluster
+to process the application. If you would like to enable the Driven bootstrap action you can open the script file, uncomment
+required sections and supply your Driven (cloud service) API key and the EMR cluster will send the telemetry data to
+https://driven.cascading.io[https://driven.cascading.io]
+
+[source,shell]
+----
+elastic-mapreduce  --create --name "cascading-aws-tutorial-3" \
+  --visible-to-all-users \
+  --num-instances $INSTANCE_COUNT \
+  --slave-instance-type "m1.xlarge" \
+  --master-instance-type "m1.xlarge" \
+  --debug \
+  --enable-debugging \
+  --availability-zone $ZONE \
+  --jar s3n://$BUCKET/$NAME \
+  --arg $REDSHIFT_URL \
+  --arg $REDSHIFT_USER \
+  --arg $REDSHIFT_PASSWORD \
+  --arg $AWS_ACCESS_KEY \
+  --arg $AWS_SECRET_KEY
+  --arg $BUCKET
+----
+
+There are five primary sections of logic in Part 3. Let's take a closer look:
+
+*Step 1:* declare our Fields, table columns and column types
+
+[source,java]
+----
+// create Cascading Fields for date_dim data
+public static final Fields DATE_DIM_FIELDS = new Fields(...)
+// create Redshift table fields for date_dim data
+public static final String[] DATE_DIM_TABLE_FIELDS = new String[]{...}
+// create Redshift column types for date_dim data
+public static final String[] DATE_DIM_TABLE_TYPES = new String[]{...}
+
+// continue for additional files and tables
+// ...
+----
+
+*Step 2:* Initialize the application
+
+[source,java]
+----
+Properties properties = new Properties();
+AppProps.setApplicationJarClass( properties, Main.class );
+// add ApplicationTag for Driven identification and search functionality
+AppProps.addApplicationTag( properties, "Cascading-Redshift Demo Part3" );
+HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
+----
+
+*Step 3:* Filter data using http://docs.cascading.org/cascading/1.2/javadoc/cascading/operation/regex/RegexFilter.html[RegexFilter]
+and http://docs.cascading.org/cascading/2.1/javadoc/cascading/pipe/Each.html[Each] pipes - Source from HDFS sink to Redshift
+
+[source,java]
+----
+List<Flow> queryFlows = new ArrayList<Flow>();
+
+// create FlowDef for date filter flow
+FlowDef dateDimFilterFlow = FlowDef.flowDef();
+// give name to FlowDef for Driven visibility
+dateDimFilterFlow.setName( "FilterDateDim (Redshift Sink)" );
+// create initial Pipe
+Pipe inputFilesPipe = new Pipe( "datedim_filter" );
+// create RegexFilter to filter for all data from 2002
+RegexFilter regexFilter = new RegexFilter( "2002" );
+// create Each pipe to iterate over each record and apply regexFilter
+inputFilesPipe = new Each( inputFilesPipe, new Fields( "d_year" ), regexFilter );
+// add source and pipe to dateDimFilterFlow
+dateDimFilterFlow.addSource( inputFilesPipe, new Hfs( new TextDelimited( DATE_DIM_FIELDS, "|" ), "s3://dataset-samples-ryan/tpc-ds/date_dim.dat" ) );
+
+Tap dateDimSinkTap = getOutputTap( "filtered_date_dim", Fields.ALL );
+// add tail sink to dateDimFilterFlow
+dateDimFilterFlow.addTailSink( inputFilesPipe, dateDimSinkTap );
+
+// add dateDimFilterFlow to queryFlows ArrayList for later use
+queryFlows.add( flowConnector.connect( dateDimFilterFlow ) );
+
+// repeat for Demographics and Store data
+// ...
+----
+
+*Step 4:* Perform a series of http://docs.cascading.org/cascading/2.0/javadoc/cascading/pipe/HashJoin.html[HashJoins]
+
+[source,java]
+----
+Map<String, Tap> sources = new HashMap<String, Tap>();
+ Map<String, Tap> sinks = new HashMap<String, Tap>();
+
+ // create Redshift table for sales<>item join results
+ Tap storeSaleItemSink = getOutputTap( "store_sales_item_join", Fields.ALL );
+ sinks.put( "store_sales_item_join", storeSaleItemSink );
+
+ // everything joins against store_sales so put that in first.
+ Tap storeSales = new Hfs( new TextDelimited( STORE_SALES_FIELDS, "|" ), "s3://dataset-samples-ryan/tpc-ds/store_sales.dat" );
+ sources.put( "StoreSales", storeSales );
+ Pipe storeSalesPipe = new Pipe( "StoreSales" );
+
+ // JOIN item on (store_sales.ss_item_sk = item.i_item_sk)
+ Tap item = new Hfs( new TextDelimited( ITEM_FIELDS, "|" ), "s3://dataset-samples-ryan/tpc-ds/item.dat" );
+ sources.put( "Item", item );
+ Pipe itemPipe = new Pipe( "Item" );
+ Pipe storeSalesItemJoin = new HashJoin( "store_sales_item_join", storeSalesPipe, new Fields( "ss_item_sk" ), itemPipe, new Fields( "i_item_sk" ) );
+
+// continue for joins on date_dim, store_sales, customer_demographics
+// ...
+
+// wire all the join flows together
+queryFlows.add( flowConnector.connect( "JoinStoreSales (Redshift Sources)", sources, sinks, storeSalesItemJoin, storeSalesDateDimJoin, storeSalesCustomerDemographicsJoin, storeSalesStoreJoin ) );
+----
+
+*Step 5:* Strip out extraneous fields using http://docs.cascading.org/cascading/2.0/javadoc/cascading/pipe/assembly/Retain.html[Retain]
+
+[source,java]
+----
+/*
+* Strip out extraneous fields now
+*/
+Fields finalFields = new Fields( new Comparable[]{"i_item_id", "s_state", "ss_quantity", "ss_list_price", "ss_coupon_amt", "ss_sales_price"}, new Type[]{String.class, String.class, Double.class, Double.class, Double.class, Double.class} );
+FlowDef fieldRemovingFlowDef = FlowDef.flowDef();
+fieldRemovingFlowDef.setName( "RemoveExtraFields" );
+Pipe allFieldsPipe = new Pipe( "all_fields" );
+Pipe fieldRemovingPipe = new Retain( allFieldsPipe, finalFields );
+fieldRemovingFlowDef.addSource( fieldRemovingPipe, storeSaleCustDemSink );
+RedshiftTableDesc redactedFieldsTapTableDescriptor = new RedshiftTableDesc( "all_fields", SALES_REPORT_TABLE_FIELDS, SALES_REPORT_TABLE_TYPES, null, null );
+Tap redactedFieldsTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, S3_PATH_ROOT + "all_fields", awsCredentials, redactedFieldsTapTableDescriptor, new RedshiftScheme( SALES_REPORT_FIELDS, redactedFieldsTapTableDescriptor ), SinkMode.REPLACE, true, false );
+fieldRemovingFlowDef.addTailSink( fieldRemovingPipe, redactedFieldsTap );
+queryFlows.add( flowConnector.connect( fieldRemovingFlowDef ) );
+----
+
+*Step 6:* Calculate averages using   https://github.com/Cascading/cascading-Redshift/blob/wip-1.0/src/main/java/cascading/flow/Redshift/RedshiftFlow.java[RedshiftFlow]
+
+[source,java]
+----
+/*
+* Compute the averages by item and state and join them
+ */
+Fields groupingFields = new Fields( "i_item_id", "s_state" ).applyTypes( String.class, String.class );
+
+FlowDef calculateQuantityResults = FlowDef.flowDef();
+calculateQuantityResults.setName( "CalculateAverageQuantity" );
+Pipe quantityAveragingPipe = new Pipe( "quantity_average" );
+quantityAveragingPipe = new AverageBy( quantityAveragingPipe, groupingFields, new Fields( "ss_quantity" ), new Fields( "ss_quantity" ) );
+calculateQuantityResults.addSource( quantityAveragingPipe, redactedFieldsTap );
+Fields quantity_average_fields = new Fields( "i_item_id", "ss_quantity", "s_state" ).applyTypes( String.class, Double.class, String.class );
+RedshiftTableDesc avgQuantityTableDescriptor = new RedshiftTableDesc( "quantity_average", new String[]{"i_item_id", "ss_quantity", "s_state"}, new String[]{"varchar(100)", "decimal(7,2)", "varchar(100)"}, null, null );
+Tap quantityAverageTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, S3_PATH_ROOT + "quantity_average", awsCredentials, avgQuantityTableDescriptor, new RedshiftScheme( quantity_average_fields, avgQuantityTableDescriptor ), SinkMode.REPLACE, true, false );
+calculateQuantityResults.addTailSink( quantityAveragingPipe, quantityAverageTap );
+queryFlows.add( flowConnector.connect( calculateQuantityResults ) );
+
+// continue for average price, average coupon amount, average sales price
+// ...
+----
+
+*Step 7:* Join averages using http://docs.cascading.org/cascading/2.0/javadoc/cascading/pipe/CoGroup.html[CoGroup] and
+discard unwanted fields using http://docs.cascading.org/cascading/2.0/javadoc/cascading/pipe/assembly/Discard.html[Discard]
+
+[source,java]
+----
+/*
+* Join the averages together
+ */
+Map<String, Tap> reportSources = new HashMap<String, Tap>();
+Map<String, Tap> reportSinks = new HashMap<String, Tap>();
+Map<String, Tap> traps = new HashMap<String, Tap>();
+
+reportSources.put( "QuantityAveragePipe", quantityAverageTap );
+Pipe quantityAveragePipe = new Pipe( "QuantityAveragePipe" );
+reportSources.put( "ListPriceAverage", listPipeAverageTap );
+Pipe listPriceAveragePipe = new Pipe( "ListPriceAverage" );
+reportSources.put( "CouponAmountAverage", couponAmountAverageTap );
+Pipe couponAmountAveragePipe = new Pipe( "CouponAmountAverage" );
+reportSources.put( "SalePriceAverage", salePriceAverageTap );
+Pipe salePriceAveragePipe = new Pipe( "SalePriceAverage" );
+
+groupingFields = new Fields( "i_item_id", "s_state" ).applyTypes( String.class, String.class );
+Fields junkFields = new Fields( "i_item_id_junk", "s_state_junk" ).applyTypes( String.class, String.class );
+Fields SalesReportQLFields = new Fields( "i_item_id", "s_state", "ss_quantity", "i_item_id_junk", "s_state_junk", "ss_list_price" ).applyTypes( String.class, String.class, Double.class, String.class, String.class, Double.class );
+Fields SalesReportQLCFields = new Fields( "i_item_id", "s_state", "ss_quantity", "ss_list_price", "i_item_id_junk", "s_state_junk", "ss_coupon_amt" ).applyTypes( String.class, String.class, Double.class, Double.class, String.class, String.class, Double.class );
+Fields SalesReportFields = new Fields( "i_item_id", "s_state", "ss_quantity", "ss_list_price", "ss_coupon_amt", "i_item_id_junk", "s_state_junk", "ss_sales_price" ).applyTypes( String.class, String.class, Double.class, Double.class, Double.class, String.class, String.class, Double.class );
+
+Fields gFields = new Fields( "i_item_id" ).applyTypes( String.class );
+
+// cogroup quantityAveragePipe & listPriceAveragePipe on "i_item_id" and "s_state"
+Pipe salesReportPipe = new CoGroup( "SalesReportQL", quantityAveragePipe, gFields, listPriceAveragePipe, gFields, SalesReportQLFields );
+// strip unnecessary fields from salesReportPipe
+salesReportPipe = new Discard( salesReportPipe, junkFields );
+// cogroup salesReportPipe & couponAmountAveragePipe on "i_item_id" and "s_state"
+
+salesReportPipe = new CoGroup( "SalesReportQLC", salesReportPipe, gFields, couponAmountAveragePipe, gFields, SalesReportQLCFields );
+// strip unnecessary fields from salesReportPipe
+salesReportPipe = new Discard( salesReportPipe, junkFields );
+// cogroup salesReportPipe & salePriceAveragePipe on "i_item_id" and "s_state"
+salesReportPipe = new CoGroup( "SalesReport", salesReportPipe, gFields, salePriceAveragePipe, gFields, SalesReportFields );
+// strip unnecessary fields from salesReportPipe
+salesReportPipe = new Discard( salesReportPipe, junkFields );
+----
+
+*Step 8:* Create final reports
+
+[source,java]
+----
+// create SalesReport Redshift table and add as sink
+RedshiftTableDesc allReportTableDescriptor = new RedshiftTableDesc( "sales_report", SALES_REPORT_TABLE_FIELDS, SALES_REPORT_TABLE_TYPES, null, null );
+Tap allReportTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, S3_PATH_ROOT + "SalesReport", awsCredentials, allReportTableDescriptor, new RedshiftScheme( SALES_REPORT_FIELDS, allReportTableDescriptor ), SinkMode.REPLACE, true, false );
+Tap salesReportQLTrap = getOutputTap( "SalesReportQLTrap", Fields.ALL );
+//Tap salesReportQLCTrap = getOutputTap( "SalesReportQLCTrap", Fields.ALL );
+
+sinks.put( "SalesReport", allReportTap );
+reportSinks.put( "SalesReport", allReportTap );
+traps.put( "SalesReportQL", salesReportQLTrap );
+//traps.put( "SalesReportQLC", salesReportQLCTrap );
+
+
+queryFlows.add( flowConnector.connect( "GenerateReport (Redshift Sources)", reportSources, reportSinks, traps, salesReportPipe ) );
+
+Pipe finalReportPipe = new Pipe( "FinalReportPipe" );
+Pipe reportOutputPipe = new GroupBy( finalReportPipe, gFields, gFields );
+reportOutputPipe = new Each( reportOutputPipe, finalFields, new Limit( 100 ) );
+RedshiftTableDesc finalReportTableDescriptor = new RedshiftTableDesc( "final_report", SALES_REPORT_TABLE_FIELDS, SALES_REPORT_TABLE_TYPES, null, null );
+Tap finalReportTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, S3_PATH_ROOT + "FinalReport", awsCredentials, finalReportTableDescriptor, new RedshiftScheme( SALES_REPORT_FIELDS, finalReportTableDescriptor ), SinkMode.REPLACE, true, false );
+
+queryFlows.add( flowConnector.connect( "FormatReport", allReportTap, finalReportTap, reportOutputPipe ) );
+----
+
+*Step 9:* Connect all flows and complete http://docs.cascading.org/cascading/2.1/javadoc/cascading/cascade/Cascade.html[Cascade]
+
+[source,java]
+----
+// create, connect (all flows from queryFlows) and complete cascade
+CascadeConnector connector = new CascadeConnector();
+Cascade cascade = connector.connect( queryFlows.toArray( new Flow[ 0 ] ) );
+cascade.complete();
+----
+
+=== References
+
+For more details about the particular operations or to understand how some
+of these steps can be modified for your use case, use the
+following resources:
+
+
+*Sorting using GroupBy and CoGroup* - http://docs.cascading.org/cascading/2.5/userguide/html/ch03s03.html#N205A3
+
+
+

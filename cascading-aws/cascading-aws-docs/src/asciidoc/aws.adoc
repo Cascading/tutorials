@@ -1,0 +1,63 @@
+= Data Processing on Amazon Web Services (AWS)
+
+== AWS Setup
+
+Setup AWS and Redshift
+----------------------
+
+Redshift is an AWS-specific tool and hence all the example code makes use of AWS. This 
+tutorial does not cover starting up a Redshift Database, AWS permission rules, and 
+general EC2 management. See the http://aws.amazon.com/redshift/[Redshift Documentation] 
+for details on how to set that up. In particular, if you are using EMR to run the flow 
+your EMR instances will need to be in a security group that has access to the database 
+and it is strongly suggested that you run your EMR instances in the same availability 
+zone your Redshift database is running in.
+
+. Signup and create an http://aws.amazon.com/s3/[S3 instance]
+
+. Ensure that you have launched the Redshift cluster by
+http://docs.aws.amazon.com/redshift/latest/gsg/rs-gsg-prereq.html[completing the 
+Getting Started Guide]. Note down the JDBC URL, the database user name, and the 
+database password. You will need it later. If you will be using Elastic Map
+Reduce, please ensure that you have authorized both the EMR master and slave
+security groups within the Redshift cluster security group.
+
+. Create https://console.aws.amazon.com/iam/home?#users[AWS access
+key for a new user]. Ensure that you give the right permissions to the user to run 
+map reduce jobs on the Amazon cluster.
+
+. Since Redshift reads the data initially from S3, you have to provide the
+AWS access-key/secret-key combination obtained from the previous step:
+
+[source,bash]
+----
+$ export AWS_ACCESS_KEY=<your AWS user access key>
+$ export AWS_SECRET_KEY=<your AWS user secret key>
+----
+
+. Next, install and configure
+http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-cli-install.html[EMR 
+Command Line Tools]. Add the tool to your path
+
+[source,bash]
+----
+$ ./elastic-mapreduce --version
+$ export PATH=[path]/elastic-mapreduce-cli:$PATH
+----
+
+. Finally, install and configure http://s3tools.org/s3cmd[s3cmd]. Ensure that you
+download the latest version of the tool
+
+[source,bash]
+----
+$ s3cmd --version
+s3cmd version 1.5.0-rc1
+----
+
+== Next:
+link:part1.html[Lingual Shell with HDFS and Redshift]
+
+
+
+
+

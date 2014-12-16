@@ -1,0 +1,52 @@
+= Data Processing on Amazon Web Services (AWS)
+
+== Introduction
+
+Modern data workflows never exist in isolation -- often, they are written in multiple languages across a variety of platforms
+and orchestrated using a variety of tools and services that best fit the needs. These applications need to read
+from and write to a wide array data stores and warehouses. They also need to be deployed across a 
+number of environments, and once deployed they then require performance tuning and monitoring products to provide 
+compliance for SLAs, cluster governance. Cascading and Driven provides a comprehensive solution for building, deploying, 
+running and managing this new class of enterprise applications. 
+
+In this multi-part tutorial we will walk through the creation of end-to-end data processing workflows in AWS environments using
+popular big data processing technologies. AWS users will be able to use Cascading and Lingual (a Cascading DSL that provides
+ANSI-SQL compliant interface to run map reduce applications) to orchestrate a workflow
+that migrates data between S3 and Redshift, and uses EMR for scalable data processing. The tutorial also shows how to
+quickly bootstrap EMR clusters and how to gain operational visibility into your application with Driven.
+
+== What technologies will we be using?
+* http://www.cascading.org/[Cascading] for creating and orchestrating our data workflows
+* http://aws.amazon.com/elasticmapreduce/[AWS Elastic MapReduce] for bootstrapping scalable processing clusters
+* http://aws.amazon.com/redshift/[AWS Redshift] for scalable data warehousing
+* http://aws.amazon.com/s3/[AWS] for data storage on AWS
+* http://www.cascading.org/projects/lingual/[Lingual & Lingual JDBC] for writing ETL-like MapReduce jobs with SQL
+* https://github.com/Cascading/cascading-jdbc[Cascading-JDBC] for accessing data in Cascading from AWS Redshift
+* http://cascading.io/driven/[Driven] for tracking application development and performance monitoring
+
+== link:prerequisites.html[Prerequisites]
+* Install Lingual, Cascading-Jdbc, Driven, Gradle, IDE and other software for running the tutorial
+
+== link:part1.html[Part 1: Lingual Shell with HDFS and Redshift]
+* Using a Lingual bash script we will migrate data from HDFS to Redshift using SQL
+
+== link:part2.html[Part 2: ETL with Lingual JDBC with HDFS and Redshift]
+*  Using Lingual JDBC in Java we will perform a simple ETL process using SQL between HDFS to Redshift
+
+== link:part3.html[Part 3: ETL on EMR with Cascading on S3, HDFS and Redshift]
+* Using Cascading we will perform a more complex ETL process between S3, EMR and Redshift.
+
+The coding examples in each part refers to a commonly-used operation in ETL,
+and can be referred directly; you do not need to complete previous parts to
+use a given example.
+
+Also, while we give references to http://docs.cascading.org/cascading/2.5/userguide/html[Cascading Users Guide]
+for the APIs used to implement these tasks, this tutorial is not intended to
+serve as an introduction to Cascading. For that, we recommend that you follow
+the http://docs.cascading.org/tutorials/etl-log[Java Developers Guide to ETL with Cascading] tutorial.
+
+If you have a question or run into any problems send an email to
+the https://groups.google.com/forum/#!forum/cascading-user[cascading-user-list].
+
+== Next:
+link:prerequisites.html[Checking for Prerequisites]
