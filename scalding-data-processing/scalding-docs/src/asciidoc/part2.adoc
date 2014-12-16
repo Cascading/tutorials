@@ -1,0 +1,155 @@
+= Data Processing with Scalding
+
+== Part 2: Stream Splitting
+
+In this part we'll see how to split a data stream we obtained in the first part into two separate streams. Let's see
+how to do it by going through the code.
+
+*Step 1:* Read the input file, parse and filter it
+
+We have already done this in part 1, the only difference is that we will be writing output to two directories
+instead of one. We have indicated this by:
+
+[source,scala]
+----
+  val output1= Tsv(args("output1"))
+  val output2= Tsv(args("output2"))
+----
+
+The code for this step is repeated here for completeness.
+
+[source,scala]
+----
+  val input = TextLine(args("input"))
+  val output1= Tsv(args("output1"))
+  val output2= Tsv(args("output2"))
+
+  val inputFields = 'line
+  val regexFields = ('ip, 'time, 'request, 'response, 'size)
+
+  val filteredInput = input.read.mapTo('line -> regexFields) {
+    te: TupleEntry =>
+      val regex = new Regex("^([^ ]*) \\S+ \\S+ \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) ([^ ]*).*$")
+      val split = regex.findFirstMatchIn(te.getString("line")).get.subgroups
+      (split(0), split(1), split(2), split(3), split(4))
+  }.filterNot('size) {
+    size: String => size == "-"
+  }
+----
+
+At the end of this step, we have obtained each input log line's five fields in succession in an object called filteredInput.
+The object in Scalding which is capable of holding fields is called a RichPipe. The object filteredInput's type is
+therefore, RichPipe.
+
+*Step 2:* Split the stream
+
+The RichPipe filteredInput is now ready to be split. We do it by:
+
+[source,scala]
+----
+  val branch1 = new RichPipe(filteredInput)
+  val branch2 = new RichPipe(filteredInput)
+----
+
+Now both branch1 and branch2 will contain a copy of the data stream flowing through the filteredInput RichPipe.
+
+*Step 3:* Write the output
+
+As shown in part 1, we can write the stream flowing through a pipe by calling the write method. Since we have two
+streams, we write both streams out to two different locations:
+
+[source,scala]
+----
+  branch1.write(output1)
+  branch2.write(output2)
+----
+
+Now that we've gone through the code, let's build and run our program.
+
+=== Run and Validate Your Program
+
+*Step 1:* Compile
+
+Go into the sclading-data-processing folder from your terminal, and type:
+
+    $ cd scalding-data-processing/part2
+    $ gradle clean fatjar
+
+This will compile the code and create a "fat-jar", a jar file which contains all the required dependencies inside it.
+The fatjar will be present in the build/libs/ folder.
+
+The build.gradle file is identical to part 1. Please see the explanation in part 1 for the dependencies required.
+
+*Step 2:* Prepare the input and output directories in HDFS, only if you haven't done already
+
+    $ hadoop fs -mkdir logs
+    $ hadoop fs -mkdir output1
+    $ hadoop fs -mkdir output2
+    $ hadoop fs -put ../data/NASA_access_log_Aug95.txt logs
+
+*Step 3:* Run the program
+
+    $ yarn jar build/libs/part2-fat.jar etl.Main --hdfs --input logs/NASA_access_log_Aug95.txt --output1 output1/out.txt --output2 output2/out.txt
+
+*Step 4:* View the execution graph in Driven
+
+Depending on how you configured your Driven plugin, either click the Driven
+URL from your console or log into the Driven application.
+
+    14/12/11 12:01:53 INFO state.AppStats: shutdown hook finished.
+    14/12/11 12:01:53 INFO rest.DrivenDocumentService: *http://localhost:8080/driven/3B8BE330F87B4DF9BA9C7CABB3E1BC16*
+    14/12/11 12:01:53 INFO rest.DrivenDocumentService: messaging version 1.0-eap-57:JSON
+
+image:part2.png[]
+
+*Figure 1: An example of the application's view in Driven.*
+
+Here's a https://driven.cascading.io/index.html#/apps/192EF673E18E40E0A2EFD1CB1381B131/C1E8649DD58B46BF95DB691603E4F727[link]
+to see this part's execution graph on the Driven cloud service.
+
+*Step 5:* Validate output
+
+Let's view what the output folder contains. Do:
+
+    $ hadoop fs -cat output1/out.txt/* > out1.txt
+    $ less out1.txt
+
+You should see the following on your screen:
+
+    in24.inetnebr.com       01/Aug/1995:00:00:01 -0400      GET /shuttle/missions/sts-68/news/sts-68-mcc-05.txt HTTP/1.0    200     1839
+    uplherc.upl.com 01/Aug/1995:00:00:07 -0400      GET / HTTP/1.0  304     0
+    uplherc.upl.com 01/Aug/1995:00:00:08 -0400      GET /images/ksclogo-medium.gif HTTP/1.0 304     0
+    uplherc.upl.com 01/Aug/1995:00:00:08 -0400      GET /images/MOSAIC-logosmall.gif HTTP/1.0       304     0
+    uplherc.upl.com 01/Aug/1995:00:00:08 -0400      GET /images/USA-logosmall.gif HTTP/1.0  304     0
+
+Since we split the stream, and sent two exact copies of it to two different files, let's see what the other directory
+contains:
+
+    $ hadoop fs -cat output2/out.txt/* > out2.txt
+    $ less out2.txt
+
+You should again see the same output as shown above.
+
+Let's verify if the two outputs are identical
+
+    $ diff out1.txt out2.txt
+    $
+
+Since the diff tool returns zero, or no difference, the two outputs are exact copies of each other. Thus we have seen
+how to split one stream into two parts.
+
+In the next part, we continue our data operations on one of the branches.
+
+
+=== References
+
+See the following for more information:
+
+*Scalding Wiki:* https://github.com/twitter/scalding/wiki/Fields-based-API-Reference#map-functions
+
+*Scalding API docs:* http://twitter.github.io/scalding/index.html#com.twitter.scalding.package
+
+== Next
+link:part3.html[Part 3 - Data processing on branch 1]
+
+

@@ -108,6 +108,12 @@ subprojects { subproject ->
    }
   }
 
+  if (subproject.name == 'scalding-data-processing') {
+    createDocs {
+      File sourceDir = new File('scalding-data-processing/scalding-docs/src/asciidoc')
+    }
+  }
+
   task zipDocs( type: Zip, dependsOn: createDocs ){
     baseName = "${project.name}"
     from (createDocs.outputDir){

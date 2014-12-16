@@ -1,0 +1,284 @@
+= Data Processing with Scalding
+
+== Part 1: Data Parsing and Cleaning
+
+In this part, we read the input log file from HDFS, parse it, remove bad records and write it to a tab separated file
+in HDFS.
+
+Let's go through the code of Part 1 from top to bottom and see what's going on.
+
+*Step 1:* Configure the input and output
+
+Our input is stored in HDFS, and it is a text file (ASCII encoded) where each line is terminated by a newline character.
+In order to read such files, we make use of the TextLine class in Scalding. Later, we'll pass the path to the input directory
+using a command line argument.
+
+[source,scala]
+----
+val input = TextLine(args("input"))
+----
+
+Similarly, we'll pass in the path to the output directory using the command line argument of "output."
+However this time we'll specify that we're interested in storing our output in tab separated file (Tsv)
+
+[source,scala]
+----
+val output= Tsv(args("output"))
+----
+
+*Step 2:* Parse the input file
+
+Sclading's TextLine class can read the input file, and return each line in a Field called 'line. Let's do that first:
+
+[source,scala]
+----
+val filteredInput = input.read
+----
+
+The input file is a web server log taken from NASA. We now have a handle on the lines of the file, but since the lines
+are not in a structured form, i.e, they are not separated into columns, we need to apply a regex pattern to split each
+line into its tokens. Here's the complete code which accomplishes this:
+
+[source, scala]
+----
+val filteredInput = input.read.mapTo(inputFields -> regexFields) {
+    te: TupleEntry =>
+      val regex = new Regex("^([^ ]*) \\S+ \\S+ \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) ([^ ]*).*$")
+      val split = regex.findFirstMatchIn(te.getString("line")).get.subgroups
+      (split(0), split(1), split(2), split(3), split(4))
+  }
+----
+
+Here, we're consuming each line and transforming its "inputFields", called 'line, into "regexFields", which we have
+defined earlier to be:
+
+[source, scala]
+----
+val regexFields = ('ip, 'time, 'request, 'response, 'size)
+----
+
+The Scalding construct MapTo has the general form:
+
+[source, scala]
+----
+pipe.mapTo(existingFields -> newFields){function}
+----
+
+MapTo takes the records flowing through a pipe, and converts its fields from existingFields to newFields by applying
+the function specified between the curly braces. You can now see that in our case, we're taking "inputFields", and
+translating them into "regexFields":
+
+[source, scala]
+----
+val filteredInput = input.read.mapTo(inputFields -> regexFields)
+----
+
+The function we're using is the following:
+
+[source, scala]
+----
+{
+    te: TupleEntry =>
+      val regex = new Regex("^([^ ]*) \\S+ \\S+ \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) ([^ ]*).*$")
+      val split = regex.findFirstMatchIn(te.getString("line")).get.subgroups
+      (split(0), split(1), split(2), split(3), split(4))
+}
+----
+
+In this function, we're accepting a TupleEntry object which holds our String line, and applying a regular expression
+to parse it into its five individual parts--ip, time, request, response and size.
+
+
+*Step 2:* Clean the data by using Filters
+
+So far, we have been able to parse each line into its tokens. However, we need to clean the data before we proceed. It
+is imperative to do this--some records could be malformed. We need to filter out "bad" records.
+
+Filtering in Scalding is very straightforward. The general form of the Filter function is:
+
+[source, scala]
+----
+pipe.filter(fields){function}
+----
+
+The filter construct shown above operates on each object passing through the pipe, and applies the user defined function
+specified in the curly braces. The function must return either true or false for each object it operates on. If the
+function returns true, the record is allowed to pass through, otherwise it is discarded.
+
+To make things easier to understand, we will use the inverse of the filter function, as in:
+
+[source, scala]
+----
+filterNot('size) {
+    size: String => size == "-"
+}
+----
+
+This will allow only those records to pass through for which the function evaluates to false. So, if the size of the data
+returned in response to a HTTP GET is empty, we call it a bad record, and remove it from our stream.
+
+*Step 3:* Write the output
+
+At the very end of the filtering, we write the output by calling the "write" method on our pipe:
+
+[source,scala]
+----
+.write(output)
+----
+
+This will write the contents of the pipe to the output object, which is a Tsv file located at the path specified by the
+"output" command line argument.
+
+The full code listing is now shown so you can see how everything fits together:
+
+[source,scala]
+----
+  val input = TextLine(args("input"))
+  val output= Tsv(args("output"))
+
+  val inputFields = 'line
+  val regexFields = ('ip, 'time, 'request, 'response, 'size)
+
+  val filteredInput = input.read.mapTo(inputFields -> regexFields) {
+    te: TupleEntry =>
+      val regex = new Regex("^([^ ]*) \\S+ \\S+ \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) ([^ ]*).*$")
+      val split = regex.findFirstMatchIn(te.getString("line")).get.subgroups
+      (split(0), split(1), split(2), split(3), split(4))
+  }.filterNot('size) {
+    size: String => size == "-"
+  }.write(output)
+----
+
+Now that we've gone through the code, let's build and run our program.
+
+=== Run and Validate Your Program
+
+*Step 1:* Compile
+
+Go into the sclading-data-processing folder from your terminal, and type:
+
+    $ cd scalding-data-processing/part1
+    $ gradle clean fatjar
+
+This will compile the code and create a "fat-jar", a jar file which contains all the required dependencies inside it.
+The fatjar will be present in the build/libs/ folder.
+
+Let's see the build.gradle file's dependencies block to understand the libraries required by Scalding apps:
+
+[source, scala]
+----
+dependencies {
+
+    compile(group:'org.scala-lang', name:'scala-library', version:scalaVersion)
+    compile(group:'org.scala-lang', name:'scala-compiler', version:scalaVersion)
+
+    compile(group:'com.twitter', name:'scalding-core_2.10', version:scaldingVersion) {
+      exclude group: 'cascading', module: 'cascading-hadoop'
+    }
+
+    compile(group: 'cascading', name: 'cascading-core', version: cascadingVersion)
+    compile(group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion)
+
+    provided(group:'org.apache.hadoop', name:'hadoop-common' , version:hadoopVersion)
+    provided(group:'org.apache.hadoop', name:'hadoop-mapreduce-client-core' , version:hadoopVersion)
+
+    compile(group: 'com.twitter', name: 'chill_2.10', version: '0.3.6')
+}
+----
+
+In this configuration block, any dependency marked with the "compile" scope will be bundled inside the fat-jar.
+Dependencies marked with the "provided" scope will be used to compile the code, but will be assumed to be supplied by
+the machine running the code during execution and will not be included in the fat-jar.
+
+Since we're using Gradle to build our code, we need to include the Scala library and the compiler. This is not required
+if you use the Scala Build Tool (SBT) to build the Scalding app. We've decided to use Gradle to avoid the dependency on
+Scala or SBT to build the code, and make things easier for you. Scalding Core needs to be present in the compile scope.
+Strictly speaking, Cascading libraries are not required since they're included inside the Scalding library but we've
+explicitly included them here for robustness. Note that we've also excluded the cascading library from scalding jars to
+avoid duplication and class conflicts. The Hadoop libraries are marked with the "provided" scope as we will be running
+on a Hadoop cluster, and we don't need them to be present inside the fat-jar. The chill library is required by Scalding.
+
+In the fatjar configuration block, we specify that our fatjar's main class is com.twitter.scalding.Tool. This class
+is supplied by Scalding core library, and it will in turn load our etl.Main class and run it.
+
+
+[source,scala]
+----
+fatJar {
+  classifier 'fat'
+  manifest {
+    attributes("Main-Class": "com/twitter/scalding/Tool")
+
+  }
+  exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
+}
+----
+
+*Step 2:* Prepare the input and output directories in HDFS
+
+    $ hadoop fs -mkdir logs
+    $ hadoop fs -mkdir output
+    $ hadoop fs -put ../data/NASA_access_log_Aug95.txt logs
+
+*Step 3:* Run the program
+
+    $ yarn jar build/libs/part1-fat.jar etl.Main --hdfs --input logs/NASA_access_log_Aug95.txt --output output/out.txt
+
+The "--hdfs" argument tells com.twitter.scalding.Tool class that the etl.Main class should be executed on Hadoop. We
+also specify the input and the output directories, and ask Yarn to run it using the "yarn jar ..." command.
+
+*Step 4:* View the execution graph in Driven
+
+Depending on how you configured your Driven plugin, either click the Driven
+URL from your console or log into the Driven application.
+
+    14/12/11 12:01:53 INFO state.AppStats: shutdown hook finished.
+    14/12/11 12:01:53 INFO rest.DrivenDocumentService: *http://localhost:8080/driven/3B8BE330F87B4DF9BA9C7CABB3E1BC16*
+    14/12/11 12:01:53 INFO rest.DrivenDocumentService: messaging version 1.0-eap-57:JSON
+
+image:part1.png[]
+
+*Figure 1: An example of the application's view in Driven.*
+
+Here's a https://driven.cascading.io/index.html#/apps/19230129871C4FA7860BEDFD383C6F4D/46CCA9D641FC44B8AFC119653E03499B[link]
+to see this part's execution graph on the Driven cloud service.
+
+*Step 5:* Validate output
+
+Let's view what the output folder contains. Do:
+
+    $ hadoop fs -cat output/*
+
+The output should be the input records separated by tabs, similar to the following:
+
+    in24.inetnebr.com       01/Aug/1995:00:00:01 -0400      GET /shuttle/missions/sts-68/news/sts-68-mcc-05.txt HTTP/1.0    200     1839
+    uplherc.upl.com 01/Aug/1995:00:00:07 -0400      GET / HTTP/1.0  304     0
+    uplherc.upl.com 01/Aug/1995:00:00:08 -0400      GET /images/ksclogo-medium.gif HTTP/1.0 304     0
+    uplherc.upl.com 01/Aug/1995:00:00:08 -0400      GET /images/MOSAIC-logosmall.gif HTTP/1.0       304     0
+    uplherc.upl.com 01/Aug/1995:00:00:08 -0400      GET /images/USA-logosmall.gif HTTP/1.0  304     0
+    ix-esc-ca2-07.ix.netcom.com     01/Aug/1995:00:00:09 -0400      GET /images/launch-logo.gif HTTP/1.0    200     1713
+    uplherc.upl.com 01/Aug/1995:00:00:10 -0400      GET /images/WORLD-logosmall.gif HTTP/1.0        304     0
+    slppp6.intermind.net    01/Aug/1995:00:00:10 -0400      GET /history/skylab/skylab.html HTTP/1.0        200     1687
+    piweba4y.prodigy.com    01/Aug/1995:00:00:10 -0400      GET /images/launchmedium.gif HTTP/1.0   200     11853
+    slppp6.intermind.net    01/Aug/1995:00:00:11 -0400      GET /history/skylab/skylab-small.gif HTTP/1.0   200     9202
+    slppp6.intermind.net    01/Aug/1995:00:00:12 -0400      GET /images/ksclogosmall.gif HTTP/1.0   200     3635
+    .
+    .
+    .
+
+
+
+This completed part 1. In the next part, we'll see how to split a data stream into two parts.
+
+
+=== References
+
+See the following for more information:
+
+*Scalding Wiki:* https://github.com/twitter/scalding/wiki/Fields-based-API-Reference#map-functions
+
+*Scalding API docs:* http://twitter.github.io/scalding/index.html#com.twitter.scalding.package
+
+== Next
+link:part2.html[Part 2 - Splitting Data Stream]
+

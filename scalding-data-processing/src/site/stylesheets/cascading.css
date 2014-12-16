@@ -447,8 +447,6 @@ pre { color: white; font-family: Consolas, "Liberation Mono", Courier, monospace
 
 .listingblock:hover .asciidoc:before { content: "asciidoc"; text-transform: uppercase; float: right; font-size: 0.9em; color: #999; }
 
-.listingblock:hover .scala:before { content: "scala"; text-transform: uppercase; float: right; font-size: 0.9em; color: #999; }
-
 .listingblock:hover .java:before { content: "java"; text-transform: uppercase; float: right; font-size: 0.9em; color: #999; }
 
 .listingblock:hover .javascript:before { content: "javascript"; text-transform: uppercase; float: right; font-size: 0.9em; color: #999; }
