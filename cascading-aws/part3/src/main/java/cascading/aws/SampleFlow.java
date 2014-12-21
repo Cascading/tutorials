@@ -64,7 +64,7 @@ public class SampleFlow
     String secretKey = args[ 4 ];
     String bucket = args[ 5 ];
 
-    String S3_PATH_ROOT = "s3n://" + bucket + "/tmp";
+    String S3_PATH_ROOT = "s3n://" + bucket + "/output/";
 
     AWSCredentials awsCredentials = new AWSCredentials( accessKey, secretKey );
 
@@ -89,7 +89,7 @@ public class SampleFlow
     // create Each pipe to iterate over each record and apply regexFilter
     inputFilesPipe = new Each( inputFilesPipe, new Fields( "d_year" ), regexFilter );
     // add source and pipe to dateDimFilterFlow
-    dateDimFilterFlow.addSource( inputFilesPipe, new Hfs( new TextDelimited( DATE_DIM_FIELDS, "|" ), "s3n://" + bucket + "/date_dim.dat" ) );
+    dateDimFilterFlow.addSource( inputFilesPipe, new Hfs( new TextDelimited( DATE_DIM_FIELDS, "|" ), "s3n://" + bucket + "/cascading-aws-data/date_dim.dat" ) );
 
     Tap dateDimSinkTap = getOutputTap( "filtered_date_dim", Fields.ALL, bucket );
     // add tail sink to dateDimFilterFlow
@@ -118,7 +118,7 @@ public class SampleFlow
     // create Each pipe to iterate over each record and apply regexFilter
     custDemographicsFilter = new Each( custDemographicsFilter, new Fields( "cd_education_status" ), educationFilter );
     // add source and pipe to customerDemographicsFilterFlow
-    customerDemographicsFilterFlow.addSource( custDemographicsFilter, new Hfs( new TextDelimited( CUSTOMER_DEM_FIELDS, "|" ), "s3n://" + bucket + "/customer_demographics.dat" ) );
+    customerDemographicsFilterFlow.addSource( custDemographicsFilter, new Hfs( new TextDelimited( CUSTOMER_DEM_FIELDS, "|" ), "s3n://" + bucket + "/cascading-aws-data/customer_demographics.dat" ) );
 
     // create RedshiftTableDesc for customer_demopgraphics data
     Tap customerDemographicsFilterSinkTap = getOutputTap( "filtered_customer_demographics", Fields.ALL, bucket );
@@ -134,7 +134,7 @@ public class SampleFlow
     Pipe stateFilter = new Pipe( "store_filter" );
     RegexFilter storeStateFilter = new RegexFilter( "(TN|SD)" );
     stateFilter = new Each( stateFilter, new Fields( "s_state" ).applyTypes( String.class ), storeStateFilter );
-    storeFilterFlow.addSource( stateFilter, new Hfs( new TextDelimited( STORE_FIELDS, "|" ), "s3n://" + bucket + "/store.dat" ) );
+    storeFilterFlow.addSource( stateFilter, new Hfs( new TextDelimited( STORE_FIELDS, "|" ), "s3n://" + bucket + "/cascading-aws-data/store.dat" ) );
     Tap storeStateSinkTap = getOutputTap( "filtered_store", Fields.ALL, bucket );
     storeFilterFlow.addTailSink( stateFilter, storeStateSinkTap );
     // add customerDemographicsFilterFlow to queryFlows ArrayList for later use
@@ -148,12 +148,12 @@ public class SampleFlow
     sinks.put( "store_sales_item_join", storeSaleItemSink );
 
     // everything joins against store_sales so put that in first.
-    Tap storeSales = new Hfs( new TextDelimited( STORE_SALES_FIELDS, "|" ), "s3n://" + bucket + "/store_sales.dat" );
+    Tap storeSales = new Hfs( new TextDelimited( STORE_SALES_FIELDS, "|" ), "s3n://" + bucket + "/cascading-aws-data/store_sales.dat" );
     sources.put( "StoreSales", storeSales );
     Pipe storeSalesPipe = new Pipe( "StoreSales" );
 
     // JOIN item on (store_sales.ss_item_sk = item.i_item_sk)
-    Tap item = new Hfs( new TextDelimited( ITEM_FIELDS, "|" ), "s3n://" + bucket + "/item.dat" );
+    Tap item = new Hfs( new TextDelimited( ITEM_FIELDS, "|" ), "s3n://" + bucket + "/cascading-aws-data/item.dat" );
     sources.put( "Item", item );
     Pipe itemPipe = new Pipe( "Item" );
     Pipe storeSalesItemJoin = new HashJoin( "store_sales_item_join", storeSalesPipe, new Fields( "ss_item_sk" ), itemPipe, new Fields( "i_item_sk" ) );
@@ -252,7 +252,7 @@ public class SampleFlow
 
     }
 
-  // generate standard Hfs tap
+  // generate S3 (Hfs) tap
   protected static Tap getOutputTap( String tapName, Fields fields, String bucket )
     {
     return new Hfs( new TextDelimited( fields ), "s3n://" + bucket + "/output/" + tapName, SinkMode.REPLACE );

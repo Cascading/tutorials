@@ -5,16 +5,15 @@
 === What You Will See
 
 In Part 1 of the tutorial, we will use Lingual shell to migrate data from HDFS to AWS Redshift. Cascading Lingual has two forms,
-Lingual Shell (covered here) and Lingual-JDBC (covered in part 2 pf this tutorial). Lingual is a powerful extension to
-Cascading that simplifies application development and integration by providing an ANSI SQL interface for Apache Hadoop.
-Now you can connect existing business intelligence (BI) tools, optimize computing costs, and accelerate application development.
+Lingual Shell (covered here) and Lingual-JDBC (covered in part 2 of this tutorial). Lingual is a powerful DSL on top of
+Cascading that simplifies application development and integration by providing an ANSI SQL interface for Hadoop and AWS
+Elastic MapReduce. Now you can connect existing business intelligence (BI) tools, optimize computing costs, and accelerate application development.
 Going beyond ‘SQL-like’, Lingual is a mature implementation of ANSI/ISO standard SQL-92 built on top of the Cascading framework.
 Further documentation can be found here, http://docs.cascading.org/lingual/1.2/[Lingual Docs]
 
 === Run and Validate Your Program
 
-*Step 1:* If you have not done it already please refer to the prerequsites section to
-copy the required data files to Hadoop.
+*Step 1:* If you have not done so already please refer to the prerequsites section for environment setup.
 
 *Step 2:* Run your flow
 
@@ -22,8 +21,9 @@ copy the required data files to Hadoop.
 ----
 $ cd {path}/{to}/tutorials/cascading-aws/part1/scripts
 $ chmod +x lingual_hdfs_redshift.sh
-$ ./lingual_hdfs_redshift.sh [REDSHIFT_URL] [REDSHIFT_USER] [REDSHIFT_PASSWORD] [PATH]/[TO]/cascading-jdbc-redshift-2.6.0-wip-dev-provider.jar
-[HDFS]/[PATH]/[TO]/NASA_access_log_Aug95_short.ssv
+$ ./lingual_hdfs_redshift.sh [REDSHIFT_URL] [REDSHIFT_USER] [REDSHIFT_PASSWORD]
+[PATH]/[TO]/cascading-jdbc/cascading-jdbc-redshift/build/libs/cascading-jdbc-redshift-2.6.0-wip-dev-provider.jar
+/[HDFS]/[PATH]/[TO]/NASA_access_log_Aug95_short.ssv
 ----
 
 *Step 3:* View the execution of your flow in real-time through Driven
@@ -36,7 +36,7 @@ https://driven.cascading.io/index.html#/apps/CF7811E5B1C44545AEEFDB8126D691D4?vi
 
 [source,bash]
 ----
-14/11/28 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/CF7811E5B1C44545AEEFDB8126D691D4?view=element*
+14/12/20 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/CF7811E5B1C44545AEEFDB8126D691D4?view=element*
 ----
 
 image:images/part_1.png[]
@@ -140,5 +140,11 @@ echo "INSERT INTO \"OUT\".\"OUT\" SELECT \"ip\",\"time1\",\"request\",\"response
 
 Congratulations, you just ran ANSI SQL on Hadoop using Cascading Lingual!
 
+=== References
+. Lingual home page - http://www.cascading.org/projects/lingual/
+. Lingual docs - http://docs.cascading.org/lingual/1.2/
+. Lingual source - https://github.com/Cascading/lingual
+
 == Next:
+=== Part 2
 link:part2.html[Simple ETL using Lingual JDBC with HDFS and Redshift]

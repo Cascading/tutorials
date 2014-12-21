@@ -8,45 +8,13 @@ is configured correctly before we get started. Here are the components that
 we want to make sure that you have installed correctly before we get started with
 development:
 
-=== GitHub
+=== Environment
+This tutorial assumes that you will be running the sample applications
+from your local machine in a Unix/Linux environment.
 
-The code of this tutorial is hosted on
-https://github.com/Cascading/tutorials[GitHub].
-Clone the code onto your local disk and build it like so:
+=== JDK
 
-[source,bash]
-----
-$ git clone https://github.com/Cascading/tutorials
-$ cd tutorials/cascading-aws
-$ gradle build
-----
-
-These tutorials will also leverage cascading-jdbc which is hosted on
-https://github.com/Cascading/tutorials[GitHub]. If you have not set up your AWS
-Redshift cluster please do so here link:aws.html[AWS Setup] and then clone and
-build the code like so:
-
-[source,bash]
-----
-$ mkdir ./{user}/{path}/cascading-jdbc
-$ cd ./{user}/{path}/cascading-jdbc
-$ git clone git@github.com:Cascading/cascading-jdbc.git
-$ cd cascading-jdbc
-$ gradle build -Dcascading.jdbc.url.redshift='jdbc:postgresql://redshift-host/redshift-db?user=some-user&password=somepw' -i
-----
-
-=== Data
-The tutorial requires data files which are hosted on data.cascading.org:
-
-[source,bash]
-----
-$ cd tutorials
-$ mkdir cascading-aws/data
-$ wget http://data.cascading.org/cascading-aws-data.tgz
-$ tar xf cascading-aws-data.tgz -C cascading-aws/data
-$ hadoop dfs -copyFromLocal cascading-aws/data/* /{hadoop}/{file}/{path}/
-$ hadoop dfs -ls /{hadoop}/{file}/{path}/
-----
+Please run this tutorial using JDK 1.7.
 
 === Gradle
 
@@ -65,20 +33,73 @@ $ gradle -v
 ------------------------------------------------------------
 ----
 
+=== GitHub
+
+The code of this tutorial is hosted on
+https://github.com/Cascading/tutorials[GitHub].
+Clone the code onto your local disk and build it like so:
+
+[source,bash]
+----
+$ mkdir ./[PATH]/[TO]/cascading-tutorials
+$ cd ./[PATH]/[TO]/cascading-tutorials
+$ git clone https://github.com/Cascading/tutorials
+$ cd tutorials/cascading-aws
+$ gradle build
+----
+
+These tutorials will also leverage cascading-jdbc which is hosted on
+https://github.com/Cascading/tutorials[GitHub]. If you have not set up your AWS
+Redshift cluster please do so here link:aws.html[AWS Setup] and then clone and
+build the code like so:
+
+[source,bash]
+----
+$ mkdir ./[PATH]/[TO]/cascading-jdbc
+$ cd ./[PATH]/[TO]/cascading-jdbc
+$ git clone https://github.com/Cascading/cascading-jdbc.git
+$ cd cascading-jdbc
+----
+
+After you have your Redshift cluster connection information (see link:aws.html#_redshift[AWS Redshift Setup]) please run the following command
+to build cascading-jdbc-redshift.
+
+[source,bash]
+----
+$ gradle build -Dcascading.jdbc.url.redshift='jdbc:postgresql://[REDSHIFT_HOST]/[REDSHIFT_DB]?user=[USERNAME]&password=[PASSWORD]' -i
+----
+
+=== Data
+The tutorial requires data files which are hosted on data.cascading.org:
+
+[source,bash]
+----
+$ cd ./[PATH]/[TO]/cascading-tutorials/cascading-aws/
+$ wget http://data.cascading.org/cascading-aws-data.tgz
+$ tar xf cascading-aws-data.tgz
+$ rm -f cascading-aws-data.tgz
+----
+
 === Hadoop
-We will be running the demos on the Hadoop distribution of your
-choice. Cascading is supported on all major Hadoop distributions,
-Install the latest stable version from the 2.x series.
+In part 1 of this tutorial we will demostrate data migration from Hadoop to AWS Redshift using Cascading Lingual shell.
+You may run the sample application for part1 on the Hadoop distribution of your choice. Cascading is supported on all
+major Hadoop distributions. If you would like to run part 1 (Cascading Lingual shell), please install the latest stable
+version from the 2.x series.
+
+Parts 2 and 3 of this tutorial will focus on AWS Elastic MapReduce and do not require a Hadoop installation.
 
 [source,bash]
 ----
 $ hadoop version
-Hadoop 2.2.0
+Hadoop 2.4.1
 ----
 
-Cascading is compatible with a number of hadoop distributions and versions.
-You can see on the http://www.cascading.org/support/compatibility[compatibility page]
-to see if your distribution is supported.
+To run part 1, please add the necessary data to HDFS
+[source,bash]
+----
+$ hadoop dfs -copyFromLocal cascading-aws-data/NASA_access_log_Aug95_short.ssv /[HADOOP]/[FILE]/[PATH]
+$ hadoop dfs -ls /[HADOOP]/[FILE]/[PATH]
+----
 
 === Driven
 
@@ -105,11 +126,6 @@ image:images/part_3.png[]
 You can learn more about using Driven for your Cascading application
 at http://docs.cascading.io/driven/1.0/getting-started/[Getting Started with Driven].
 
-=== JDK
-
-Make sure that you are running the tutorial with JDK 1.7. Currently, we are deprecating
-support for version 1.6 and do not support JDK 1.8.
-
 === Database Workbench
 http://www.sql-workbench.net/downloads.html[SQLWorkbenchJ] was used to view AWS Redshift databases and cluster created during this tutorial.
 
@@ -122,7 +138,9 @@ http://www.jetbrains.com/idea/[IntelliJ IDEA] compatible project in each part of
 
 [source,bash]
 ----
-$ gradle ideaModule
+$ cd ./[PATH]/[TO]/cascading-tutorials/cascading-aws/
+$ gradle cleanidea idea
+$ open *.ipr
 ----
 
 If you prefer https://www.eclipse.org/[eclipse], you can run:
@@ -133,5 +151,5 @@ $ gradle eclipse
 ----
 
 == Next:
-=== Amazon Web Services
+=== AWS Setup
 link:aws.html[AWS Setup]

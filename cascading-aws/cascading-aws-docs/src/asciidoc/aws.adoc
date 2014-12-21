@@ -5,56 +5,79 @@
 Setup AWS and Redshift
 ----------------------
 
-Redshift is an AWS-specific tool and hence all the example code makes use of AWS. This 
-tutorial does not cover starting up a Redshift Database, AWS permission rules, and 
-general EC2 management. See the http://aws.amazon.com/redshift/[Redshift Documentation] 
-for details on how to set that up. In particular, if you are using EMR to run the flow 
-your EMR instances will need to be in a security group that has access to the database 
-and it is strongly suggested that you run your EMR instances in the same availability 
-zone your Redshift database is running in.
+In this tutorial we will create end-to-end data processing workflows using the following AWS products:
 
-. Signup and create an http://aws.amazon.com/s3/[S3 instance]
+* AWS Command Line Interface - http://aws.amazon.com/cli/
+* AWS S3 - http://aws.amazon.com/s3/
+* AWS Redshift - http://aws.amazon.com/redshift/
+* AWS Elastic MapReduce - http://aws.amazon.com/elasticmapreduce/
 
-. Ensure that you have launched the Redshift cluster by
+=== AWS
+
+If you have not done so already, please signup and create an http://aws.amazon.com/[AWS account]
+
+NOTE: This tutorial does not cover starting up a Redshift Database, AWS permission rules, and
+general EC2 management. See the http://aws.amazon.com/redshift/[Redshift Documentation] and
+http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html[AWS CLI Documentation]
+for further details.
+
+=== Redshift
+Launch a Redshift cluster by
 http://docs.aws.amazon.com/redshift/latest/gsg/rs-gsg-prereq.html[completing the 
-Getting Started Guide]. Note down the JDBC URL, the database user name, and the 
-database password. You will need it later. If you will be using Elastic Map
-Reduce, please ensure that you have authorized both the EMR master and slave
-security groups within the Redshift cluster security group.
+Getting Started Guide]. Note down the JDBC URL, the database user name, the
+database password and region. You will need them later.
 
-. Create https://console.aws.amazon.com/iam/home?#users[AWS access
-key for a new user]. Ensure that you give the right permissions to the user to run 
-map reduce jobs on the Amazon cluster.
+Also note down your https://console.aws.amazon.com/iam/home?#security_credential[AWS
+Security Credentials].
 
-. Since Redshift reads the data initially from S3, you have to provide the
-AWS access-key/secret-key combination obtained from the previous step:
+Since Redshift reads the data initially from S3, you have to provide the
+AWS access-key/secret-key combination obtained from the previous step.
 
-[source,bash]
-----
-$ export AWS_ACCESS_KEY=<your AWS user access key>
-$ export AWS_SECRET_KEY=<your AWS user secret key>
-----
-
-. Next, install and configure
-http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-cli-install.html[EMR 
-Command Line Tools]. Add the tool to your path
+Reminder, if you have not done so already, please compile cascading-jdbc-redshift by supplying your Redshift
+connection information to gradle build:
 
 [source,bash]
 ----
-$ ./elastic-mapreduce --version
-$ export PATH=[path]/elastic-mapreduce-cli:$PATH
+$ cd ./[PATH]/[TO]/cascading-jdbc
+$ gradle build -Dcascading.jdbc.url.redshift='jdbc:postgresql://[REDSHIFT_HOST]/[REDSHIFT_DB]?user=[USERNAME]&password=[PASSWORD]' -i
 ----
 
-. Finally, install and configure http://s3tools.org/s3cmd[s3cmd]. Ensure that you
-download the latest version of the tool
+NOTE: Please ensure that your Redshift security group will accept traffic from
+exteranl instances. Redshift uses port 5439. For the purposes of this tutorial we
+have added a Custom TCP rule to allow all traffic to port 5439.
+
+=== AWS Command Line Interface
+Next, install and configure
+http://aws.amazon.com/cli/[AWS Command Line Interface].
+The AWS CLI is a unified tool that provides a consistent interface for interacting with all parts of AWS.
+With it we can control multiple AWS services from the command line and automate them through scripts.
+
 
 [source,bash]
 ----
-$ s3cmd --version
-s3cmd version 1.5.0-rc1
+# ensure python installation
+$ python --version
+Python 2.7.5
+----
+
+[source,bash]
+----
+# download cli
+$ curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+# unzip
+$ unzip awscli-bundle.zip
+# install
+$ sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+# verify install
+$ aws help
+# configure to your aws account - ensure that the default region is the same your Redshift cluster
+$ aws configure
+# if you have any S3 buckets you should now be able to list them like so:
+$ aws s3 ls
 ----
 
 == Next:
+=== Part 1
 link:part1.html[Lingual Shell with HDFS and Redshift]
 
 

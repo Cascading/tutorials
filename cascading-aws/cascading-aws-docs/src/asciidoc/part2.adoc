@@ -4,61 +4,132 @@
 
 === What You Will See
 
-The file SampleFlow.java demonstrates SQL on Hadoop by using Lingual-Jdbc to perform
-ETL and data migration tasks between HDFS and Redshift.
+Part 2 of this tutorial has two components, a shell script that manages the compilation,
+required data transfers and EMR cluster creation, as well as a Java application
+(part2/src/main/SampleFlow.java) that will be executed on the EMR cluster.
 
-1. Read three data files from HDFS
+==== emrExample.sh
 
-2. Strip extraneous fields from the data
+When you call the script part2/src/scripts/emrExample.sh with the required arguments the following
+will take place:
 
-3. Perform and aggregation and joining operation across all three files using SQL
+. clean and compile part 2 of the tutorial
 
-4. Write results to S3.
+. use http://aws.amazon.com/cli/[aws cli] to create new S3 bucket or delete contents if bucket already exists
+
+. use aws cli to push three data files and compiled jar file to S3 bucket
+
+. use aws cli to create an http://aws.amazon.com/elasticmapreduce/[EMR cluster] while creating the cluster we will also bootstrap
+the http://www.cascading.org/sdk/[Cascading SDK] which includes Cascading Lingual.
+
+==== SampleFlow.java
+
+When the compiled jar file is being executed on the EMR cluster the following will occur:
+
+. Source data files from S3 bucket
+
+. Strip extraneous fields from the data using
+http://docs.cascading.org/cascading/2.6/javadoc/cascading/pipe/assembly/Retain.html[Cascading Retain subassembly]
+
+. Perform an aggregation and joining operation on the data using SQL via Cascading Lingual-JDBC
+
+. Sink results to S3 and Redshift.
+
+NOTE: Cascading's
+https://github.com/Cascading/cascading-jdbc/blob/2.6/cascading-jdbc-redshift/src/main/java/cascading/jdbc/RedshiftTap.java[RedshiftTap]
+has a constructor argument "boolean useDirectInsert". When true it will perform traditional insert statements to load
+data to Redshift. When false it will use Redshift's http://docs.aws.amazon.com/redshift/latest/dg/r_COPY.html[COPY command]
+to load the data. In part 2 we will demonstate direct insert and in part 3 we will use the COPY command.
 
 === Run and Validate Your Program
 
-*Step 1:* If you have not done it already please refer to the prerequsites section to
-copy the required data files to Hadoop.
+*Step 1:* If you have not done so already please refer to the prerequsites section for environment setup.
 
-*Step 2:* Compile your program
-
-[source,bash]
-----
-$ cd cascading-aws/part2
-$ gradle clean jar
-----
-
-*Step 3:* Run your flow on Hadoop using the following command. Please ensure that you have enabled access to the S3 directory and
-Redshift instance that you are passing to the application.
+*Step 2:* Call the script from the tutorials/cascading-aws home directory.
 
 [source,bash]
 ----
-$ hadoop jar build/libs/cascading-aws-tutorials.jar {s3TempDir} {redshiftUrl} {redshiftUser} {redshiftPass} {awsAccesskey} {awsSecretKey}
+$ cd ./[PATH]/[TO]/cascading-tutorials/cascading-aws/
+$ part2/src/scripts/emrExample.sh [REDSHIFT_URL] [REDSHIFT_USER] [REDSHIFT_PASSWORD] [S3_BUCKET]
+[AWS_ACCESS_KEY] [AWS_SECRET_KEY]
 ----
 
-*Step 4:* View the execution of your flow in real-time through Driven
-
-Depending on how you configured your Driven Plugin, either click the
-Driven URL from your console or log into the Driven application.
-
-You can also explore this application on the Driven cloud service here:
-https://driven.cascading.io/index.html#/apps/F7E041554B2F4983A122AF0B120F2CDE?view=element
+The script logs all calls and output to the console. When it is complete you should see the following:
 
 [source,bash]
 ----
-14/11/28 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/F7E041554B2F4983A122AF0B120F2CDE?view=element*
+{
+    "ClusterId": "[CLUSTER_ID]"
+}
 ----
 
-image:images/part_2.png[]
+*Step 3:* Inspect https://console.aws.amazon.com/s3/home[AWS S3] for the bucket you specified when calling the
+emrExample.sh script. Ensure that the busket exists and that it contains one jar file and three .dat files. The EMR cluster
+will also write it's log files to [BUCKET]/logs.
 
-*Step 5:* View your new table in Redshift using SQLWorkbenchJ
+*Step 4:* Inspect your https://console.aws.amazon.com/elasticmapreduce/home[AWS EMR console] for the new cluster. Here
+you can monitor progress of each step and gather other valuable information. If there are any errors during execution
+you will find them by selecting the cluster in question, and then selecting "Steps" where you will be able to view logs
+for any failed jobs.
+
+*Step 5:* View your new table (part2_results) in Redshift using SQLWorkbenchJ
 
 If the task completes successfully, you will have a new table in Redshift "part2_results" and
 3 new folders in your s3TempDir containing part-XXXX files from the M/R tasks.
 
+*Step 6:* Explore a previously run version of this application on the Driven cloud service here:
+https://driven.cascading.io/index.html#/apps/F7E041554B2F4983A122AF0B120F2CDE?view=element
+
+image:images/part_2.png[]
+
 === What’s Going On?
 
-First, let's instantiate our command line arguments.
+First, let's take a closer look at the shell script. The primary points of interest include:
+
+* Cleaning and compiling the program:
+
+[source,bash]
+----
+# clean and build part 2 application
+gradle :part2:clean :part2:jar
+----
+
+* AWS CLI commands to create or empty S3 bucket and transfer required files:
+
+[source,bash]
+----
+# create the bucket or delete the contents if it exists
+aws s3 mb --acl-public s3://$BUCKET || aws s3 rm s3://$BUCKET --recursive
+
+# push required data files to S3
+aws s3 cp data/date_dim.dat s3://$BUCKET/
+aws s3 cp data/store_sales.dat s3://$BUCKET/
+aws s3 cp data/item.dat s3://$BUCKET/
+
+# push built jar file to S3
+aws s3 cp $BUILD/$NAME s3://$BUCKET/$NAME
+----
+
+The AWS CLI command to create an EMR cluster - providing all necessary information to run the application we
+just compiled and sent to S3. Notice the bootstrap-action that installs the https://github.com/Cascading/CascadingSDK[Cascading SDK]:
+
+[source,bash]
+----
+aws emr create-cluster \
+  --ami-version 3.3.1 \
+  --instance-type $INSTANCE_TYPE \
+  --instance-count $INSTANCE_COUNT \
+  --bootstrap-action Path="s3://files.concurrentinc.com/lingual/1.2/lingual-client/install-lingual-client.sh",Name=LINGUAL_BOOTSTRAP \
+  --name "cascading-aws-tutorial-2" \
+  --visible-to-all-users \
+  --enable-debugging \
+  --auto-terminate \
+  --no-termination-protected \
+  --log-uri s3n://$BUCKET/logs/ \
+  --steps Type=CUSTOM_JAR,Name=Part2,ActionOnFailure=TERMINATE_CLUSTER,Jar=s3n://$BUCKET/$NAME,Args=$REDSHIFT_URL,$REDSHIFT_USER,$REDSHIFT_PASSWORD,$AWS_ACCESS_KEY,$AWS_SECRET_KEY,$BUCKET
+----
+
+Now let's take a look at the java application. We begin by instantiating our command line arguments.
 
 [source,java]
 ----
@@ -71,7 +142,7 @@ String accessKey = args[5];
 String secretKey = args[6];
 ----
 
-After ensuring our directory paths are properly formatted and instantiating our AWSCredentials object we need to declare
+After formatting a few variables, initializing our application and instantiating our AWSCredentials object we need to declare
 our Field names and types for the incoming data.
 
 [source,java]
@@ -135,9 +206,13 @@ Tap resultsItemsTap = new Hfs( new TextDelimited( new Fields( "i_category", "i_i
 Tap resultsSalesTap = new Hfs( new TextDelimited( new Fields( "ss_item_sk", "ss_sold_date_sk" ) ),
   "s3n://" + accessKey + ":" + secretKey + "@" + s3ResultsDir +  "/sales", SinkMode.REPLACE );
 
-// final results tap
-Tap resultsTap = new Hfs( new TextDelimited( Fields.ALL ), "s3n://" + accessKey +
-  ":" + secretKey + "@" + s3ResultsDir +  "/results", SinkMode.REPLACE );
+// define result fields
+Fields resultsFields = new Fields( "$0", "$1", "$2" ).applyTypes( Long.class, String.class, String.class );
+// create RedshiftTableDesc for Redshift Table
+RedshiftTableDesc resultsTapDesc = new RedshiftTableDesc( "part2_results", new String[]{"sales_count", "category", "day_name"}, new String[]{"int", "varchar(100)", "varchar(100)"}, null, null );
+// create Redshift output final tap
+Tap resultsTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, "s3://" + s3ResultsDir + "/part2-tmp", awsCredentials, resultsTapDesc, new RedshiftScheme( resultsFields, resultsTapDesc ), SinkMode.REPLACE, true, true );
+
 ----
 
 With our Pipes and Taps in hand we can now create our Flow definitions.
@@ -156,7 +231,8 @@ FlowDef flowDefDates = FlowDef.flowDef().setName( "retain dates info flow" )
   .addSource( retainDatesPipe, datesDataTap )
   .addTailSink( retainDatesPipe, resultsDatesTap );
 
-// Final flow that sources from the three previous flows
+// Final flow that sources from the three previous flows. Notice here how we define our schema.table names
+// as sources (ie, "example.store_sales") that are used by the SQL query.
 FlowDef flowDef = FlowDef.flowDef().setName( "sql flow" )
   .addSource( "example.store_sales", resultsSalesTap )      //declares SQL table name "example.store_sales"
   .addSource( "example.items", resultsItemsTap )            //declares SQL table name "example.items"
@@ -202,14 +278,21 @@ Maven:
 `<dependency>` +
 `<groupId>cascading</groupId>` +
 `<artifactId>cascading-jdbc-redshift</artifactId>` +
-`<version>2.6</version>` +
+`<version>2.6.1</version>` +
 `</dependency>` +
 
 Gradle:
 
-`compile group: 'cascading', name: 'cascading-redshift', version: '2.6'`
+`compile group: 'cascading', name: 'cascading-redshift', version: '2.6.1'`
 
 Congratulations, you just ran SQL on Hadoop using Lingual-JDBC and Cascading!
 
+=== References
+. Cascading SDK - http://www.cascading.org/sdk/
+. Lingual home page - http://www.cascading.org/projects/lingual/
+. AWS Command Line Interface - http://aws.amazon.com/cli/
+. Cascading Retain - http://docs.cascading.org/cascading/2.6/javadoc/cascading/pipe/assembly/Retain.html
+
 == Next:
+=== Part 3
 link:part3.html[ETL on EMR with Cascading on S3, HDFS and Redshift]

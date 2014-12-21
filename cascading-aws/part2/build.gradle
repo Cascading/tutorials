@@ -31,6 +31,7 @@ archivesBaseName = 'cascading-aws-tutorials'
 buildscript {
     repositories {
         maven { url 'http://repo.spring.io/plugins-release' }
+        maven{ url 'http://jcenter.bintray.com' }
     }
     dependencies {
         classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.5'
@@ -49,13 +50,16 @@ ext.hadoopVersion = '2.4.1'
 ext.lingualVersion = '1.2.0'
 
 dependencies {
+  compile( group: 'cascading', name: 'lingual-hadoop2-mr1', version: '1.2.0-wip-45')
+  compile( group: 'cascading', name: 'lingual-platform', version: '1.2.0-wip-44')
+  compile( group: 'cascading', name: 'lingual-core', version: '1.2.0-wip-44')
   compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
   compile( group: 'cascading', name: 'cascading-local', version: cascadingVersion )
   compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
   compile( group: 'cascading', name: 'cascading-jdbc-redshift', version: redshiftVersion )
-  compile( group: 'cascading', name: 'lingual-hadoop', version: lingualVersion )
   compile( group: 'xerces',    name: 'xercesImpl', version: '2.11.0')
-  compile( group: 'xalan',    name: 'xalan', version: '2.7.1')
+  compile( group: 'xalan',     name: 'xalan', version: '2.7.1')
+
 
   provided( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion )
 

@@ -3,85 +3,171 @@
 == Part 3: ETL on EMR with Cascading on S3, HDFS and Redshift
 
 === What You Will See
-In Part 3 of the tutorial, we will change things up a bit and dive into ETL with Cascading on AWS.
+In Part 3 of this tutorial we will change things up a bit and dive into ETL with Cascading on AWS.
 We will use hashjoins, cogroups, filters, each pipes, subassemblies and several flows running within Cascades on
-bootstrap EMR clusters. You may also add the Driven bootstrap option to the EMR cluster to send your telemetry
-from EMR to https://driven.cascading.io[https://driven.cascading.io].
+bootstrap EMR clusters. In the end we will trigger Redshift's COPY command, which is built into Cascading's
+RedshiftTap to push the data to Redshift in bulk. You may also add the Driven bootstrap option to the EMR cluster
+to send your telemetry from EMR to https://driven.cascading.io[https://driven.cascading.io].
+
+Part 3 of this tutorial also has two components, a shell script that manages the compilation,
+required data transfers and EMR cluster creation, as well as a Java application
+(part3/src/main/SampleFlow.java) that will be executed on the EMR cluster.
+
+==== emrExample.sh
+
+When you call the script part3/src/scripts/emrExample.sh with the required arguments the following
+will take place:
+
+. clean and compile part 3 of the tutorial
+
+. use aws cli to create new S3 bucket or delete contents if bucket already exists
+
+. use aws cli to push five data files and compiled jar file to S3 bucket
+
+. use aws cli to create an EMR cluster - providing the location of the data
+and jar file for execution
+
+==== SampleFlow.java
+
+We will take a closer look at the SampleFlow.java in the "What's Going On?" section below. However, in short
+it is tasked with sourcing various .dat files from S3, performing several ETL operations on AWS EMR and sinking
+the results to Redshift.
 
 === Run and Validate Your Program
 
-*Step 1:* Compile your program
+*Step 1:* If you have not done so already please refer to the prerequsites section for environment setup.
+
+*Step 2:* If you would like to use Driven to visualize and monitor this application please edit
+part3/src/scripts/emrExample.sh. You will need to have a valid http://cascading.io/register/[Driven Cloud Service]
+account. To use Driven please ensure you have modified emrExample.sh like so:
 
 [source,bash]
 ----
-$ cd cascading-aws/part3
-$ gradle clean jar
+# Uncomment to use Driven
+DRIVEN_API_KEY=[YOUR DRIVEN API KEY]
+DRIVEN_VERSION="1.2"
+INSTALL_PLUGIN_URL="s3://wip.concurrentinc.com/driven/${DRIVEN_VERSION}/driven-plugin/install-driven-plugin.sh"
+DRIVEN_SERVER_HOSTS="https://driven.cascading.io"
 ----
 
-*Step 2:* After building, please upload your program (in part3/build/libs) to an S3 bucket of your choice.
-Please also upload all the .dat files to the same bucket as you place the jar file. When you are done you should have
-the following files in a single bucket:
+Also, further below please add the Driven bootstrap action to the aws emr create-cluster command:
 
-* cascading-aws-tutorials.jar
-* date_dim.dat
-* customer_demographics.dat
-* store.dat
-* store_sales.dat
-* item.dat
+[source,bash]
+----
+aws emr create-cluster \
+  --ami-version 3.3.1 \
+  --instance-type $INSTANCE_TYPE \
+  --instance-count $INSTANCE_COUNT \
+  --bootstrap-actions Path=$INSTALL_PLUGIN_URL,Name=DRIVEN_BOOTSTRAP,Args="--host,${DRIVEN_SERVER_HOSTS}","--api-key,${DRIVEN_API_KEY}" \
+  --name "cascading-aws-tutorial-3" \
+  --visible-to-all-users \
+  --enable-debugging \
+  --auto-terminate \
+  --no-termination-protected \
+  --log-uri s3n://$BUCKET/logs/ \
+  --steps Type=CUSTOM_JAR,Name=Part3,ActionOnFailure=TERMINATE_CLUSTER,Jar=s3n://$BUCKET/$NAME,Args=$REDSHIFT_URL,$REDSHIFT_USER,$REDSHIFT_PASSWORD,$AWS_ACCESS_KEY,$AWS_SECRET_KEY,$BUCKET
+----
 
-*Step 3:* To run this flow we will call a script (located in ./cascading-aws/part3/src/scripts/emrExample.sh)
-that will bootstrap our EMR cluster and trigger the job.
+Now, when your Cascading application is running on the EMR cluster you will be able to visualize it and monitor it in real time.
+Driven has many useful features to successfully scale and productize your data applications. Please see http://cascading.io/try/[Driven]
+for further information.
 
-    $ chmod +x ./src/scripts/emrExample.sh
-    $ ./src/scripts/emrExample.sh [REDSHIFT_URL] [REDSHIFT_USER] [REDSHIFT_PASSWORD]
-      [AWS_BUCKET] [AWS_ACCESS_KEY] [AWS_SECRET_KEY]
+image:images/part_3.png[]
 
-*Step 4:* View the execution of your flow in real-time through Driven
+*Step 3:* Call the script from the tutorials/cascading-aws home directory.
+
+[source,bash]
+----
+$ cd ./[PATH]/[TO]/cascading-tutorials/cascading-aws/
+$ part3/src/scripts/emrExample.sh [REDSHIFT_URL] [REDSHIFT_USER] [REDSHIFT_PASSWORD] [S3_BUCKET] [AWS_ACCESS_KEY]
+[AWS_SECRET_KEY]
+----
+
+The script logs all calls and output to the console. When it is complete you should see the following:
+
+[source,bash]
+----
+{
+    "ClusterId": "[CLUSTER_ID]"
+}
+----
+
+*Step 4:* Inspect https://console.aws.amazon.com/s3/home[AWS S3] for the bucket you specified when calling the
+emrExample.sh script. Ensure that the busket exists and that it contains one jar file and five .dat files. The EMR cluster
+will also write it's log files to [BUCKET]/logs and the application will write to [BUCKET]/output.
+
+*Step 5:* Inspect your https://console.aws.amazon.com/elasticmapreduce/home[AWS EMR console] for the new cluster. Here
+you can monitor progress of each step and gather other valuable information. If there are any errors during execution
+you will find them by selecting the cluster in question, and then selecting "Steps" where you will be able to view logs
+for any failed jobs.
+
+*Step 6:* View your 5 new tables in Redshift using SQLWorkbenchJ.
+
+*Step 7:* View the execution of your flow in real-time through Driven
 
 Depending on how you configured your Driven Plugin, either click the
 Driven URL from your console or log into the Driven application.
 
-You can also explore this application on the Driven cloud service here:
+You can also explore a previously run version of this application on the Driven cloud service here:
 https://driven.cascading.io/index.html#/apps/5B103897FE06452381AE8B8FDA7B0F47?view=element
 
 [source,bash]
 ----
-14/11/28 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/5B103897FE06452381AE8B8FDA7B0F47?view=element*
+14/12/20 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/5B103897FE06452381AE8B8FDA7B0F47?view=element*
 ----
-
-image:images/part_3.png[]
 
 === What’s Going On?
 
-Let's start by inspecting the script file
-`./cascading-aws/part3/src/scripts/emrExample.sh`
+First, let's take a closer look at the shell script. The primary points of interest include:
 
-This script consists of one primary call to elastic-mapreduce. It requires your Redshift connection information
-as well as the location of the data files and application jar on S3. When called, it spins up a 3 node EMR cluster
-to process the application. If you would like to enable the Driven bootstrap action you can open the script file, uncomment
-required sections and supply your Driven (cloud service) API key and the EMR cluster will send the telemetry data to
-https://driven.cascading.io[https://driven.cascading.io]
+Cleaning and compiling the program:
 
-[source,shell]
+[source,bash]
 ----
-elastic-mapreduce  --create --name "cascading-aws-tutorial-3" \
+# clean and build part 3 application
+gradle :part3:clean :part3:jar
+----
+
+AWS CLI commands to create or empty S3 bucket and transfer required files:
+
+[source,bash]
+----
+# create the bucket or delete the contents if it exists
+aws s3 mb --acl-public s3://$BUCKET || aws s3 rm s3://$BUCKET --recursive
+
+# push required data files to S3
+aws s3 cp data/date_dim.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp data/store_sales.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp data/item.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp data/store.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp data/customer_demographics.dat s3://$BUCKET/cascading-aws-data/
+
+# push built jar file to S3
+aws s3 cp $BUILD/$NAME s3://$BUCKET/$NAME
+----
+
+The AWS CLI command to create an EMR cluster - providing all necessary information to run the application we
+just compiled and sent to S3. Notice the bootstrap-action for Driven. If you have not set up your Driven account
+and supplied you API key as previously mentioned please remove the "--bootstrap-actions" line from the following
+section:
+
+[source,bash]
+----
+aws emr create-cluster \
+  --ami-version 3.3.1 \
+  --instance-type $INSTANCE_TYPE \
+  --instance-count $INSTANCE_COUNT \
+  --bootstrap-actions Path=$INSTALL_PLUGIN_URL,Name=DRIVEN_BOOTSTRAP,Args="--host,${DRIVEN_SERVER_HOSTS}","--api-key,${DRIVEN_API_KEY}" \
+  --name "cascading-aws-tutorial-3" \
   --visible-to-all-users \
-  --num-instances $INSTANCE_COUNT \
-  --slave-instance-type "m1.xlarge" \
-  --master-instance-type "m1.xlarge" \
-  --debug \
   --enable-debugging \
-  --availability-zone $ZONE \
-  --jar s3n://$BUCKET/$NAME \
-  --arg $REDSHIFT_URL \
-  --arg $REDSHIFT_USER \
-  --arg $REDSHIFT_PASSWORD \
-  --arg $AWS_ACCESS_KEY \
-  --arg $AWS_SECRET_KEY
-  --arg $BUCKET
+  --auto-terminate \
+  --no-termination-protected \
+  --log-uri s3n://$BUCKET/logs/ \
+  --steps Type=CUSTOM_JAR,Name=Part3,ActionOnFailure=TERMINATE_CLUSTER,Jar=s3n://$BUCKET/$NAME,Args=$REDSHIFT_URL,$REDSHIFT_USER,$REDSHIFT_PASSWORD,$AWS_ACCESS_KEY,$AWS_SECRET_KEY,$BUCKET
 ----
 
-There are five primary sections of logic in Part 3. Let's take a closer look:
+Now to the java application. There are five primary sections of logic in Part 3. Let's take a closer look:
 
 *Step 1:* declare our Fields, table columns and column types
 
@@ -256,34 +342,7 @@ salesReportPipe = new CoGroup( "SalesReport", salesReportPipe, gFields, salePric
 salesReportPipe = new Discard( salesReportPipe, junkFields );
 ----
 
-*Step 8:* Create final reports
-
-[source,java]
-----
-// create SalesReport Redshift table and add as sink
-RedshiftTableDesc allReportTableDescriptor = new RedshiftTableDesc( "sales_report", SALES_REPORT_TABLE_FIELDS, SALES_REPORT_TABLE_TYPES, null, null );
-Tap allReportTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, S3_PATH_ROOT + "SalesReport", awsCredentials, allReportTableDescriptor, new RedshiftScheme( SALES_REPORT_FIELDS, allReportTableDescriptor ), SinkMode.REPLACE, true, false );
-Tap salesReportQLTrap = getOutputTap( "SalesReportQLTrap", Fields.ALL );
-//Tap salesReportQLCTrap = getOutputTap( "SalesReportQLCTrap", Fields.ALL );
-
-sinks.put( "SalesReport", allReportTap );
-reportSinks.put( "SalesReport", allReportTap );
-traps.put( "SalesReportQL", salesReportQLTrap );
-//traps.put( "SalesReportQLC", salesReportQLCTrap );
-
-
-queryFlows.add( flowConnector.connect( "GenerateReport (Redshift Sources)", reportSources, reportSinks, traps, salesReportPipe ) );
-
-Pipe finalReportPipe = new Pipe( "FinalReportPipe" );
-Pipe reportOutputPipe = new GroupBy( finalReportPipe, gFields, gFields );
-reportOutputPipe = new Each( reportOutputPipe, finalFields, new Limit( 100 ) );
-RedshiftTableDesc finalReportTableDescriptor = new RedshiftTableDesc( "final_report", SALES_REPORT_TABLE_FIELDS, SALES_REPORT_TABLE_TYPES, null, null );
-Tap finalReportTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, S3_PATH_ROOT + "FinalReport", awsCredentials, finalReportTableDescriptor, new RedshiftScheme( SALES_REPORT_FIELDS, finalReportTableDescriptor ), SinkMode.REPLACE, true, false );
-
-queryFlows.add( flowConnector.connect( "FormatReport", allReportTap, finalReportTap, reportOutputPipe ) );
-----
-
-*Step 9:* Connect all flows and complete http://docs.cascading.org/cascading/2.1/javadoc/cascading/cascade/Cascade.html[Cascade]
+*Step 8:* Connect all flows and complete http://docs.cascading.org/cascading/2.1/javadoc/cascading/cascade/Cascade.html[Cascade]
 
 [source,java]
 ----
@@ -294,13 +353,8 @@ cascade.complete();
 ----
 
 === References
+. cascading-jdbc-redshift - https://github.com/Cascading/cascading-jdbc/tree/2.6/cascading-jdbc-redshift
+. Sorting using GroupBy and CoGroup - http://docs.cascading.org/cascading/2.5/userguide/html/ch03s03.html#N205A3
+. AWS Command Line Interface - http://aws.amazon.com/cli/
 
-For more details about the particular operations or to understand how some
-of these steps can be modified for your use case, use the
-following resources:
-
-
-*Sorting using GroupBy and CoGroup* - http://docs.cascading.org/cascading/2.5/userguide/html/ch03s03.html#N205A3
-
-
-
+Congratulations, you have now gone through the creation of end-to-end data processing workflows using Cascading and AWS!

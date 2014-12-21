@@ -12,6 +12,9 @@ import cascading.flow.Flow;
 import cascading.flow.FlowDef;
 import cascading.flow.hadoop.HadoopFlowConnector;
 import cascading.jdbc.AWSCredentials;
+import cascading.jdbc.RedshiftScheme;
+import cascading.jdbc.RedshiftTableDesc;
+import cascading.jdbc.RedshiftTap;
 import cascading.lingual.flow.SQLPlanner;
 import cascading.pipe.Pipe;
 import cascading.pipe.assembly.Retain;
@@ -32,13 +35,15 @@ public class SampleFlow
 
   public void run( String[] args ) throws IOException
     {
-    String hfsDataDir = args[ 0 ];
-    String s3ResultsDir = args[ 1 ];
-    String redshiftJdbcUrl = args[ 2 ];
-    String redshiftUsername = args[ 3 ];
-    String redshiftPassword = args[ 4 ];
-    String accessKey = args[ 5 ];
-    String secretKey = args[ 6 ];
+
+    String redshiftJdbcUrl = args[ 0 ];
+    String redshiftUsername = args[ 1 ];
+    String redshiftPassword = args[ 2 ];
+    String accessKey = args[ 3 ];
+    String secretKey = args[ 4 ];
+    String s3Bucket = args[ 5 ];
+
+    String s3ResultsDir = s3Bucket + "/output/";
 
     Properties properties = new Properties();
     AppProps.setApplicationJarClass( properties, SampleFlow.class );
@@ -48,7 +53,7 @@ public class SampleFlow
     AppProps.setApplicationName( properties, "Cascading-AWS-Tutorial Part2" );
 
     // format directory string
-    hfsDataDir = trimTrailingSlash( hfsDataDir );
+    s3Bucket = trimTrailingSlash( s3Bucket );
     s3ResultsDir = trimTrailingSlash( s3ResultsDir );
 
     // setup our AWS Credentials
@@ -62,7 +67,7 @@ public class SampleFlow
     Class[] STORE_SALES_TABLE_TYPES = new Class[]{Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, String.class};
 
     Fields ITEM_FIELDS = new Fields( "i_item_sk", "i_item_id", "i_rec_start_date", "i_rec_end_date", "i_item_desc", "i_current_price", "i_wholesale_cost", "i_brand_id", "i_brand", "i_class_id", "i_class", "i_category_id", "i_category", "i_manufact_id", "i_manufact", "i_size", "i_formulation", "i_color", "i_units", "i_container", "i_manager_id", "i_product_name", "i_trailing_field" );
-    Class[] ITEM_FIELDS_TYPES = new Class[]{Integer.class, String.class, Date.class, Date.class, String.class, Double.class, Double.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, Integer.class, String.class, String.class, String.class, String.class};
+    Class[] ITEM_FIELDS_TYPES = new Class[]{String.class, String.class, Date.class, Date.class, String.class, Double.class, Double.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, Integer.class, String.class, String.class, String.class, String.class};
 
     // define our SQL statement
     String statement = ( "select count(store_sales.\"ss_item_sk\") as sales_count, items.\"i_category\" as category, dates.\"d_day_name\" " +
@@ -89,16 +94,27 @@ public class SampleFlow
     Pipe retainItemsPipe = new Pipe( "retainItems" );
     retainItemsPipe = new Retain( retainItemsPipe, retainItems );
 
+    String dateStr = "s3n://" + accessKey + ":" + secretKey + "@" + s3Bucket + "/date_dim.dat";
+    String storeSalesStr = "s3n://" + accessKey + ":" + secretKey + "@" + s3Bucket + "/store_sales.dat";
+    String itemStr = "s3n://" + accessKey + ":" + secretKey + "@" + s3Bucket + "/item.dat";
+
     // create our input tap to read from HDFS
-    Tap datesDataTap = new Hfs( new TextDelimited( DATE_DIM_FIELDS, "|", DATE_DIM_TABLE_TYPES ), hfsDataDir + "/date_dim.dat" );
-    Tap salesDataTap = new Hfs( new TextDelimited( STORE_SALES_FIELDS, "|", STORE_SALES_TABLE_TYPES ), hfsDataDir + "/store_sales.dat" );
-    Tap itemsDataTap = new Hfs( new TextDelimited( ITEM_FIELDS, "|", ITEM_FIELDS_TYPES ), hfsDataDir + "/item.dat" );
+    Tap datesDataTap = new Hfs( new TextDelimited( DATE_DIM_FIELDS, "|", DATE_DIM_TABLE_TYPES ), dateStr );
+    Tap salesDataTap = new Hfs( new TextDelimited( STORE_SALES_FIELDS, "|", STORE_SALES_TABLE_TYPES ), storeSalesStr );
+    Tap itemsDataTap = new Hfs( new TextDelimited( ITEM_FIELDS, "|", ITEM_FIELDS_TYPES ), itemStr );
 
     // create our results taps to write to S3
-    Tap resultsDatesTap = new Hfs( new TextDelimited( new Fields( "d_day_name", "d_date_sk" ) ), "s3n://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/part2-dates", SinkMode.REPLACE );
-    Tap resultsItemsTap = new Hfs( new TextDelimited( new Fields( "i_category", "i_item_sk" ) ), "s3n://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/part2-items", SinkMode.REPLACE );
-    Tap resultsSalesTap = new Hfs( new TextDelimited( new Fields( "ss_item_sk", "ss_sold_date_sk" ) ), "s3n://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/part2-sales", SinkMode.REPLACE );
-    Tap resultsTap = new Hfs( new TextDelimited( Fields.ALL ), "s3n://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/part2-results", SinkMode.REPLACE );
+    Tap resultsDatesTap = new Hfs( new TextDelimited( new Fields( "d_day_name", "d_date_sk" ) ), "s3://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/part2-dates", SinkMode.REPLACE );
+    Tap resultsItemsTap = new Hfs( new TextDelimited( new Fields( "i_category", "i_item_sk" ) ), "s3://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/part2-items", SinkMode.REPLACE );
+    Tap resultsSalesTap = new Hfs( new TextDelimited( new Fields( "ss_item_sk", "ss_sold_date_sk" ) ), "s3://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/part2-sales", SinkMode.REPLACE );
+
+    // define result fields
+    Fields resultsFields = new Fields( "$0", "$1", "$2" ).applyTypes( Long.class, String.class, String.class );
+    // create RedshiftTableDesc for Redshift Table
+    RedshiftTableDesc resultsTapDesc = new RedshiftTableDesc( "part2_results", new String[]{"sales_count", "category", "day_name"}, new String[]{"int", "varchar(100)", "varchar(100)"}, null, null );
+    // create Redshift output final tap
+    Tap resultsTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, "s3://" + s3ResultsDir + "/part2-tmp", awsCredentials, resultsTapDesc, new RedshiftScheme( resultsFields, resultsTapDesc ), SinkMode.REPLACE, true, true );
+
 
     // set up our FlowDefs - we will add their sources, their retain pipes and their sinks
     FlowDef flowDefSales = FlowDef.flowDef().setName( "retain sales info flow" ).addSource( retainSalesPipe, salesDataTap ).addTailSink( retainSalesPipe, resultsSalesTap );

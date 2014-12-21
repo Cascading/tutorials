@@ -21,6 +21,10 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+//apply plugin: 'propdeps'
+//apply plugin: 'propdeps-maven'
+//apply plugin: 'propdeps-idea'
+//apply plugin: 'propdeps-eclipse'
 apply plugin: 'cascadingasciidoc'
 
 buildscript {
@@ -28,11 +32,12 @@ buildscript {
         mavenLocal()
         mavenCentral()
         maven{ url 'http://conjars.org/repo/' }
-        maven{ url 'http://jcenter.bintray.com' }
+        maven { url 'http://repo.spring.io/plugins-release' }
     }
 
     dependencies {
         classpath 'concurrentinc:cascading-asciidoc:1.0.0-wip-6'
+        //classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.5'
     }
 
 }
@@ -52,7 +57,9 @@ dependencies {
     compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
     compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
     compile( group: 'cascading', name: 'cascading-jdbc-redshift', version: redshiftVersion )
-
+//
+//    provided( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client', version: hadoopVersion )
+//    provided( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion )
 }
 
 jar {

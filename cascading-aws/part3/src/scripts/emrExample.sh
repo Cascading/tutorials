@@ -7,29 +7,47 @@ BUCKET=$4
 AWS_ACCESS_KEY=$5
 AWS_SECRET_KEY=$6
 
+NAME=cascading-aws-tutorials.jar
+BUILD=part3/build/libs
+
 # Uncomment to use Driven
-#DRIVEN_API_KEY=$7
+#DRIVEN_API_KEY=[YOUR DRIVEN API KEY]
 #DRIVEN_VERSION="1.2"
 #INSTALL_PLUGIN_URL="s3://wip.concurrentinc.com/driven/${DRIVEN_VERSION}/driven-plugin/install-driven-plugin.sh"
 #DRIVEN_SERVER_HOSTS="https://driven.cascading.io"
 
+# clean and build part 3 application
+gradle :part3:clean :part3:jar
+
+# create the bucket or delete the contents if it exists
+aws s3 mb --acl-public s3://$BUCKET || aws s3 rm s3://$BUCKET --recursive
+
+# push required data files to S3
+aws s3 cp data/date_dim.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp data/store_sales.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp data/item.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp data/store.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp data/customer_demographics.dat s3://$BUCKET/cascading-aws-data/
+
+# push built jar file to S3
+aws s3 cp $BUILD/$NAME s3://$BUCKET/$NAME
+
+# EMR instance type and count
 INSTANCE_TYPE="m1.xlarge"
 INSTANCE_COUNT="3"
 
 # uncomment and add the following to elastic-mapreduce call below if using driven
-#--bootstrap-action $INSTALL_PLUGIN_URL --args "--host,${DRIVEN_SERVER_HOSTS},--api-key,${DRIVEN_API_KEY}" \
+# --bootstrap-actions Path=$INSTALL_PLUGIN_URL,Name=DRIVEN_BOOTSTRAP,Args="--host,${DRIVEN_SERVER_HOSTS}","--api-key,${DRIVEN_API_KEY}" \
 
-elastic-mapreduce  --create --name "cascading-aws-tutorial-3" \
+aws emr create-cluster \
+  --ami-version 3.3.1 \
+  --instance-type $INSTANCE_TYPE \
+  --instance-count $INSTANCE_COUNT \
+  --name "cascading-aws-tutorial-3" \
   --visible-to-all-users \
-  --num-instances $INSTANCE_COUNT \
-  --slave-instance-type $INSTANCE_TYPE \
-  --master-instance-type $INSTANCE_TYPE \
-  --debug \
   --enable-debugging \
-  --jar s3n://$BUCKET/$NAME \
-  --arg $REDSHIFT_URL \
-  --arg $REDSHIFT_USER \
-  --arg $REDSHIFT_PASSWORD \
-  --arg $AWS_ACCESS_KEY \
-  --arg $AWS_SECRET_KEY \
-  --arg $BUCKET
+  --auto-terminate \
+  --no-termination-protected \
+  --log-uri s3n://$BUCKET/logs/ \
+  --steps Type=CUSTOM_JAR,Name=Part3,ActionOnFailure=TERMINATE_CLUSTER,Jar=s3n://$BUCKET/$NAME,Args=$REDSHIFT_URL,$REDSHIFT_USER,$REDSHIFT_PASSWORD,$AWS_ACCESS_KEY,$AWS_SECRET_KEY,$BUCKET
+
