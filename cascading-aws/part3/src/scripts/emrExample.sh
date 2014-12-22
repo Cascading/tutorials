@@ -20,14 +20,14 @@ BUILD=part3/build/libs
 gradle :part3:clean :part3:jar
 
 # create the bucket or delete the contents if it exists
-aws s3 mb --acl-public s3://$BUCKET || aws s3 rm s3://$BUCKET --recursive
+aws s3 mb s3://$BUCKET || aws s3 rm s3://$BUCKET --recursive
 
 # push required data files to S3
-aws s3 cp data/date_dim.dat s3://$BUCKET/cascading-aws-data/
-aws s3 cp data/store_sales.dat s3://$BUCKET/cascading-aws-data/
-aws s3 cp data/item.dat s3://$BUCKET/cascading-aws-data/
-aws s3 cp data/store.dat s3://$BUCKET/cascading-aws-data/
-aws s3 cp data/customer_demographics.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp cascading-aws-data/date_dim.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp cascading-aws-data/store_sales.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp cascading-aws-data/item.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp cascading-aws-data/store.dat s3://$BUCKET/cascading-aws-data/
+aws s3 cp cascading-aws-data/customer_demographics.dat s3://$BUCKET/cascading-aws-data/
 
 # push built jar file to S3
 aws s3 cp $BUILD/$NAME s3://$BUCKET/$NAME
@@ -50,4 +50,3 @@ aws emr create-cluster \
   --no-termination-protected \
   --log-uri s3n://$BUCKET/logs/ \
   --steps Type=CUSTOM_JAR,Name=Part3,ActionOnFailure=TERMINATE_CLUSTER,Jar=s3n://$BUCKET/$NAME,Args=$REDSHIFT_URL,$REDSHIFT_USER,$REDSHIFT_PASSWORD,$AWS_ACCESS_KEY,$AWS_SECRET_KEY,$BUCKET
-

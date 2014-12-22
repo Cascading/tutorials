@@ -23,9 +23,9 @@ aws s3 mb s3://$BUCKET || aws s3 rm s3://$BUCKET --recursive
 aws s3 mb s3://$BUCKET/tmp || aws s3 rm s3://$BUCKET/tmp --recursive
 
 # push required data files to S3
-aws s3 cp data/date_dim.dat s3://$BUCKET/
-aws s3 cp data/store_sales.dat s3://$BUCKET/
-aws s3 cp data/item.dat s3://$BUCKET/
+aws s3 cp cascading-aws-data/date_dim.dat s3://$BUCKET/
+aws s3 cp cascading-aws-data/store_sales.dat s3://$BUCKET/
+aws s3 cp cascading-aws-data/item.dat s3://$BUCKET/
 
 # push built jar file to S3
 aws s3 cp $BUILD/$NAME s3://$BUCKET/$NAME

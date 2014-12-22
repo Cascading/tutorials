@@ -32,12 +32,11 @@ application with Driven.
 == link:part1.html[Part 1: Lingual Shell with HDFS and Redshift]
 * Using Cascading Lingual shell we will migrate data from HDFS to Redshift using SQL
 
-== link:part2.html[Part 2: ETL with Lingual JDBC with HDFS and Redshift]
-*  Using Lingual JDBC in Java we will perform a simple ETL process using SQL between HDFS to Redshift
+== link:part2.html[Part 2: Simple ETL using Lingual JDBC with S3, EMR and Redshift]
+*  Using Lingual JDBC in Java we will perform a simple ETL process using SQL between S3, EMR and Redshift
 
-== link:part3.html[Part 3: ETL on EMR with Cascading on S3, HDFS and Redshift]
+== link:part3.html[Part 3: ETL on EMR with Cascading using S3 and Redshift]
 * Using Cascading we will perform a more complex ETL process between S3, EMR and Redshift.
-
 
 The coding examples in each part refers to a commonly-used operation in ETL,
 and can be referred directly; you do not need to complete previous parts to

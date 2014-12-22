@@ -109,7 +109,7 @@ to your existing Cascading applications to integrate with the Driven application
 The cloud version of Driven is free to use for development. Visit
 http://cascading.io/try/[Try Driven] to access all the
 developer features and gain visibility into your ETL flows.
-http://docs.cascading.io/driven/1.2/getting-started/[Install Directions]
+http://docs.cascading.io[Driven Documentation]
 
 NOTE: We will use the cloud-based Driven product for the purposes of this
 tutorial. Driven will receive the data from your application to help you
@@ -124,11 +124,10 @@ connection.
 image:images/part_3.png[]
 
 You can learn more about using Driven for your Cascading application
-at http://docs.cascading.io/driven/1.0/getting-started/[Getting Started with Driven].
+at http://docs.cascading.io[Driven Documentation].
 
 === Database Workbench
 http://www.sql-workbench.net/downloads.html[SQLWorkbenchJ] was used to view AWS Redshift databases and cluster created during this tutorial.
-
 
 === IDE Support
 

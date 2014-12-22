@@ -1,6 +1,6 @@
 = Data Processing on Amazon Web Services (AWS)
 
-== Part 2: Simple ETL using Lingual JDBC with HDFS and Redshift
+== Part 2: Simple ETL using Lingual JDBC with S3, EMR and Redshift
 
 === What You Will See
 
@@ -10,16 +10,16 @@ required data transfers and EMR cluster creation, as well as a Java application
 
 ==== emrExample.sh
 
-When you call the script part2/src/scripts/emrExample.sh with the required arguments the following
+When you call the script cascading-aws/part2/src/scripts/emrExample.sh with the required arguments the following
 will take place:
 
 . clean and compile part 2 of the tutorial
 
-. use http://aws.amazon.com/cli/[aws cli] to create new S3 bucket or delete contents if bucket already exists
+. use http://aws.amazon.com/cli/[AWS CLI] to create new S3 bucket or delete contents if bucket already exists
 
-. use aws cli to push three data files and compiled jar file to S3 bucket
+. use AWS CLI to push three data files and compiled jar file to S3 bucket
 
-. use aws cli to create an http://aws.amazon.com/elasticmapreduce/[EMR cluster] while creating the cluster we will also bootstrap
+. use AWS CLI to create an http://aws.amazon.com/elasticmapreduce/[EMR cluster] while creating the cluster we will also bootstrap
 the http://www.cascading.org/sdk/[Cascading SDK] which includes Cascading Lingual.
 
 ==== SampleFlow.java
@@ -77,16 +77,16 @@ for any failed jobs.
 If the task completes successfully, you will have a new table in Redshift "part2_results" and
 3 new folders in your s3TempDir containing part-XXXX files from the M/R tasks.
 
-*Step 6:* Explore a previously run version of this application on the Driven cloud service here:
-https://driven.cascading.io/index.html#/apps/F7E041554B2F4983A122AF0B120F2CDE?view=element
-
 image:images/part_2.png[]
 
 === What’s Going On?
 
-First, let's take a closer look at the shell script. The primary points of interest include:
+==== emrExample.sh
 
-* Cleaning and compiling the program:
+First, let's take a closer look at the shell script (./cascading-aws/part2/src/scripts/emrExample.sh).
+The primary points of interest include:
+
+Cleaning and compiling the program:
 
 [source,bash]
 ----
@@ -94,12 +94,15 @@ First, let's take a closer look at the shell script. The primary points of inter
 gradle :part2:clean :part2:jar
 ----
 
-* AWS CLI commands to create or empty S3 bucket and transfer required files:
+AWS CLI commands to create or empty S3 bucket and transfer required files:
 
 [source,bash]
 ----
 # create the bucket or delete the contents if it exists
-aws s3 mb --acl-public s3://$BUCKET || aws s3 rm s3://$BUCKET --recursive
+aws s3 mb s3://$BUCKET || aws s3 rm s3://$BUCKET --recursive
+
+# create tmp bucket or delete the contents if it exists
+aws s3 mb s3://$BUCKET/tmp || aws s3 rm s3://$BUCKET/tmp --recursive
 
 # push required data files to S3
 aws s3 cp data/date_dim.dat s3://$BUCKET/
@@ -115,11 +118,13 @@ just compiled and sent to S3. Notice the bootstrap-action that installs the http
 
 [source,bash]
 ----
+INSTALL_SDK_URL="s3://files.cascading.org/sdk/2.6/install-cascading-sdk.sh"
+
 aws emr create-cluster \
   --ami-version 3.3.1 \
   --instance-type $INSTANCE_TYPE \
   --instance-count $INSTANCE_COUNT \
-  --bootstrap-action Path="s3://files.concurrentinc.com/lingual/1.2/lingual-client/install-lingual-client.sh",Name=LINGUAL_BOOTSTRAP \
+  --bootstrap-actions Path=$INSTALL_SDK_URL,Name=SDK_LINGUAL_BOOTSTRAP \
   --name "cascading-aws-tutorial-2" \
   --visible-to-all-users \
   --enable-debugging \
@@ -129,7 +134,10 @@ aws emr create-cluster \
   --steps Type=CUSTOM_JAR,Name=Part2,ActionOnFailure=TERMINATE_CLUSTER,Jar=s3n://$BUCKET/$NAME,Args=$REDSHIFT_URL,$REDSHIFT_USER,$REDSHIFT_PASSWORD,$AWS_ACCESS_KEY,$AWS_SECRET_KEY,$BUCKET
 ----
 
-Now let's take a look at the java application. We begin by instantiating our command line arguments.
+==== SampleFlow.java
+
+Now let's take a look at the java application (./cascading-aws/part2/src/main/java/cascading/aws/SampleFlow.java).
+We begin by instantiating our command line arguments.
 
 [source,java]
 ----
@@ -295,4 +303,4 @@ Congratulations, you just ran SQL on Hadoop using Lingual-JDBC and Cascading!
 
 == Next:
 === Part 3
-link:part3.html[ETL on EMR with Cascading on S3, HDFS and Redshift]
+link:part3.html[ETL on EMR with Cascading using S3 and Redshift]

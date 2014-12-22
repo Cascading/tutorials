@@ -79,8 +79,3 @@ $ aws s3 ls
 == Next:
 === Part 1
 link:part1.html[Lingual Shell with HDFS and Redshift]
-
-
-
-
-

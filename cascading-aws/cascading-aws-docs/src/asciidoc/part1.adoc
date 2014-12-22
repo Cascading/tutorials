@@ -31,12 +31,9 @@ $ ./lingual_hdfs_redshift.sh [REDSHIFT_URL] [REDSHIFT_USER] [REDSHIFT_PASSWORD]
 Depending on how you configured your Driven Plugin, either click the
 Driven URL from your console or log into the Driven application.
 
-You can also explore this application on the Driven cloud service here:
-https://driven.cascading.io/index.html#/apps/CF7811E5B1C44545AEEFDB8126D691D4?view=element
-
 [source,bash]
 ----
-14/12/20 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/CF7811E5B1C44545AEEFDB8126D691D4?view=element*
+14/12/20 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/[APP_ID]?view=element*
 ----
 
 image:images/part_1.png[]
@@ -147,4 +144,4 @@ Congratulations, you just ran ANSI SQL on Hadoop using Cascading Lingual!
 
 == Next:
 === Part 2
-link:part2.html[Simple ETL using Lingual JDBC with HDFS and Redshift]
+link:part2.html[Simple ETL using Lingual JDBC with S3, EMR and Redshift]

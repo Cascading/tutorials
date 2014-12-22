@@ -1,6 +1,6 @@
 = Data Processing on Amazon Web Services (AWS)
 
-== Part 3: ETL on EMR with Cascading on S3, HDFS and Redshift
+== Part 3: ETL on EMR with Cascading using S3 and Redshift
 
 === What You Will See
 In Part 3 of this tutorial we will change things up a bit and dive into ETL with Cascading on AWS.
@@ -11,7 +11,7 @@ to send your telemetry from EMR to https://driven.cascading.io[https://driven.ca
 
 Part 3 of this tutorial also has two components, a shell script that manages the compilation,
 required data transfers and EMR cluster creation, as well as a Java application
-(part3/src/main/SampleFlow.java) that will be executed on the EMR cluster.
+(./cascading-aws/part3/src/main/java/cascading/aws/SampleFlow.java) that will be executed on the EMR cluster.
 
 ==== emrExample.sh
 
@@ -37,9 +37,9 @@ the results to Redshift.
 
 *Step 1:* If you have not done so already please refer to the prerequsites section for environment setup.
 
-*Step 2:* If you would like to use Driven to visualize and monitor this application please edit
-part3/src/scripts/emrExample.sh. You will need to have a valid http://cascading.io/register/[Driven Cloud Service]
-account. To use Driven please ensure you have modified emrExample.sh like so:
+*Step 2:* If you would like to use Driven to visualize and monitor this application please edit part3/src/scripts/emrExample.sh.
+You will need to have a valid http://cascading.io/register/[Driven Cloud Service] account. To use Driven please
+ensure you have modified emrExample.sh like so:
 
 [source,bash]
 ----
@@ -108,17 +108,17 @@ for any failed jobs.
 Depending on how you configured your Driven Plugin, either click the
 Driven URL from your console or log into the Driven application.
 
-You can also explore a previously run version of this application on the Driven cloud service here:
-https://driven.cascading.io/index.html#/apps/5B103897FE06452381AE8B8FDA7B0F47?view=element
-
 [source,bash]
 ----
-14/12/20 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/5B103897FE06452381AE8B8FDA7B0F47?view=element*
+14/12/20 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/[APP_ID]?view=element*
 ----
 
 === What’s Going On?
 
-First, let's take a closer look at the shell script. The primary points of interest include:
+==== emrExample.sh
+
+First, let's take a closer look at the shell script (./cascading-aws/part3/src/scripts/emrExample.sh).
+The primary points of interest include:
 
 Cleaning and compiling the program:
 
@@ -133,7 +133,7 @@ AWS CLI commands to create or empty S3 bucket and transfer required files:
 [source,bash]
 ----
 # create the bucket or delete the contents if it exists
-aws s3 mb --acl-public s3://$BUCKET || aws s3 rm s3://$BUCKET --recursive
+aws s3 mb s3://$BUCKET || aws s3 rm s3://$BUCKET --recursive
 
 # push required data files to S3
 aws s3 cp data/date_dim.dat s3://$BUCKET/cascading-aws-data/
@@ -153,11 +153,13 @@ section:
 
 [source,bash]
 ----
+# uncomment and add the following to elastic-mapreduce call below if using driven
+# --bootstrap-actions Path=$INSTALL_PLUGIN_URL,Name=DRIVEN_BOOTSTRAP,Args="--host,${DRIVEN_SERVER_HOSTS}","--api-key,${DRIVEN_API_KEY}" \
+
 aws emr create-cluster \
   --ami-version 3.3.1 \
   --instance-type $INSTANCE_TYPE \
   --instance-count $INSTANCE_COUNT \
-  --bootstrap-actions Path=$INSTALL_PLUGIN_URL,Name=DRIVEN_BOOTSTRAP,Args="--host,${DRIVEN_SERVER_HOSTS}","--api-key,${DRIVEN_API_KEY}" \
   --name "cascading-aws-tutorial-3" \
   --visible-to-all-users \
   --enable-debugging \
@@ -167,7 +169,10 @@ aws emr create-cluster \
   --steps Type=CUSTOM_JAR,Name=Part3,ActionOnFailure=TERMINATE_CLUSTER,Jar=s3n://$BUCKET/$NAME,Args=$REDSHIFT_URL,$REDSHIFT_USER,$REDSHIFT_PASSWORD,$AWS_ACCESS_KEY,$AWS_SECRET_KEY,$BUCKET
 ----
 
-Now to the java application. There are five primary sections of logic in Part 3. Let's take a closer look:
+==== SampleFlow.java
+
+Now to the java application. There are five primary sections of logic in Part 3 (./cascading-aws/part3/src/main/java/cascading/aws/SampleFlow.java).
+Let's take a closer look:
 
 *Step 1:* declare our Fields, table columns and column types
 
@@ -196,7 +201,7 @@ HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
 ----
 
 *Step 3:* Filter data using http://docs.cascading.org/cascading/1.2/javadoc/cascading/operation/regex/RegexFilter.html[RegexFilter]
-and http://docs.cascading.org/cascading/2.1/javadoc/cascading/pipe/Each.html[Each] pipes - Source from HDFS sink to Redshift
+and http://docs.cascading.org/cascading/2.1/javadoc/cascading/pipe/Each.html[Each] pipes - Source from S3 sink to Redshift
 
 [source,java]
 ----
