@@ -19,6 +19,7 @@ This tutorial discusses the following topics, which include exercises and links 
 
 == link:prerequisites.html[Prerequisites]
 * Install Hive, Cascading-Hive, Driven, Gradle, IDE and other software for running the tutorial
+* Download sample data used in the tutorial
 
 == link:part1.html[Part 1: File Copy]
 * Simple application that copies a file from HDFS to Hive
