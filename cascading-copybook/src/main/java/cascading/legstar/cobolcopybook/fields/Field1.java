@@ -11,17 +11,7 @@ public class Field1 extends Fields
 
   public Field1()
     {
-    super(
-      new Comparable[]{
-        "BdfoLen"
-        , "BdfoKey"
-        , "BdfoParmNo"
-      }, new Type[]{
-        short.class
-        , long.class
-        , int.class
-      }
-    );
+    super( new Comparable[]{"BdfoLen", "BdfoKey", "BdfoParmNo"}, new Type[]{short.class, long.class, int.class} );
     }
 
   }

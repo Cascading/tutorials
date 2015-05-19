@@ -34,8 +34,7 @@ public class TupleEntryCobolTransformer
    * @param tupleEntry  the tuple entry to be populated
    * @return true if setting worked, false if we reached end of file
    */
-  public boolean set( InputStream is, int hostByteLen, Class<?> beanClass,
-                      TupleEntry tupleEntry ) throws IOException
+  public boolean set( InputStream is, int hostByteLen, Class<?> beanClass, TupleEntry tupleEntry ) throws IOException
     {
 
     tupleEntry.setTuple( Tuple.size( tupleEntry.getFields().size() ) );
@@ -46,8 +45,7 @@ public class TupleEntryCobolTransformer
 
       try
         {
-        TupleEntryCobolUnmarshalVisitor tcuv = new TupleEntryCobolUnmarshalVisitor(
-          hostData, 0, cobolConverters, tupleEntry );
+        TupleEntryCobolUnmarshalVisitor tcuv = new TupleEntryCobolUnmarshalVisitor( hostData, 0, cobolConverters, tupleEntry );
         getBinding( beanClass.getName() ).accept( tcuv );
         return true;
         }
@@ -86,8 +84,7 @@ public class TupleEntryCobolTransformer
    * @return a legstar binding
    * @throws HostTransformException
    */
-  private ICobolBinding getBinding( String beanClassName )
-    throws HostTransformException
+  private ICobolBinding getBinding( String beanClassName ) throws HostTransformException
     {
     ICobolBinding binding = bindings.get( beanClassName );
     if( binding == null )

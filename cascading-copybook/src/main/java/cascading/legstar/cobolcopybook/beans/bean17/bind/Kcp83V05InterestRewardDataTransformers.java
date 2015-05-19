@@ -16,8 +16,7 @@ public class Kcp83V05InterestRewardDataTransformers extends AbstractTransformers
    */
   public Kcp83V05InterestRewardDataTransformers()
     {
-    super( new Kcp83V05InterestRewardDataJavaToHostTransformer(),
-      new Kcp83V05InterestRewardDataHostToJavaTransformer() );
+    super( new Kcp83V05InterestRewardDataJavaToHostTransformer(), new Kcp83V05InterestRewardDataHostToJavaTransformer() );
     }
 
   /**
@@ -29,8 +28,7 @@ public class Kcp83V05InterestRewardDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final String hostCharset )
-    throws HostTransformException
+  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final String hostCharset ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, hostCharset );
     }
@@ -42,8 +40,7 @@ public class Kcp83V05InterestRewardDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp83V05InterestRewardData toJava( final byte[] hostData )
-    throws HostTransformException
+  public Kcp83V05InterestRewardData toJava( final byte[] hostData ) throws HostTransformException
     {
     return getHostToJava().transform( hostData );
     }
@@ -59,8 +56,7 @@ public class Kcp83V05InterestRewardDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final String hostCharset,
-                                            final HostTransformStatus status ) throws HostTransformException
+  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final String hostCharset, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, hostCharset, status );
     }
@@ -74,9 +70,7 @@ public class Kcp83V05InterestRewardDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp83V05InterestRewardData toJava( final byte[] hostData,
-                                            final HostTransformStatus status )
-    throws HostTransformException
+  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, status );
     }
@@ -91,9 +85,7 @@ public class Kcp83V05InterestRewardDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final int offset,
-                                            final String hostCharset )
-    throws HostTransformException
+  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final int offset, final String hostCharset ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset, hostCharset );
     }
@@ -106,8 +98,7 @@ public class Kcp83V05InterestRewardDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final int offset )
-    throws HostTransformException
+  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final int offset ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset );
     }
@@ -124,9 +115,7 @@ public class Kcp83V05InterestRewardDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final int offset,
-                                            final String hostCharset,
-                                            final HostTransformStatus status ) throws HostTransformException
+  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final int offset, final String hostCharset, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset, hostCharset, status );
     }
@@ -141,9 +130,7 @@ public class Kcp83V05InterestRewardDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final int offset,
-                                            final HostTransformStatus status )
-    throws HostTransformException
+  public Kcp83V05InterestRewardData toJava( final byte[] hostData, final int offset, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset, status );
     }

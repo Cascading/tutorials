@@ -99,13 +99,15 @@ public class Main
     // Create a sortedCountByIpPipe using Each and Retain to limit to top 10 results
     sortedCountByIpPipe = new Each( sortedCountByIpPipe, new Fields( "IPcount" ), new Limit( 10 ) );
 
+    AppProps.addApplicationTag( properties, "tutorials" );
+    AppProps.addApplicationTag( properties, "cluster:development" );
+    AppProps.setApplicationName( properties, "etl-part4-count") ;
+
     // connect the taps, pipes, etc., into a flow
     FlowDef flowDef = FlowDef.flowDef()
-      .setName( "part4" )
+      .setName("part 4")
       .addSource( regexImport, inTap )
       .addTailSink( sortedCountByIpPipe, outTap );
-
-    AppProps.addApplicationTag( properties, "ETL Tutorial" );
 
     // Run the flow
     Flow wcFlow = flowConnector.connect( flowDef );

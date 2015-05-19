@@ -29,7 +29,6 @@ import cascading.flow.hadoop.HadoopFlowConnector;
 import cascading.jdbc.JDBCScheme;
 import cascading.jdbc.JDBCTap;
 import cascading.jdbc.TableDesc;
-import cascading.jdbc.db.TeradataDBInputFormat;
 import cascading.pipe.Pipe;
 import cascading.property.AppProps;
 import cascading.scheme.hadoop.TextDelimited;
@@ -53,9 +52,10 @@ public class SampleFlow
   public static void main( String[] args )
     {
     String srcFile = args[ 0 ];        // HDFS filepath to sampledata.csv
-    String connStr = args[ 1 ];        // src table connection string, ie jdbc:teradata://ec2-1-2-3-4.compute-1.amazonaws.com
-    String dbUser = args[ 2 ];         // DB username
-    String dbPass = args[ 3 ];         // DB password
+    String sinkDir = args[ 1 ];        // HDFS filepath to write output
+    String connStr = args[ 2 ];        // src table connection string, ie jdbc:teradata://ec2-1-2-3-4.compute-1.amazonaws.com
+    String dbUser = args[ 3 ];         // DB username
+    String dbPass = args[ 4 ];         // DB password
 
 
     SampleFlow obj = new SampleFlow();
@@ -73,7 +73,7 @@ public class SampleFlow
     Tap exportTeradataTap = obj.createTeraDataDbTap( "cascading_test_table", connStr + "/TYPE=FASTEXPORT", dbUser, dbPass );
 
     // Create Hfs sink tap for writing data to HDFS from Teradata
-    Tap sinkTap = new Hfs( new TextDelimited( new Fields( "startIpNum", "endIpNum", "locId" ), false, "," ), "/CascadingTeradataDemo/Sink_" + getTimestamp() );
+    Tap sinkTap = new Hfs( new TextDelimited( new Fields( "startIpNum", "endIpNum", "locId" ), false, "," ), sinkDir + "/CascadingSink_" + getTimestamp() );
 
     // Create two simple copy pipes - here you can add further pipes for data transformation
     Pipe sourceCopyPipe = new Pipe( "sourcePipe" );
@@ -81,16 +81,14 @@ public class SampleFlow
 
     // Create and connect flows
     HadoopFlowConnector flowConnector = new HadoopFlowConnector();
-    Flow flow1 = flowConnector.connect( "flow1", inTap, uploadTeradataTap, sourceCopyPipe );
-    Flow flow2 = flowConnector.connect( "flow2", exportTeradataTap, sinkTap, sinkCopyPipe );
+    Flow flow1 = flowConnector.connect( "UploadFlow", inTap, uploadTeradataTap, sourceCopyPipe );
+    Flow flow2 = flowConnector.connect( "ExportFlow", exportTeradataTap, sinkTap, sinkCopyPipe );
 
     // Create, connect and complete cascade
     CascadeConnector connector = new CascadeConnector();
     Cascade cascade = connector.connect( flow1, flow2 );
     cascade.complete();
 
-    System.out.println( "*** SUCCESS - Process Complete." );
-    System.out.println( "You will now see cascading_test_table in your " + "Teradata instance as well as a new HDFS directory -> $./hdfs dfs -ls /CascadingTeradataDemo/Sink_..." );
     }
 
   public Tap createTeraDataDbTap( String tableName, String connectionUrl, String user, String password )
@@ -98,7 +96,7 @@ public class SampleFlow
     TableDesc tableDesc = new TableDesc( tableName, _urlsSinkColumnNames, _urlsSinkColumnDefs, primaryKeys );
 
     // Invoke TeradataDBInputFormat.class to pick up Teradata specific behaviour
-    JDBCScheme scheme = new JDBCScheme( TeradataDBInputFormat.class, null, FIELDS, _urlsSinkColumnNames, null, null, null );
+    JDBCScheme scheme = new JDBCScheme( FIELDS, _urlsSinkColumnNames, "" );
 
     // Create standard JDBCTap
     Tap teradataTap = new JDBCTap( connectionUrl, user, password, driver, tableDesc, scheme );

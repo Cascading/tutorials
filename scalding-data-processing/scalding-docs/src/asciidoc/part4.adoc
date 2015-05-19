@@ -1,8 +1,8 @@
-= Data Processing with Scalding
+= The Scalding QuickStart Tutorial
 
-== Part 4: Data Operations on Branch 2
+== Part 4: Implementing custom functions
 
-We did some data processing on branch 1 in part 3. In this part, we will perform data processing on the other branch.
+In this part, we will perform data processing on the other branch using unique function and a custom function.
 Recall that we're trying to simulate the case of gauging interest in a particular product category by some users.
 We want to select only those users who have bought products from our website in the past. Now, in a real case, we would
 have collected this information separately. For this tutorial's purposes, we will artificially assign scores to each
@@ -40,8 +40,6 @@ We've already done this in earlier parts, and we show the code here for complete
   val branch1 = new RichPipe(filteredInput)
   val branch2 = new RichPipe(filteredInput)
 ----
-
-Our task is to process branch1. We do that next.
 
 *Step 2:* Process branch 1
 
@@ -189,8 +187,17 @@ image:part4.png[]
 
 *Figure 1: An example of the application's view in Driven.*
 
-Here's a https://driven.cascading.io/index.html#/apps/CF79DDBDE3E5418C8276FB491BA4D872/03DF5AA81E4C4D5488411ED1F5068601[link]
+Here's a http://showcase.cascading.io/index.html#/apps/63427D5E4C704D748B41B2A83D4B9AB6[Driven link]
 to see this part's execution graph on the Driven cloud service.
+
+[NOTE]
+===============================
+Driven exposes three views of the DAG -- Logical, Physical and Contracted. The Logical View lets
+you inspect and visualize the Tap, Pipe and other Cascading constructs that you
+specified in your code. With Physical View, you can also inspect intermediate Tap
+and Pipe Assemblies embedded in your code. In our case, we can see that the Retain
+function was used in the subassembly.
+===============================
 
 *Step 5:* Validate output
 
@@ -227,8 +234,8 @@ See the following for more information:
 
 *Scalding API docs:* http://twitter.github.io/scalding/index.html#com.twitter.scalding.package
 
-== Next
+== Next: Part 5 - Joins
 
-link:part4.html[Part 5 - Data joins]
+link:part4.html[Part 5 - Joins]
 
 

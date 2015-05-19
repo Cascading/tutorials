@@ -33,16 +33,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp05V10ProfileMarkers", propOrder = {
-  "kcp05V10Profile3Dgts",
-  "kcp05V10Profile5Dgts",
-  "kcp05V10Profile7Dgts",
-  "kcp05V10Profile1Dgts",
-  "kcp05V10Profile2Nd7Dgts",
-  "kcp05V10Profile3Rd7Dgts"
-})
-public class Kcp05V10ProfileMarkers
-  implements Serializable
+@XmlType(name = "Kcp05V10ProfileMarkers", propOrder = {"kcp05V10Profile3Dgts", "kcp05V10Profile5Dgts", "kcp05V10Profile7Dgts", "kcp05V10Profile1Dgts", "kcp05V10Profile2Nd7Dgts", "kcp05V10Profile3Rd7Dgts"})
+public class Kcp05V10ProfileMarkers implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

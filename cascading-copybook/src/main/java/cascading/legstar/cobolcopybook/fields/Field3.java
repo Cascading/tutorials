@@ -11,17 +11,7 @@ public class Field3 extends Fields
 
   public Field3()
     {
-    super(
-      new Comparable[]{
-        "BdfoFileTally"
-        , "BdfoFileHash"
-        , "BdfoNumAccountsSelected"
-      }, new Type[]{
-        int.class
-        , int.class
-        , int.class
-      }
-    );
+    super( new Comparable[]{"BdfoFileTally", "BdfoFileHash", "BdfoNumAccountsSelected"}, new Type[]{int.class, int.class, int.class} );
     }
 
   }

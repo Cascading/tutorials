@@ -92,19 +92,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp13V05NotificatFreqDetail", propOrder = {
-  "kcp13V05NotificatFreqCode",
-  "kcp13V05NotificatDayOfMnth",
-  "kcp13V05NotificatDayOfWeek",
-  "kcp13V05NotificatDueDate",
-  "kcp13V05NotificatRecurChg",
-  "kcp13V05ReasonCode",
-  "kcp13V05NotificatCommAction",
-  "kcp13V05NotificatCrintActn",
-  "kcp13V05NotificatDrintActn"
-})
-public class Kcp13V05NotificatFreqDetail
-  implements Serializable
+@XmlType(name = "Kcp13V05NotificatFreqDetail", propOrder = {"kcp13V05NotificatFreqCode", "kcp13V05NotificatDayOfMnth", "kcp13V05NotificatDayOfWeek", "kcp13V05NotificatDueDate", "kcp13V05NotificatRecurChg", "kcp13V05ReasonCode", "kcp13V05NotificatCommAction", "kcp13V05NotificatCrintActn", "kcp13V05NotificatDrintActn"})
+public class Kcp13V05NotificatFreqDetail implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

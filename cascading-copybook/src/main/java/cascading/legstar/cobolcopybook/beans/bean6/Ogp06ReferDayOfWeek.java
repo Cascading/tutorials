@@ -34,11 +34,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Ogp06ReferDayOfWeek", propOrder = {
-  "ogp06ReferFreqDaysDue"
-})
-public class Ogp06ReferDayOfWeek
-  implements Serializable
+@XmlType(name = "Ogp06ReferDayOfWeek", propOrder = {"ogp06ReferFreqDaysDue"})
+public class Ogp06ReferDayOfWeek implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

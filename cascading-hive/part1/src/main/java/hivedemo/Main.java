@@ -57,7 +57,9 @@ public class Main
     AppProps.setApplicationJarClass( properties, Main.class );
 
     // add ApplicationTag for Driven identification and search functionality
-    AppProps.addApplicationTag( properties, "Cascading-Hive Demo Part1" );
+    AppProps.addApplicationTag( properties, "tutorials" );
+    AppProps.addApplicationTag( properties, "cluster:development" );
+    AppProps.setApplicationName( properties, "cascading-hive part1 file copy" );
 
     // create initial Hfs tap to read call_center.dat from local HDFS
     Tap inTapCallCenter = new Hfs( new TextDelimited( CALL_CENTER_FIELDS, "|" ), "/tpcds/data/call_center.dat" );

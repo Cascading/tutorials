@@ -77,6 +77,10 @@ for any failed jobs.
 If the task completes successfully, you will have a new table in Redshift "part2_results" and
 3 new folders in your s3TempDir containing part-XXXX files from the M/R tasks.
 
+=======
+You can also use this live http://showcase.cascading.io/index.html#/apps/082A21818D8548C5A0BF62FD4504DCED?view=element[link] to view the
+application in Driven.
+
 image:images/part_2.png[]
 
 === What’s Going On?
@@ -291,7 +295,7 @@ Maven:
 
 Gradle:
 
-`compile group: 'cascading', name: 'cascading-redshift', version: '2.6.1'`
+`compile group: 'cascading', name: 'cascading-redshift', version: '2.7.0'`
 
 Congratulations, you just ran SQL on Hadoop using Lingual-JDBC and Cascading!
 

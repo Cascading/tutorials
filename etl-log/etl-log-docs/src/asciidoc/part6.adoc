@@ -46,12 +46,43 @@ URL from your console or log into the Driven application.
 14/08/28 12:01:53 INFO rest.DrivenDocumentService: messaging version 1.0-eap-57:JSON
 ----
 
-Attached is a live https://driven.cascading.io/index.html#/apps/C2447E113AEE4E5DB6FB501340D4F765[link]
+Attached is a live http://showcase.cascading.io/index.html#/apps/D6BFDB8C225C428C96535B6B212EDBCA[Driven link]
  to execute Part 6 exercise on the Concurrent cloud service.
  
 image:etl-part-6.png[]
 
 *Figure 1: An example of the performance view in Driven.*
+
+[NOTE]
+===============================
+If you registered at http://cascading.io and installed the Driven API key, you will 
+have accces to the “All Applications” view that tracks all your historical application
+runs. This view starts becoming interesting over a period of time when you want to 
+track trending, identify outlier behavior, or monitor applications based on their 
+termination status
+===============================
+
+Open your *Driven-enabled* app to track the progress of your application in real-time. Make 
+sure that you have set the Refresh feature to ON. By default, the Driven updates the visualization
+every 30 seconds.
+
+[NOTE]
+===============================
+Driven lets you visually track the progress of your application in real-time. This 
+feature comes in very handy to sanity-check the progress 
+of large, complex jobs. In addition, as the data applications get complex, the graph 
+is an excellent way to review the architecture for your data-driven application. Examples 
+of quick checks that can be conducted include ensuring that much of filtering of data 
+pipes is done ahead of a join, establishing points where checkpoints have to be introduced,
+validating that the business requirements are aligned with the actual implementation of 
+the data transformation function…
+===============================
+
+Now, it gets interesting to start exploring the application in the Driven Performance View.
+You can observe the intermediate Taps being created in each step. As applications get more
+complex, or the data sets become larger, the  performance view becomes very important 
+to understand how your code steps get decomposed into Mappers and Reducers, the cost associated 
+with such steps (execution time), helping address such questions as, "how much did the join cost me?"
 
 *Step 5:* View contents of the result file that contain the sorted score of 
 users with a score greater than 60

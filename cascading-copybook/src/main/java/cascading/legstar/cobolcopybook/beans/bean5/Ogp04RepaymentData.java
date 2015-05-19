@@ -86,18 +86,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Ogp04RepaymentData", propOrder = {
-  "ogp04LbloanMat",
-  "ogp04Repamt",
-  "ogp04Repfreq",
-  "ogp04Repdte",
-  "ogp04Reptyp",
-  "ogp04Borrow",
-  "ogp04Amtsanc",
-  "ogp04MirasDate"
-})
-public class Ogp04RepaymentData
-  implements Serializable
+@XmlType(name = "Ogp04RepaymentData", propOrder = {"ogp04LbloanMat", "ogp04Repamt", "ogp04Repfreq", "ogp04Repdte", "ogp04Reptyp", "ogp04Borrow", "ogp04Amtsanc", "ogp04MirasDate"})
+public class Ogp04RepaymentData implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

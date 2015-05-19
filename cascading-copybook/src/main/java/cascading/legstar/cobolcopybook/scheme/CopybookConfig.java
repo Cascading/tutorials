@@ -3,12 +3,6 @@ package cascading.legstar.cobolcopybook.scheme;
 import java.util.Map;
 
 import cascading.legstar.cobolcopybook.beans.bean1.bind.BdfoCommonDataBinding;
-import cascading.legstar.cobolcopybook.beans.bean4.Ogp03AccountTaxData;
-import cascading.legstar.cobolcopybook.beans.bean5.Ogp04RepaymentData;
-import cascading.legstar.cobolcopybook.beans.bean6.Ogp06ReferralData;
-import cascading.legstar.cobolcopybook.beans.bean7.Kcp01V05AccountDetails;
-import cascading.legstar.cobolcopybook.beans.bean8.Kcp02V05AccountStatus;
-import cascading.legstar.cobolcopybook.beans.bean9.Kcp05V10ProfileMarkers;
 import cascading.legstar.cobolcopybook.beans.bean10.Kcp07V05BalDetails;
 import cascading.legstar.cobolcopybook.beans.bean11.Kcp08V05AuthLimits;
 import cascading.legstar.cobolcopybook.beans.bean12.Kcp09V05OtherLimits;
@@ -21,8 +15,31 @@ import cascading.legstar.cobolcopybook.beans.bean18.Kcp93V05AccLevelCrint;
 import cascading.legstar.cobolcopybook.beans.bean19.Kcp94V05AccLevelCrint;
 import cascading.legstar.cobolcopybook.beans.bean20.Kcp96V05AccLevelDrint;
 import cascading.legstar.cobolcopybook.beans.bean21.Kcp97V05DrintRates;
-import cascading.legstar.cobolcopybook.fields.*;
+import cascading.legstar.cobolcopybook.beans.bean4.Ogp03AccountTaxData;
+import cascading.legstar.cobolcopybook.beans.bean5.Ogp04RepaymentData;
+import cascading.legstar.cobolcopybook.beans.bean6.Ogp06ReferralData;
+import cascading.legstar.cobolcopybook.beans.bean7.Kcp01V05AccountDetails;
+import cascading.legstar.cobolcopybook.beans.bean8.Kcp02V05AccountStatus;
+import cascading.legstar.cobolcopybook.beans.bean9.Kcp05V10ProfileMarkers;
 import cascading.legstar.cobolcopybook.fields.Field1;
+import cascading.legstar.cobolcopybook.fields.Field10;
+import cascading.legstar.cobolcopybook.fields.Field11;
+import cascading.legstar.cobolcopybook.fields.Field12;
+import cascading.legstar.cobolcopybook.fields.Field13;
+import cascading.legstar.cobolcopybook.fields.Field14;
+import cascading.legstar.cobolcopybook.fields.Field15;
+import cascading.legstar.cobolcopybook.fields.Field16;
+import cascading.legstar.cobolcopybook.fields.Field17;
+import cascading.legstar.cobolcopybook.fields.Field18;
+import cascading.legstar.cobolcopybook.fields.Field19;
+import cascading.legstar.cobolcopybook.fields.Field20;
+import cascading.legstar.cobolcopybook.fields.Field21;
+import cascading.legstar.cobolcopybook.fields.Field4;
+import cascading.legstar.cobolcopybook.fields.Field5;
+import cascading.legstar.cobolcopybook.fields.Field6;
+import cascading.legstar.cobolcopybook.fields.Field7;
+import cascading.legstar.cobolcopybook.fields.Field8;
+import cascading.legstar.cobolcopybook.fields.Field9;
 import cascading.tuple.Fields;
 import com.google.common.collect.Maps;
 
@@ -32,15 +49,21 @@ import com.google.common.collect.Maps;
 public class CopybookConfig
   {
 
-  /** Associates a sub record with a legstar generated java bean class. */
+  /**
+   * Associates a sub record with a legstar generated java bean class.
+   */
   private final Map<String, Class<?>> beans = Maps.newLinkedHashMap();
 
-  /** Associates a sub record with a cascading field. */
+  /**
+   * Associates a sub record with a cascading field.
+   */
   private final Map<String, Fields> fields = Maps.newLinkedHashMap();
 
   private final Fields commonDataFields = new Field1();
 
-  /** The fixed size of the common area in all bdfo27 records. */
+  /**
+   * The fixed size of the common area in all bdfo27 records.
+   */
   private final int bdfoCommonDataLen;
 
   public CopybookConfig()

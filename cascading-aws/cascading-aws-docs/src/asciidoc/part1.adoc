@@ -22,7 +22,7 @@ Further documentation can be found here, http://docs.cascading.org/lingual/1.2/[
 $ cd {path}/{to}/tutorials/cascading-aws/part1/scripts
 $ chmod +x lingual_hdfs_redshift.sh
 $ ./lingual_hdfs_redshift.sh [REDSHIFT_URL] [REDSHIFT_USER] [REDSHIFT_PASSWORD]
-[PATH]/[TO]/cascading-jdbc/cascading-jdbc-redshift/build/libs/cascading-jdbc-redshift-2.6.0-wip-dev-provider.jar
+[PATH]/[TO]/cascading-jdbc/cascading-jdbc-redshift/build/libs/cascading-jdbc-redshift-2.7.0-wip-dev-provider.jar
 /[HDFS]/[PATH]/[TO]/NASA_access_log_Aug95_short.ssv
 ----
 
@@ -36,6 +36,9 @@ Driven URL from your console or log into the Driven application.
 14/12/20 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/[APP_ID]?view=element*
 ----
 
+You can also use this live http://showcase.cascading.io/index.html#/apps/7C93A9D439684003803BC10AEB189B9C[link] to view the
+application in Driven.
+
 image:images/part_1.png[]
 
 === What’s Going On?
@@ -48,7 +51,7 @@ image:images/part_1.png[]
 REDSHIFT_URL="$1"
 REDSHIFT_USER="$2"
 REDSHIFT_PASSWORD="$3"
-CASCADING_JDBC_PATH="/Users/ryan/concurrent/lingual/cascading-jdbc/cascading-jdbc-redshift/build/libs/cascading-jdbc-redshift-2.6.0-wip-dev-provider.jar"
+CASCADING_JDBC_PATH="/Users/ryan/concurrent/lingual/cascading-jdbc/cascading-jdbc-redshift/build/libs/cascading-jdbc-redshift-2.7.0-wip-dev-provider.jar"
 HDFS_DATA_FILES_PATH="/user/ryan/logs/"
 ----
 

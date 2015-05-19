@@ -182,33 +182,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp02V05AccountStatusData", propOrder = {
-  "kcp02V05Status",
-  "kcp02V05Opdate",
-  "kcp02V05Cldate",
-  "kcp02V05Chdate",
-  "kcp02V05ReopenDate",
-  "kcp02V05TransferDate",
-  "kcp02V05BadDoubt",
-  "kcp02V05OpenPrimeRc",
-  "kcp02V05OpenSupplemRc",
-  "kcp02V05FromFinInstRef",
-  "kcp02V05FromFinInstScode",
-  "kcp02V05ClosePrimeRc",
-  "kcp02V05CloseSupplemRc",
-  "kcp02V05ToFinInstRef",
-  "kcp02V05ToFinInstSortCode",
-  "kcp02V05TransferToSortCode",
-  "kcp02V05TransfrToAccNumber",
-  "kcp02V05TransfFromSortCode",
-  "kcp02V05TransferFromAccNum",
-  "kcp02V05NewChangeDate",
-  "kcp02V05OldChangeDate",
-  "kcp02V05MergeIndicator",
-  "kcp02V05Dormancy"
-})
-public class Kcp02V05AccountStatusData
-  implements Serializable
+@XmlType(name = "Kcp02V05AccountStatusData", propOrder = {"kcp02V05Status", "kcp02V05Opdate", "kcp02V05Cldate", "kcp02V05Chdate", "kcp02V05ReopenDate", "kcp02V05TransferDate", "kcp02V05BadDoubt", "kcp02V05OpenPrimeRc", "kcp02V05OpenSupplemRc", "kcp02V05FromFinInstRef", "kcp02V05FromFinInstScode", "kcp02V05ClosePrimeRc", "kcp02V05CloseSupplemRc", "kcp02V05ToFinInstRef", "kcp02V05ToFinInstSortCode", "kcp02V05TransferToSortCode", "kcp02V05TransfrToAccNumber", "kcp02V05TransfFromSortCode", "kcp02V05TransferFromAccNum", "kcp02V05NewChangeDate", "kcp02V05OldChangeDate", "kcp02V05MergeIndicator", "kcp02V05Dormancy"})
+public class Kcp02V05AccountStatusData implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

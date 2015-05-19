@@ -27,5 +27,6 @@ include 'cascading-hive'
 include 'cascading-copybook'
 include 'cascading-aws'
 include 'scalding-data-processing'
+include 'cascading-mr'
 
 rootProject.name = 'tutorials'

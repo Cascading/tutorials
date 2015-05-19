@@ -28,77 +28,74 @@ apply from: "../etc/providedCompile.gradle"
 archivesBaseName = 'cascading-copybook'
 
 buildscript {
-  repositories {
-    mavenCentral()
-    maven{ url 'http://jcenter.bintray.com' }
-    maven{ url 'http://conjars.org/repo/' }
-  }
+    repositories {
+        mavenCentral()
+        maven { url 'http://jcenter.bintray.com' }
+        maven { url 'http://conjars.org/repo/' }
+    }
 
-  dependencies {
-    classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
-    classpath 'concurrentinc:cascading-asciidoc:1.0.0-wip-6'
-  }
+    dependencies {
+        classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
+        classpath 'concurrentinc:cascading-asciidoc:1.0.0-wip-6'
+    }
 }
 
 
 repositories {
-  mavenLocal()
-  mavenCentral()
-  maven{ url 'http://jcenter.bintray.com' }
-  maven { url 'http://conjars.org/repo/' }
+    mavenLocal()
+    mavenCentral()
+    maven { url 'http://jcenter.bintray.com' }
+    maven { url 'http://conjars.org/repo/' }
 }
 
-ext.cascadingVersion = '2.5.2'
+ext.cascadingVersion = '2.7.0'
 ext.hadoopVersion = '2.2.0'
 
 dependencies {
-  compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
-  compile( group: 'cascading', name: 'cascading-local', version: cascadingVersion )
-  compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
+    compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
+    compile( group: 'cascading', name: 'cascading-local', version: cascadingVersion )
+    compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
 
-  providedCompile( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion )
+    providedCompile( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion )
+    providedCompile( group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoopVersion )
 
-  compile group: 'com.legsem.legstar', name: 'legstar-cob2trans', version: '1.5.3'
-  compile group: 'commons-io', name: 'commons-io', version: '2.4'
-  compile group: 'com.google.guava', name: 'guava', version: '14.0.1'
-  compile group: 'com.github.jknack', name: 'handlebars', version:'1.3.2'
-  compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.2'
-  compile group: 'org.slf4j', name: 'slf4j-log4j12', version:'1.7.2'
+    compile group: 'com.legsem.legstar', name: 'legstar-cob2trans', version: '1.5.3'
+    compile group: 'commons-io', name: 'commons-io', version: '2.4'
+    compile group: 'com.google.guava', name: 'guava', version: '14.0.1'
+    compile group: 'com.github.jknack', name: 'handlebars', version: '1.3.2'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.2'
 
 }
 
 createDocs {
-     sourceDir = new File( project.projectDir, '/src/asciidoc' )
-     def attributes = [ 
-         imagesdir : "src/asciidoc/images/", 
-         stylesdir: "src/site/stylesheets/",
-         stylesheet: 'cascading.css'
-       ]
-     options = [ 
-         template_dir : 'src/templates/',
-         attributes : attributes 
-       ]
+    sourceDir = new File( project.projectDir, '/src/asciidoc' )
+    def attributes = [imagesdir : "src/asciidoc/images/",
+                      stylesdir : "src/site/stylesheets/",
+                      stylesheet: 'cascading.css']
+    options = [template_dir: 'src/templates/',
+               attributes  : attributes]
 }
 
 jar {
-  description = "Assembles a Hadoop ready jar file"
-  doFirst {
-    into( 'lib' ) {
-      from configurations.compile
+    description = "Assembles a Hadoop ready jar file"
+    doFirst {
+        into( 'lib' ) {
+            from configurations.compile
+        }
     }
-  }
 
-  manifest {
-    attributes( "Main-Class": "cascading/legstar/cobolcopybook/app/Main" )
-  }
+//    manifest {
+//        attributes( "Main-Class": "cascading/legstar/cobolcopybook/app/Main" )
+//    }
 }
 
 fatJar {
-  classifier 'fat'
-  manifest {
-    attributes( "Main-Class": "cascading/legstar/cobolcopybook/app/Main" )
-
-  }
-  exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
+    classifier 'fat'
+//    manifest {
+//        attributes( "Main-Class": "cascading/legstar/cobolcopybook/app/Main" )
+//
+//    }
+    exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
 }
 

@@ -40,7 +40,7 @@ URL from your console or log into the Driven application.
     14/08/28 12:01:53 INFO rest.DrivenDocumentService: http://localhost:8080/driven/3B8BE330F87B4DF9BA9C7CABB3E1BC16
     14/08/28 12:01:53 INFO rest.DrivenDocumentService: messaging version 1.0-eap-57:JSON
  
-Attached is a live https://driven.cascading.io/driven/1EB5FC1596F04E1AB2DBE304BA3DC31C[link]
+Attached is a live http://showcase.cascading.io/index.html#/apps/9AB80B749AF94B819515DD63086A56CB[Driven link]
  to execute Part 4 exercise on the Concurrent cloud service.
  
 image:etl-part-4.png[]

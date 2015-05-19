@@ -1,6 +1,6 @@
-= Data Processing with Scalding
+= The Scalding QuickStart Tutorial
 
-== Part 5: Data Joins and GroupBy
+== Part 5: Joins
 
 We did some data processing on two branches in part 3 and part 4 and obtained the IPs which accessed a particular
 product category (branch 1), and the IPs which are of interest to us (branch 2). We are now in a position to answer
@@ -150,8 +150,39 @@ image:part5.png[]
 
 *Figure 1: An example of the application's view in Driven.*
 
-Here's a https://driven.cascading.io/index.html#/apps/796692A8795D4FAB96FEE1B3CF53D3AF/B880F785D3E54F8A9F966364BA63D8E3[link]
+Here's a http://showcase.cascading.io/index.html#/apps/8F10714F8C384D5C943769C5FC7B51D6[Driven link]
 to see this part's execution graph on the Driven cloud service.
+
+[NOTE]
+===============================
+If you registered at http://cascading.io and installed the Driven API key, you will 
+have accces to the “All Applications” view that tracks all your historical application
+runs. This view starts becoming interesting over a period of time when you want to 
+track trending, identify outlier behavior, or monitor applications based on their 
+termination status
+===============================
+
+Open your *Driven-enabled* app to track the progress of your application in real-time. Make 
+sure that you have set the Refresh feature to ON. By default, the Driven updates the visualization
+every 30 seconds.
+
+[NOTE]
+===============================
+Driven lets you visually track the progress of your application in real-time. This 
+feature comes in very handy to sanity-check the progress 
+of large, complex jobs. In addition, as the data applications get complex, the graph 
+is an excellent way to review the architecture for your data-driven application. Examples 
+of quick checks that can be conducted include ensuring that much of filtering of data 
+pipes is done ahead of a join, establishing points where checkpoints have to be introduced,
+validating that the business requirements are aligned with the actual implementation of 
+the data transformation function…
+===============================
+
+Now, it gets interesting to start exploring the application in the Driven Performance View.
+You can observe the intermediate Taps being created in each step. As applications get more
+complex, or the data sets become larger, the  performance view becomes very important 
+to understand how your code steps get decomposed into Mappers and Reducers, the cost associated 
+with such steps (execution time), helping address such questions as, "how much did the join cost me?"
 
 *Step 5:* Validate output
 

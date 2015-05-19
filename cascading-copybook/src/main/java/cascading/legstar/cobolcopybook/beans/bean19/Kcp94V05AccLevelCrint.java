@@ -28,11 +28,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp94V05AccLevelCrint", propOrder = {
-  "kcp94V05AccLevelCrintData"
-})
-public class Kcp94V05AccLevelCrint
-  implements Serializable
+@XmlType(name = "Kcp94V05AccLevelCrint", propOrder = {"kcp94V05AccLevelCrintData"})
+public class Kcp94V05AccLevelCrint implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

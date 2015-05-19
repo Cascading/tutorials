@@ -208,7 +208,7 @@ this https://driven.cascading.io/driven/1AE69BD0641146EFB926DE7AC83B94B0[link].*
 You can register 
 to use the service from *http://cascading.io/driven*. Also, 
 you can watch (screencast) tutorials of Driven at 
-*http://cascading.io/driven/#Get_Started*.
+*http://www.cascading.org/driven/*.
 
 == Next: 
 link:prerequisites.html[Checking for Prerequisites]

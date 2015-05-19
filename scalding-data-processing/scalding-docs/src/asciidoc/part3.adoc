@@ -1,12 +1,10 @@
-= Data Processing with Scalding
+= The Scalding QuickStart Tutorial
 
-== Part 3: Data Operations on Branch 1
+== Part 3: Filtering Data
 
-In this part, we will perform data processing on one of the branches obtained in part 2. Recall that we're trying to
+In this part, we will filter data in one of the branches obtained in part 2. Recall that we're trying to
 simulate the case of gauging interest in a particular product category by some users. In this part, we will narrow down
 the stream to contain only the requests which went to a particular area of our website ("/GET/ images").
-
-Let's go through the code from top to bottom and see what's going on.
 
 *Step 1:* Parse, clean and split the input into two branches
 
@@ -38,23 +36,23 @@ We've already done this in part 2, and we show the code here for completeness:
   val branch2 = new RichPipe(filteredInput)
 ----
 
-Our task is to process branch1. We do that next.
+Our task is to filter branch 1. We do that next.
 
-*Step 2:* Process branch 1
+*Step 2:* Filter data in branch 1
 
 We need to narrow down branch1 to include only those IP addresses which requested our newly introduced product. Let's
-assume that our newly introduced product lies in the "/GET /images/" section somewhere. Note that this is a contrived
+assume that our newly introduced product lies in the "/GET /images/" section. Note that this is a contrived
 example, but it is not too far from a real case--you can easily substitute a real product category here. Our task boils
-down to filter out IPs which haven't accessed the images:
+down to filtering out the IPs that haven't accessed the images:
 
 [source,scala]
 ----
 val processedBranch1 = branch1.filterNot('request) { req: String => req == "GET /images/" }
 ----
 
-This gives us all IPs which accessed images on our website. We are only interested in IP addresses now, and we can
+This gives us all IPs which accessed images on our website. We are only interested in IP addresses, and we can
 discard all other fields (request, size, etc.) In Scalding, the construct which retains only the specified fields from
-a tuple stream is called Project.
+a tuple stream is called a Project.
 
 [source,scala]
 ----
@@ -117,7 +115,7 @@ image:part3.png[]
 
 *Figure 1: An example of the application's view in Driven.*
 
-Here's a https://driven.cascading.io/index.html#/apps/81AE6BFC4A7F42EDBD735812005D6969/4F42E2CB46E34B0586001E739F2B3BDD[link]
+Here's a http://showcase.cascading.io/index.html#/apps/4400B72CBFBF46F6876EAE3F02928265[link]
 to see this part's execution graph on the Driven cloud service.
 
 *Step 5:* Validate output
@@ -144,9 +142,7 @@ Note how the output consists only of IP addresses, all other fields are removed.
 operator. Also note that there are no two duplicate IPs, and that the output is sorted. This is the result of the
 Unique operator which is a reduce side operation in MapReduce.
 
-
 In the next part, we continue our data operations on the other branch
-
 
 === References
 
@@ -156,8 +152,8 @@ See the following for more information:
 
 *Scalding API docs:* http://twitter.github.io/scalding/index.html#com.twitter.scalding.package
 
-== Next
+== Next: Part 4 - Implementing custom functions
 
-link:part4.html[Part 4 - Data processing on branch 2]
+link:part4.html[Part 4 - Implementing custom functions]
 
 

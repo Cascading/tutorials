@@ -11,21 +11,7 @@ public class Field2 extends Fields
 
   public Field2()
     {
-    super(
-      new Comparable[]{
-        "BdfoRundate"
-        , "BdfoFileId"
-        , "BdfoCentreId"
-        , "BdfoSbiFileInd"
-        , "BdfoDenReturned"
-      }, new Type[]{
-        java.lang.String.class
-        , java.lang.String.class
-        , java.lang.String.class
-        , java.lang.String.class
-        , java.lang.String.class
-      }
-    );
+    super( new Comparable[]{"BdfoRundate", "BdfoFileId", "BdfoCentreId", "BdfoSbiFileInd", "BdfoDenReturned"}, new Type[]{java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class} );
     }
 
   }

@@ -1,11 +1,9 @@
-= Data Processing with Scalding
+= The Scalding QuickStart Tutorial
 
-== Part 1: Data Parsing and Cleaning
+== Part 1: Importing & Validating Data
 
 In this part, we read the input log file from HDFS, parse it, remove bad records and write it to a tab separated file
 in HDFS.
-
-Let's go through the code of Part 1 from top to bottom and see what's going on.
 
 *Step 1:* Configure the input and output
 
@@ -28,14 +26,14 @@ val output= Tsv(args("output"))
 
 *Step 2:* Parse the input file
 
-Sclading's TextLine class can read the input file, and return each line in a Field called 'line. Let's do that first:
+Scalding's TextLine class can read the input file, and return each line in a Field called 'line. Let's do that first:
 
 [source,scala]
 ----
 val filteredInput = input.read
 ----
 
-The input file is a web server log taken from NASA. We now have a handle on the lines of the file, but since the lines
+The input file is a web server log taken from NASA weblogs. We now have a handle on the lines of the file, but since the lines
 are not in a structured form, i.e, they are not separated into columns, we need to apply a regex pattern to split each
 line into its tokens. Here's the complete code which accomplishes this:
 
@@ -49,7 +47,7 @@ val filteredInput = input.read.mapTo(inputFields -> regexFields) {
   }
 ----
 
-Here, we're consuming each line and transforming its "inputFields", called 'line, into "regexFields", which we have
+Here, we're consuming each line and transforming its "inputFields", called 'line', into "regexFields", which we have
 defined earlier to be:
 
 [source, scala]
@@ -91,21 +89,18 @@ to parse it into its five individual parts--ip, time, request, response and size
 
 *Step 2:* Clean the data by using Filters
 
-So far, we have been able to parse each line into its tokens. However, we need to clean the data before we proceed. It
-is imperative to do this--some records could be malformed. We need to filter out "bad" records.
+So far, we have been able to parse each line into its tokens. Now, we need to clean the data before we proceed. 
 
-Filtering in Scalding is very straightforward. The general form of the Filter function is:
+The general form of the Filter function is:
 
 [source, scala]
 ----
 pipe.filter(fields){function}
 ----
 
-The filter construct shown above operates on each object passing through the pipe, and applies the user defined function
+The filter construct shown above operates on each object passing through the pipe, and applies the user-defined function
 specified in the curly braces. The function must return either true or false for each object it operates on. If the
 function returns true, the record is allowed to pass through, otherwise it is discarded.
-
-To make things easier to understand, we will use the inverse of the filter function, as in:
 
 [source, scala]
 ----
@@ -193,7 +188,7 @@ the machine running the code during execution and will not be included in the fa
 Since we're using Gradle to build our code, we need to include the Scala library and the compiler. This is not required
 if you use the Scala Build Tool (SBT) to build the Scalding app. We've decided to use Gradle to avoid the dependency on
 Scala or SBT to build the code, and make things easier for you. Scalding Core needs to be present in the compile scope.
-Strictly speaking, Cascading libraries are not required since they're included inside the Scalding library but we've
+Cascading libraries are not required since they're included inside the Scalding library, but we've
 explicitly included them here for robustness. Note that we've also excluded the cascading library from scalding jars to
 avoid duplication and class conflicts. The Hadoop libraries are marked with the "provided" scope as we will be running
 on a Hadoop cluster, and we don't need them to be present inside the fat-jar. The chill library is required by Scalding.
@@ -240,8 +235,22 @@ image:part1.png[]
 
 *Figure 1: An example of the application's view in Driven.*
 
-Here's a https://driven.cascading.io/index.html#/apps/19230129871C4FA7860BEDFD383C6F4D/46CCA9D641FC44B8AFC119653E03499B[link]
+Here's a http://showcase.cascading.io/index.html#/apps/7C3B45704B7A416DAA0FFF8F5FB9A21B[Driven link]
 to see this part's execution graph on the Driven cloud service.
+
+If you have not installed the Driven plugin already, you can do it it http://www.cascading.org/driven/[here]
+
+We will get additional insights in later parts as we create more complex applications.
+From the screenshot, you will see two key components as part of the application developer
+view. The top half will help you visualize the graph associated with your application, showing
+you all the dependencies between different Cascading steps and flows. Clicking on the two
+taps (green circles) will give you additional attribute information, including reference to
+the source code where the Tap was defined.
+
+The bottom half of the screen contains the 'Timeline View', which will give details associated
+with each flow run. You can click on the 'Add Columns' to explore other counters too. As your
+applications get more complex, these counters will help you gain insights if a particular
+run-time behavior is caused by code, the infrastructure, or the network.
 
 *Step 5:* Validate output
 
@@ -279,6 +288,6 @@ See the following for more information:
 
 *Scalding API docs:* http://twitter.github.io/scalding/index.html#com.twitter.scalding.package
 
-== Next
-link:part2.html[Part 2 - Splitting Data Stream]
+== Next: Part 2 - Implementing branches
+link:part2.html[Part 2 - Implementing branches]
 

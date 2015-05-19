@@ -1,6 +1,6 @@
-= Data Processing with Scalding
+= The Scalding QuickStart Tutorial
 
-== Part 2: Stream Splitting
+== Part 2: Implementing branches
 
 In this part we'll see how to split a data stream we obtained in the first part into two separate streams. Let's see
 how to do it by going through the code.
@@ -41,7 +41,7 @@ At the end of this step, we have obtained each input log line's five fields in s
 The object in Scalding which is capable of holding fields is called a RichPipe. The object filteredInput's type is
 therefore, RichPipe.
 
-*Step 2:* Split the stream
+*Step 2:* Branch the stream
 
 The RichPipe filteredInput is now ready to be split. We do it by:
 
@@ -104,8 +104,37 @@ image:part2.png[]
 
 *Figure 1: An example of the application's view in Driven.*
 
-Here's a https://driven.cascading.io/index.html#/apps/192EF673E18E40E0A2EFD1CB1381B131/C1E8649DD58B46BF95DB691603E4F727[link]
+Here's a http://showcase.cascading.io/index.html#/apps/4400B72CBFBF46F6876EAE3F02928265[Driven link]
 to see this part's execution graph on the Driven cloud service.
+
+1. The first thing you will see is a graph -- Directed Acyclic Graph (DAG) in
+formal parlance -- that shows all the steps in your code, and the dependencies.
+The circles represent the Tap, and you can now inspect the function, Group by,
+and the count function used by your code by clicking on each step.
+2. Click on each step of the DAG. You will see additional details about the specific
+operator, and the reference to  the line of the code where the that step was
+invoked.
+3. The timeline chart visualizes how the application executed in your environment. You
+can see details about the time taken by the flow to execute, and get additional
+insights by clicking on "Add Columns" button.
+4. If you executed your application on the Hadoop cluster in a distributed mode,
+you will get additional insights regarding how your Cascading flows mapped into mappers
+and reducers. Note, that the 'Performance View' is only available if you ran your
+application on Hadoop (distributed mode)
+5. In the timeline view, click on the your flow name link. You will see how
+ your application logic got decomposed into mappers and reducers. You can also see the 
+ numbers of tasks created for each step, which is important to understanding performance
+ bottlenecks.
+
+ As your applications become more complex, the 'Performance View' becomes seminal in
+understanding the behavior of your application.
+
+*If you registered and configured the Driven API key*, you will also have an
+“All Application” view, where we can see all the applications that are
+running, or have run in the Hadoop cluster for a given user. You can customize
+the view to display additional attributes such as application name, ID,
+owner. In addition, you can customize the view to filter the information
+based on status and dates.
 
 *Step 5:* Validate output
 
@@ -149,7 +178,7 @@ See the following for more information:
 
 *Scalding API docs:* http://twitter.github.io/scalding/index.html#com.twitter.scalding.package
 
-== Next
-link:part3.html[Part 3 - Data processing on branch 1]
+== Next: Part 3 - Filtering data
+link:part3.html[Part 3 - Filtering data]
 
 

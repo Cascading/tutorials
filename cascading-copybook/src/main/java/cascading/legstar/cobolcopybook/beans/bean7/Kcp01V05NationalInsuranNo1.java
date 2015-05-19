@@ -48,13 +48,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp01V05NationalInsuranNo1", propOrder = {
-  "kcp01V05NatinsNo1A",
-  "kcp01V05NatinsNo1B",
-  "kcp01V05NatinsNo1C"
-})
-public class Kcp01V05NationalInsuranNo1
-  implements Serializable
+@XmlType(name = "Kcp01V05NationalInsuranNo1", propOrder = {"kcp01V05NatinsNo1A", "kcp01V05NatinsNo1B", "kcp01V05NatinsNo1C"})
+public class Kcp01V05NationalInsuranNo1 implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

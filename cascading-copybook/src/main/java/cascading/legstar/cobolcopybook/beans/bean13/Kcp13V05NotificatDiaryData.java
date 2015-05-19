@@ -129,26 +129,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp13V05NotificatDiaryData", propOrder = {
-  "kcp13V05NotificatTypeCode",
-  "kcp13V05NotificatSubTypeCd",
-  "kcp13V05NotificatSuppressCd",
-  "kcp13V05NotificatMmsgSupCd",
-  "kcp13V05NotificatPmsgSupCd",
-  "kcp13V05StmtDest",
-  "kcp13V05StmtDupDest",
-  "kcp13V05StmtCind",
-  "kcp13V05Dissenter",
-  "kcp13V05StmtDup",
-  "kcp13V05StmtDestClass",
-  "kcp13V05StmtLayout",
-  "kcp13V05NoOfPrenotDates",
-  "kcp13V05PrenotPrintDates",
-  "kcp13V05NoOfFrequencies",
-  "kcp13V05NotificatFreqDetail"
-})
-public class Kcp13V05NotificatDiaryData
-  implements Serializable
+@XmlType(name = "Kcp13V05NotificatDiaryData", propOrder = {"kcp13V05NotificatTypeCode", "kcp13V05NotificatSubTypeCd", "kcp13V05NotificatSuppressCd", "kcp13V05NotificatMmsgSupCd", "kcp13V05NotificatPmsgSupCd", "kcp13V05StmtDest", "kcp13V05StmtDupDest", "kcp13V05StmtCind", "kcp13V05Dissenter", "kcp13V05StmtDup", "kcp13V05StmtDestClass", "kcp13V05StmtLayout", "kcp13V05NoOfPrenotDates", "kcp13V05PrenotPrintDates", "kcp13V05NoOfFrequencies", "kcp13V05NotificatFreqDetail"})
+public class Kcp13V05NotificatDiaryData implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

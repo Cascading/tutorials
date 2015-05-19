@@ -15,16 +15,21 @@ import com.google.common.collect.Maps;
 public class CopybookSourceContext
   {
 
-  /** A helper for cobol to tuple conversions. */
+  /**
+   * A helper for cobol to tuple conversions.
+   */
   private final TupleEntryCobolTransformer transformer = new TupleEntryCobolTransformer();
 
-  /** A tuple entry for common data record. */
+  /**
+   * A tuple entry for common data record.
+   */
   private final TupleEntry commonDataTupleEntry;
-  /** Associates a sub record with a tuple entry. */
-  private final Map<String, TupleEntry> tupleEntries = Maps
-    .newLinkedHashMap();
+  /**
+   * Associates a sub record with a tuple entry.
+   */
+  private final Map<String, TupleEntry> tupleEntries = Maps.newLinkedHashMap();
 
-  public CopybookSourceContext(CopybookConfig config)
+  public CopybookSourceContext( CopybookConfig config )
     {
 
     commonDataTupleEntry = new TupleEntry( config.getCommonDataFields() );

@@ -48,13 +48,13 @@ public class SampleFlow
     Properties properties = new Properties();
     AppProps.setApplicationJarClass( properties, SampleFlow.class );
 
-    // add ApplicationTag for Driven identification and search functionality
-    AppProps.addApplicationTag( properties, "Cascading-AWS-Tutorial Part2" );
-    AppProps.setApplicationName( properties, "Cascading-AWS-Tutorial Part2" );
+    AppProps.addApplicationTag( properties, "tutorials" );
+    AppProps.addApplicationTag( properties, "cluster:development" );
+    AppProps.setApplicationName( properties, "Cascading-AWS Part2 Lingual-JDBC" );
 
     // format directory string
-    s3Bucket = trimTrailingSlash( s3Bucket );
-    s3ResultsDir = trimTrailingSlash( s3ResultsDir );
+    // s3Bucket = trimTrailingSlash( s3Bucket );
+    // s3ResultsDir = trimTrailingSlash( s3ResultsDir );
 
     // setup our AWS Credentials
     AWSCredentials awsCredentials = new AWSCredentials( accessKey, secretKey );
@@ -94,9 +94,9 @@ public class SampleFlow
     Pipe retainItemsPipe = new Pipe( "retainItems" );
     retainItemsPipe = new Retain( retainItemsPipe, retainItems );
 
-    String dateStr = "s3n://" + accessKey + ":" + secretKey + "@" + s3Bucket + "/date_dim.dat";
-    String storeSalesStr = "s3n://" + accessKey + ":" + secretKey + "@" + s3Bucket + "/store_sales.dat";
-    String itemStr = "s3n://" + accessKey + ":" + secretKey + "@" + s3Bucket + "/item.dat";
+    String dateStr = "s3n://" + s3Bucket + "/date_dim.dat";
+    String storeSalesStr = "s3n://" + s3Bucket + "/store_sales.dat";
+    String itemStr = "s3n://" + s3Bucket + "/item.dat";
 
     // create our input tap to read from HDFS
     Tap datesDataTap = new Hfs( new TextDelimited( DATE_DIM_FIELDS, "|", DATE_DIM_TABLE_TYPES ), dateStr );
@@ -104,9 +104,9 @@ public class SampleFlow
     Tap itemsDataTap = new Hfs( new TextDelimited( ITEM_FIELDS, "|", ITEM_FIELDS_TYPES ), itemStr );
 
     // create our results taps to write to S3
-    Tap resultsDatesTap = new Hfs( new TextDelimited( new Fields( "d_day_name", "d_date_sk" ) ), "s3://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/part2-dates", SinkMode.REPLACE );
-    Tap resultsItemsTap = new Hfs( new TextDelimited( new Fields( "i_category", "i_item_sk" ) ), "s3://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/part2-items", SinkMode.REPLACE );
-    Tap resultsSalesTap = new Hfs( new TextDelimited( new Fields( "ss_item_sk", "ss_sold_date_sk" ) ), "s3://" + accessKey + ":" + secretKey + "@" + s3ResultsDir + "/part2-sales", SinkMode.REPLACE );
+    Tap resultsDatesTap = new Hfs( new TextDelimited( new Fields( "d_day_name", "d_date_sk" ) ), "s3://" + s3ResultsDir + "/part2-dates/", SinkMode.REPLACE );
+    Tap resultsItemsTap = new Hfs( new TextDelimited( new Fields( "i_category", "i_item_sk" ) ), "s3://" + s3ResultsDir + "/part2-items/", SinkMode.REPLACE );
+    Tap resultsSalesTap = new Hfs( new TextDelimited( new Fields( "ss_item_sk", "ss_sold_date_sk" ) ), "s3://" + s3ResultsDir + "/part2-sales/", SinkMode.REPLACE );
 
     // define result fields
     Fields resultsFields = new Fields( "$0", "$1", "$2" ).applyTypes( Long.class, String.class, String.class );

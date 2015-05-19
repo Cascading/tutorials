@@ -83,13 +83,15 @@ public class Main
     //Sort them by IP address
     processPipe = new GroupBy( processPipe, new Fields( "ip" ), true );
 
+    AppProps.addApplicationTag( properties, "tutorials" );
+    AppProps.addApplicationTag( properties, "cluster:development" );
+    AppProps.setApplicationName( properties, "etl-part3-merge") ;
+
     // connect the taps, pipes, etc., into a flow
     FlowDef flowDef = FlowDef.flowDef()
-      .setName( "part3" )
+      .setName("part 3")
       .addSource( processPipe, sourceTap )
       .addTailSink( processPipe, outTap );
-
-    AppProps.addApplicationTag( properties, "ETL Tutorial" );
 
     // Run the flow
     Flow wcFlow = flowConnector.connect( flowDef );

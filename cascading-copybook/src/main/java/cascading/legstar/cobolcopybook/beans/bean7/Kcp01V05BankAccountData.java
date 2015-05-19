@@ -307,51 +307,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp01V05BankAccountData", propOrder = {
-  "kcp01V05Sname",
-  "kcp01V05Busclass",
-  "kcp01V05Satind",
-  "kcp01V05ProductId",
-  "kcp01V05Genname",
-  "kcp01V05Actname",
-  "kcp01V05Chtname",
-  "kcp01V05SnameCode",
-  "kcp01V05CorpDiv",
-  "kcp01V05ApplicationScore",
-  "kcp01V05InsOnDate",
-  "kcp01V05InsChgDate",
-  "kcp01V05FxdTermStartDate",
-  "kcp01V05FxdTermEndDate",
-  "kcp01V05StudOff",
-  "kcp01V05BcrNpfInd",
-  "kcp01V05AlwaysRep",
-  "kcp01V05ActualRenDate",
-  "kcp01V05RenewDate",
-  "kcp01V05Excess",
-  "kcp01V05MthlyDaysExcess",
-  "filler42",
-  "kcp01V05SameDayEnt",
-  "kcp01V05LstDrDate",
-  "kcp01V05LstCrDate",
-  "kcp01V05StatsToGrp",
-  "kcp01V05BicIndclass",
-  "kcp01V05StaffNumber",
-  "kcp01V05FirstCrIntDate",
-  "kcp01V05LastConsDate",
-  "kcp01V05BranchShortName",
-  "kcp01V05Birthdate",
-  "kcp01V05Birthdate2",
-  "kcp01V05NationalInsuranNo1",
-  "kcp01V05NationalInsuranNo2",
-  "kcp01V05CloseAccountBal",
-  "kcp01V05ExpManInd",
-  "kcp01V05SensAccInd",
-  "kcp01V05ChosenName",
-  "kcp01V05PooledOffsetInd",
-  "kcp01V05PooledBal"
-})
-public class Kcp01V05BankAccountData
-  implements Serializable
+@XmlType(name = "Kcp01V05BankAccountData", propOrder = {"kcp01V05Sname", "kcp01V05Busclass", "kcp01V05Satind", "kcp01V05ProductId", "kcp01V05Genname", "kcp01V05Actname", "kcp01V05Chtname", "kcp01V05SnameCode", "kcp01V05CorpDiv", "kcp01V05ApplicationScore", "kcp01V05InsOnDate", "kcp01V05InsChgDate", "kcp01V05FxdTermStartDate", "kcp01V05FxdTermEndDate", "kcp01V05StudOff", "kcp01V05BcrNpfInd", "kcp01V05AlwaysRep", "kcp01V05ActualRenDate", "kcp01V05RenewDate", "kcp01V05Excess", "kcp01V05MthlyDaysExcess", "filler42", "kcp01V05SameDayEnt", "kcp01V05LstDrDate", "kcp01V05LstCrDate", "kcp01V05StatsToGrp", "kcp01V05BicIndclass", "kcp01V05StaffNumber", "kcp01V05FirstCrIntDate", "kcp01V05LastConsDate", "kcp01V05BranchShortName", "kcp01V05Birthdate", "kcp01V05Birthdate2", "kcp01V05NationalInsuranNo1", "kcp01V05NationalInsuranNo2", "kcp01V05CloseAccountBal", "kcp01V05ExpManInd", "kcp01V05SensAccInd", "kcp01V05ChosenName", "kcp01V05PooledOffsetInd", "kcp01V05PooledBal"})
+public class Kcp01V05BankAccountData implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

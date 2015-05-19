@@ -43,9 +43,13 @@ import org.apache.commons.logging.LogFactory;
 public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
   {
 
-  /** Unmarshaler populates this tuple entry. */
+  /**
+   * Unmarshaler populates this tuple entry.
+   */
   private final TupleEntry tupleEntry;
-  /** Logger. */
+  /**
+   * Logger.
+   */
   private final Log _log = LogFactory.getLog( getClass() );
   /**
    * Contextual suffix to uniquely identify a map entry (used for array
@@ -65,14 +69,15 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
    * @param cobolConverters set of converters to use for cobol elements
    * @param tupleEntry      the tuple entry to be populated
    */
-  public TupleEntryCobolUnmarshalVisitor( byte[] hostBytes, int offset,
-                                          ICobolConverters cobolConverters, TupleEntry tupleEntry )
+  public TupleEntryCobolUnmarshalVisitor( byte[] hostBytes, int offset, ICobolConverters cobolConverters, TupleEntry tupleEntry )
     {
     super( hostBytes, offset, cobolConverters );
     this.tupleEntry = tupleEntry;
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolComplexBinding ce ) throws HostException
     {
@@ -81,14 +86,15 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
     names.setHierarchy( prevHierarchy );
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolArrayComplexBinding ce ) throws HostException
     {
     if( _log.isDebugEnabled() )
       {
-      _log.debug( "Unmarshaling started for array of complex bindings "
-        + ce.getBindingName() );
+      _log.debug( "Unmarshaling started for array of complex bindings " + ce.getBindingName() );
       }
         /*
          * Ask complex array binding to initialize bound array so that it is
@@ -113,21 +119,23 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
 
     if( _log.isDebugEnabled() )
       {
-      _log.debug( "Unmarshaling successful for array of complex bindings "
-        + ce.getBindingName() );
+      _log.debug( "Unmarshaling successful for array of complex bindings " + ce.getBindingName() );
       }
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolStringBinding ce ) throws HostException
     {
     super.visit( ce );
-    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ),
-      ce.getStringValue() );
+    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ), ce.getStringValue() );
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolArrayStringBinding ce ) throws HostException
     {
@@ -135,21 +143,23 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
     for( int i = 0; i < ce.getCurrentOccurs(); i++ )
       {
       String newSuffix = _suffix + "_" + Integer.toString( i );
-      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce
-        .getStringList().get( i ) );
+      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce.getStringList().get( i ) );
       }
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolNationalBinding ce ) throws HostException
     {
     super.visit( ce );
-    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ),
-      ce.getStringValue() );
+    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ), ce.getStringValue() );
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolArrayNationalBinding ce ) throws HostException
     {
@@ -157,21 +167,23 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
     for( int i = 0; i < ce.getCurrentOccurs(); i++ )
       {
       String newSuffix = _suffix + "_" + Integer.toString( i );
-      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce
-        .getStringList().get( i ) );
+      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce.getStringList().get( i ) );
       }
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolDbcsBinding ce ) throws HostException
     {
     super.visit( ce );
-    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ),
-      ce.getStringValue() );
+    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ), ce.getStringValue() );
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolArrayDbcsBinding ce ) throws HostException
     {
@@ -179,21 +191,23 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
     for( int i = 0; i < ce.getCurrentOccurs(); i++ )
       {
       String newSuffix = _suffix + "_" + Integer.toString( i );
-      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce
-        .getStringList().get( i ) );
+      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce.getStringList().get( i ) );
       }
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolZonedDecimalBinding ce ) throws HostException
     {
     super.visit( ce );
-    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ),
-      ce.getObjectValue( ce.getJaxbType() ) );
+    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ), ce.getObjectValue( ce.getJaxbType() ) );
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolArrayZonedDecimalBinding ce ) throws HostException
     {
@@ -201,21 +215,23 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
     for( int i = 0; i < ce.getCurrentOccurs(); i++ )
       {
       String newSuffix = _suffix + "_" + Integer.toString( i );
-      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ),
-        ( (List<?>) ce.getObjectValue( ce.getJaxbType() ) ).get( i ) );
+      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ( (List<?>) ce.getObjectValue( ce.getJaxbType() ) ).get( i ) );
       }
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolPackedDecimalBinding ce ) throws HostException
     {
     super.visit( ce );
-    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ),
-      ce.getObjectValue( ce.getJaxbType() ) );
+    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ), ce.getObjectValue( ce.getJaxbType() ) );
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolArrayPackedDecimalBinding ce ) throws HostException
     {
@@ -223,21 +239,23 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
     for( int i = 0; i < ce.getCurrentOccurs(); i++ )
       {
       String newSuffix = _suffix + "_" + Integer.toString( i );
-      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ),
-        ( (List<?>) ce.getObjectValue( ce.getJaxbType() ) ).get( i ) );
+      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ( (List<?>) ce.getObjectValue( ce.getJaxbType() ) ).get( i ) );
       }
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolBinaryBinding ce ) throws HostException
     {
     super.visit( ce );
-    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ),
-      ce.getObjectValue( ce.getJaxbType() ) );
+    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ), ce.getObjectValue( ce.getJaxbType() ) );
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolArrayBinaryBinding ce ) throws HostException
     {
@@ -245,21 +263,23 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
     for( int i = 0; i < ce.getCurrentOccurs(); i++ )
       {
       String newSuffix = _suffix + "_" + Integer.toString( i );
-      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ),
-        ( (List<?>) ce.getObjectValue( ce.getJaxbType() ) ).get( i ) );
+      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ( (List<?>) ce.getObjectValue( ce.getJaxbType() ) ).get( i ) );
       }
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolFloatBinding ce ) throws HostException
     {
     super.visit( ce );
-    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ),
-      ce.getFloatValue() );
+    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ), ce.getFloatValue() );
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolArrayFloatBinding ce ) throws HostException
     {
@@ -267,21 +287,23 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
     for( int i = 0; i < ce.getCurrentOccurs(); i++ )
       {
       String newSuffix = _suffix + "_" + Integer.toString( i );
-      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce
-        .getFloatList().get( i ) );
+      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce.getFloatList().get( i ) );
       }
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolDoubleBinding ce ) throws HostException
     {
     super.visit( ce );
-    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ),
-      ce.getDoubleValue() );
+    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ), ce.getDoubleValue() );
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolArrayDoubleBinding ce ) throws HostException
     {
@@ -289,21 +311,23 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
     for( int i = 0; i < ce.getCurrentOccurs(); i++ )
       {
       String newSuffix = _suffix + "_" + Integer.toString( i );
-      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce
-        .getDoubleList().get( i ) );
+      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce.getDoubleList().get( i ) );
       }
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolOctetStreamBinding ce ) throws HostException
     {
     super.visit( ce );
-    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ),
-      ce.getByteArrayValue() );
+    tupleEntry.setRaw( uniqueName( ce.getJaxbName() + _suffix ), ce.getByteArrayValue() );
     }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void visit( ICobolArrayOctetStreamBinding ce ) throws HostException
     {
@@ -311,8 +335,7 @@ public class TupleEntryCobolUnmarshalVisitor extends CobolUnmarshalVisitor
     for( int i = 0; i < ce.getCurrentOccurs(); i++ )
       {
       String newSuffix = _suffix + "_" + Integer.toString( i );
-      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce
-        .getByteArrayList().get( i ) );
+      tupleEntry.setRaw( uniqueName( ce.getJaxbName() + newSuffix ), ce.getByteArrayList().get( i ) );
       }
     }
 

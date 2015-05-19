@@ -40,15 +40,15 @@ buildscript {
 
 
 repositories {
-    mavenLocal()
+ //   mavenLocal()
     mavenCentral()
     maven { url 'http://conjars.org/repo/' }
     maven { url 'http://maven.twttr.com/' }
 }
 
 ext.scalaVersion = '2.10.0'
-ext.scaldingVersion = '0.11.2'
-ext.cascadingVersion = '2.5.5'
+ext.scaldingVersion = '0.13.1'
+ext.cascadingVersion = '2.7.0'
 ext.hadoopVersion = '2.4.1'
 
 

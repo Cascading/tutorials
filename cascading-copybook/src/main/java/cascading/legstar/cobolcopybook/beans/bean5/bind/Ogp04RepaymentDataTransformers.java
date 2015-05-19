@@ -16,8 +16,7 @@ public class Ogp04RepaymentDataTransformers extends AbstractTransformers
    */
   public Ogp04RepaymentDataTransformers()
     {
-    super( new Ogp04RepaymentDataJavaToHostTransformer(),
-      new Ogp04RepaymentDataHostToJavaTransformer() );
+    super( new Ogp04RepaymentDataJavaToHostTransformer(), new Ogp04RepaymentDataHostToJavaTransformer() );
     }
 
   /**
@@ -29,8 +28,7 @@ public class Ogp04RepaymentDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Ogp04RepaymentData toJava( final byte[] hostData, final String hostCharset )
-    throws HostTransformException
+  public Ogp04RepaymentData toJava( final byte[] hostData, final String hostCharset ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, hostCharset );
     }
@@ -42,8 +40,7 @@ public class Ogp04RepaymentDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Ogp04RepaymentData toJava( final byte[] hostData )
-    throws HostTransformException
+  public Ogp04RepaymentData toJava( final byte[] hostData ) throws HostTransformException
     {
     return getHostToJava().transform( hostData );
     }
@@ -59,8 +56,7 @@ public class Ogp04RepaymentDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Ogp04RepaymentData toJava( final byte[] hostData, final String hostCharset,
-                                    final HostTransformStatus status ) throws HostTransformException
+  public Ogp04RepaymentData toJava( final byte[] hostData, final String hostCharset, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, hostCharset, status );
     }
@@ -74,9 +70,7 @@ public class Ogp04RepaymentDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Ogp04RepaymentData toJava( final byte[] hostData,
-                                    final HostTransformStatus status )
-    throws HostTransformException
+  public Ogp04RepaymentData toJava( final byte[] hostData, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, status );
     }
@@ -91,9 +85,7 @@ public class Ogp04RepaymentDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Ogp04RepaymentData toJava( final byte[] hostData, final int offset,
-                                    final String hostCharset )
-    throws HostTransformException
+  public Ogp04RepaymentData toJava( final byte[] hostData, final int offset, final String hostCharset ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset, hostCharset );
     }
@@ -106,8 +98,7 @@ public class Ogp04RepaymentDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Ogp04RepaymentData toJava( final byte[] hostData, final int offset )
-    throws HostTransformException
+  public Ogp04RepaymentData toJava( final byte[] hostData, final int offset ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset );
     }
@@ -124,9 +115,7 @@ public class Ogp04RepaymentDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Ogp04RepaymentData toJava( final byte[] hostData, final int offset,
-                                    final String hostCharset,
-                                    final HostTransformStatus status ) throws HostTransformException
+  public Ogp04RepaymentData toJava( final byte[] hostData, final int offset, final String hostCharset, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset, hostCharset, status );
     }
@@ -141,9 +130,7 @@ public class Ogp04RepaymentDataTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Ogp04RepaymentData toJava( final byte[] hostData, final int offset,
-                                    final HostTransformStatus status )
-    throws HostTransformException
+  public Ogp04RepaymentData toJava( final byte[] hostData, final int offset, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset, status );
     }

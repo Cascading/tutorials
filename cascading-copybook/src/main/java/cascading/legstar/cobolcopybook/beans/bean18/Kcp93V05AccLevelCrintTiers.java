@@ -42,13 +42,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp93V05AccLevelCrintTiers", propOrder = {
-  "kcp93V05CutOffInd",
-  "kcp93V05NoOfTiers2",
-  "kcp93V05InterestLimitData"
-})
-public class Kcp93V05AccLevelCrintTiers
-  implements Serializable
+@XmlType(name = "Kcp93V05AccLevelCrintTiers", propOrder = {"kcp93V05CutOffInd", "kcp93V05NoOfTiers2", "kcp93V05InterestLimitData"})
+public class Kcp93V05AccLevelCrintTiers implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

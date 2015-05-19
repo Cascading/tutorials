@@ -39,12 +39,12 @@ buildscript {
 
 
 repositories {
-    mavenLocal()
+//    mavenLocal()
     mavenCentral()
     maven { url 'http://conjars.org/repo/' }
 }
 
-ext.cascadingVersion = '2.5.2'
+ext.cascadingVersion = '2.7.0'
 ext.hadoopVersion = '2.2.0'
 
 dependencies {

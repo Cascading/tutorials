@@ -71,9 +71,11 @@ public class SampleFlow
     Properties properties = new Properties();
     AppProps.setApplicationJarClass( properties, SampleFlow.class );
 
-    // add ApplicationTag for Driven identification and search functionality
-    AppProps.addApplicationTag( properties, "Cascading-AWS-Tutorial Part3" );
-    AppProps.setApplicationName( properties, "Cascading-AWS-Tutorial Part3" );
+    AppProps.addApplicationTag( properties, "tutorials" );
+    AppProps.addApplicationTag( properties, "cluster:development" );
+    AppProps.setApplicationName( properties, "Cascading-AWS Part3 EMR/S3" );
+
+
     HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
 
     List<Flow> queryFlows = new ArrayList<Flow>();

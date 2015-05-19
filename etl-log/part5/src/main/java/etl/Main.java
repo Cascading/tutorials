@@ -106,9 +106,13 @@ public class Main
     moving_avgSizeByMinPipe = new Every( moving_avgSizeByMinPipe, new Fields( "size", "time" ),
                             new MovingAverageBuffer( new Fields( "min", "moving_average" ) ), Fields.RESULTS );
 
+    AppProps.addApplicationTag( properties, "tutorials" );
+    AppProps.addApplicationTag( properties, "cluster:development" );
+    AppProps.setApplicationName( properties, "etl-part5-moving-average") ;
+
     // connect the taps, pipes, etc., into a flow
     FlowDef flowDef = FlowDef.flowDef()
-      .setName( "part5" )
+      .setName("part 5")
       .addSource( regexImport, inTap )
       .addTailSink( moving_avgSizeByMinPipe, outTap );
 

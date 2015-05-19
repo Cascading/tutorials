@@ -47,13 +47,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "BdfoCommonData", propOrder = {
-  "bdfoLen",
-  "bdfoKey",
-  "bdfoParmNo"
-})
-public class BdfoCommonData
-  implements Serializable
+@XmlType(name = "BdfoCommonData", propOrder = {"bdfoLen", "bdfoKey", "bdfoParmNo"})
+public class BdfoCommonData implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

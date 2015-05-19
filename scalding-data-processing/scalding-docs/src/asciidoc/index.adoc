@@ -1,54 +1,42 @@
-= Data Processing with Scalding
+= The Scalding QuickStart Tutorial
 
 This tutorial will teach you how to perform common data processing operations using Scalding.
-Scalding is a DSL written in Scala for the Cascading data processing framework. As Scala is
-a much more expressive language than Java, Scalding allows programmers to write data engineering
-applications at a much faster velocity than Cascading, which uses Java.
-
-We will build a data processing application in five incremental stages. This division is
+Scalding is a DSL written in Scala for the Cascading data processing framework. In this tutorial, 
+we will build a data processing application in five incremental stages. This division is
 intentional--we want you to understand each stage carefully before moving to the next. Knowledge of
 Scala is useful, but not necessary.
 
 == What are we building?
 
-Let's say we're running an e-commerce website and we have identified some "power users"--
-users who frequently buy our items and generate revenue for our business. We have recently launched a new
-product, and we want to gauge interest shown in it by these users. This is the use case we're trying to
-simulate in this tutorial; we assume that the web server logs have been collected through some mechanism in HDFS, and
-now need to be analyzed to get an understanding of the interest shown in a particular section of the website
-by some specific users.
-
-You can see how this is a big data problem. The logs can easily run into petabytes over the years, a lot of data.
-To analyze these logs efficiently, we need to ingest, store and analyze them using scalable, fault-tolerant tools and services. In
-a real world scenario, the logs are collected using a distributed messaging system such as Apache Kafka, and stored in
-a cheap distributed storage space such as HDFS. Hadoop's MapReduce can now be used to process these logs. MapReduce is
-very hard to program directly, so we want to reduce our development time by using Scalding, an abstraction
-over MapReduce which elevates our thinking to the correct level--we think in terms of operations to be performed on data such
-as group by, sorting, joining, rather than worrying about how keys and values representing our data need
-to be moved around over the Hadoop cluster.
+For the purposes of this tutorial, we will simulate analytics for an e-commerce website, 
+where we have identified some "power users"-- users who frequently buy our items and generate 
+revenue for our business. We have recently launched a new
+product, and we want to gauge interest shown in it by these users. We will assume that the 
+web server logs have been collected through some mechanism in HDFS, and
+now need to be analyzed.
 
 To solve this problem, we will perform the following operations in Scalding:
 
 == link:prerequisites.html[Prerequisites]
 * Install Driven, Gradle, IDE and other software for running the tutorial
 
-== link:part1.html[Part 1: Data Parsing and Cleaning]
+== link:part1.html[Part 1: Importing & Validating Data]
 * Read the input file
 * Filter data to exclude it from processing (bad data)
 
-== link:part2.html[Part 2: Stream Splitting]
+== link:part2.html[Part 2: Implementing branches]
 * Separate data into two streams for processing
 
-== link:part3.html[Part 3: Data Operations on Stream 1]
-* Perform data operations on Stream 1
+== link:part3.html[Part 3: Filtering Data]
+* Perform data operations such as filtering on Stream 1
 
-== link:part4.html[Part 4: Data Operations on Stream 2]
-* Perform data operations on Stream 2
+== link:part4.html[Part 4: Implementing custom functions]
+* Perform custom data operations on Stream 2
 
-== link:part5.html[Part 5: Join and Group By]
+== link:part5.html[Part 5: Joins]
 * Join Stream 1 and Stream 2
 * Perform a grouping
 * Write the output to HDFS
 
-== Next:
+== Next: Prerequisites
 link:prerequisites.html[Prerequisites]

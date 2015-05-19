@@ -62,15 +62,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "BdfoFileHeader", propOrder = {
-  "bdfoRundate",
-  "bdfoFileId",
-  "bdfoCentreId",
-  "bdfoSbiFileInd",
-  "bdfoDenReturned"
-})
-public class BdfoFileHeader
-  implements Serializable
+@XmlType(name = "BdfoFileHeader", propOrder = {"bdfoRundate", "bdfoFileId", "bdfoCentreId", "bdfoSbiFileInd", "bdfoDenReturned"})
+public class BdfoFileHeader implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

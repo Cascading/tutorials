@@ -42,12 +42,21 @@ URL from your console or log into the Driven application.
 14/08/28 12:01:53 INFO rest.DrivenDocumentService: messaging version 1.0-eap-57:JSON
 ----
 
-Attached is a live https://driven.cascading.io/driven/4DE77F8A493249299F7A889166E674A8[link]
+Attached is a live http://showcase.cascading.io/index.html#/apps/995B685F269E442B961E97F415A504FE[Driven link]
  to execute Part 5 exercise on the Concurrent cloud service.
  
 image:etl-part-5.png[]
 
 *Figure 1: An example of the performance view in Driven.*
+
+[NOTE]
+===============================
+Driven exposes three views of the DAG -- Logical, Physical and Contracted. The Logical View lets
+you inspect and visualize the Tap, Pipe and other Cascading constructs that you
+specified in your code. With Physical View, you can also inspect intermediate Tap
+and Pipe Assemblies embedded in your code. In our case, we can see that the Retain
+function was used in the subassembly.
+===============================
 
 *Step 5:* View contents of the result file that contain the moving average by bandwidth size.
  

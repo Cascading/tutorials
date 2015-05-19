@@ -47,13 +47,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "BdfoFileTrailer", propOrder = {
-  "bdfoFileTally",
-  "bdfoFileHash",
-  "bdfoNumAccountsSelected"
-})
-public class BdfoFileTrailer
-  implements Serializable
+@XmlType(name = "BdfoFileTrailer", propOrder = {"bdfoFileTally", "bdfoFileHash", "bdfoNumAccountsSelected"})
+public class BdfoFileTrailer implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

@@ -37,12 +37,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp09V05OtherLimitsData", propOrder = {
-  "kcp09V05NoOfLims",
-  "kcp09V05LimitTable"
-})
-public class Kcp09V05OtherLimitsData
-  implements Serializable
+@XmlType(name = "Kcp09V05OtherLimitsData", propOrder = {"kcp09V05NoOfLims", "kcp09V05LimitTable"})
+public class Kcp09V05OtherLimitsData implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

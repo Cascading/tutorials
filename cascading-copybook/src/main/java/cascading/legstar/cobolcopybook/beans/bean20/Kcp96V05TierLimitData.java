@@ -51,14 +51,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp96V05TierLimitData", propOrder = {
-  "kcp96V05LimitTierNumber",
-  "kcp96V05XsLimitChangesInd",
-  "kcp96V05NoOfLimitChanges",
-  "kcp96V05HistoricalTierData"
-})
-public class Kcp96V05TierLimitData
-  implements Serializable
+@XmlType(name = "Kcp96V05TierLimitData", propOrder = {"kcp96V05LimitTierNumber", "kcp96V05XsLimitChangesInd", "kcp96V05NoOfLimitChanges", "kcp96V05HistoricalTierData"})
+public class Kcp96V05TierLimitData implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

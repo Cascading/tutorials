@@ -16,8 +16,7 @@ public class Kcp18V05AccLongNameTransformers extends AbstractTransformers
    */
   public Kcp18V05AccLongNameTransformers()
     {
-    super( new Kcp18V05AccLongNameJavaToHostTransformer(),
-      new Kcp18V05AccLongNameHostToJavaTransformer() );
+    super( new Kcp18V05AccLongNameJavaToHostTransformer(), new Kcp18V05AccLongNameHostToJavaTransformer() );
     }
 
   /**
@@ -29,8 +28,7 @@ public class Kcp18V05AccLongNameTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp18V05AccLongName toJava( final byte[] hostData, final String hostCharset )
-    throws HostTransformException
+  public Kcp18V05AccLongName toJava( final byte[] hostData, final String hostCharset ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, hostCharset );
     }
@@ -42,8 +40,7 @@ public class Kcp18V05AccLongNameTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp18V05AccLongName toJava( final byte[] hostData )
-    throws HostTransformException
+  public Kcp18V05AccLongName toJava( final byte[] hostData ) throws HostTransformException
     {
     return getHostToJava().transform( hostData );
     }
@@ -59,8 +56,7 @@ public class Kcp18V05AccLongNameTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp18V05AccLongName toJava( final byte[] hostData, final String hostCharset,
-                                     final HostTransformStatus status ) throws HostTransformException
+  public Kcp18V05AccLongName toJava( final byte[] hostData, final String hostCharset, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, hostCharset, status );
     }
@@ -74,9 +70,7 @@ public class Kcp18V05AccLongNameTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp18V05AccLongName toJava( final byte[] hostData,
-                                     final HostTransformStatus status )
-    throws HostTransformException
+  public Kcp18V05AccLongName toJava( final byte[] hostData, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, status );
     }
@@ -91,9 +85,7 @@ public class Kcp18V05AccLongNameTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp18V05AccLongName toJava( final byte[] hostData, final int offset,
-                                     final String hostCharset )
-    throws HostTransformException
+  public Kcp18V05AccLongName toJava( final byte[] hostData, final int offset, final String hostCharset ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset, hostCharset );
     }
@@ -106,8 +98,7 @@ public class Kcp18V05AccLongNameTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp18V05AccLongName toJava( final byte[] hostData, final int offset )
-    throws HostTransformException
+  public Kcp18V05AccLongName toJava( final byte[] hostData, final int offset ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset );
     }
@@ -124,9 +115,7 @@ public class Kcp18V05AccLongNameTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp18V05AccLongName toJava( final byte[] hostData, final int offset,
-                                     final String hostCharset,
-                                     final HostTransformStatus status ) throws HostTransformException
+  public Kcp18V05AccLongName toJava( final byte[] hostData, final int offset, final String hostCharset, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset, hostCharset, status );
     }
@@ -141,9 +130,7 @@ public class Kcp18V05AccLongNameTransformers extends AbstractTransformers
    * @return a Java value object
    * @throws HostTransformException if transformation fails
    */
-  public Kcp18V05AccLongName toJava( final byte[] hostData, final int offset,
-                                     final HostTransformStatus status )
-    throws HostTransformException
+  public Kcp18V05AccLongName toJava( final byte[] hostData, final int offset, final HostTransformStatus status ) throws HostTransformException
     {
     return getHostToJava().transform( hostData, offset, status );
     }

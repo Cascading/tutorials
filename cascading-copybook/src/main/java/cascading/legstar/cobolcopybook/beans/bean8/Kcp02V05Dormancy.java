@@ -41,12 +41,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp02V05Dormancy", propOrder = {
-  "kcp02V05DormancyLastUpdate",
-  "kcp02V05DormancyInd"
-})
-public class Kcp02V05Dormancy
-  implements Serializable
+@XmlType(name = "Kcp02V05Dormancy", propOrder = {"kcp02V05DormancyLastUpdate", "kcp02V05DormancyInd"})
+public class Kcp02V05Dormancy implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

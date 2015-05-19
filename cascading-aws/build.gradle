@@ -21,15 +21,10 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-//apply plugin: 'propdeps'
-//apply plugin: 'propdeps-maven'
-//apply plugin: 'propdeps-idea'
-//apply plugin: 'propdeps-eclipse'
 apply plugin: 'cascadingasciidoc'
 
 buildscript {
     repositories {
-        mavenLocal()
         mavenCentral()
         maven{ url 'http://conjars.org/repo/' }
         maven { url 'http://repo.spring.io/plugins-release' }
@@ -37,7 +32,6 @@ buildscript {
 
     dependencies {
         classpath 'concurrentinc:cascading-asciidoc:1.0.0-wip-6'
-        //classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.5'
     }
 
 }
@@ -49,17 +43,15 @@ repositories {
     maven{ url 'http://conjars.org/repo/' }
 }
 
-ext.cascadingVersion = '2.6.1'
-ext.redshiftVersion = '2.6.0'
+ext.cascadingVersion = '2.7.0'
+ext.redshiftVersion = '2.7.0'
 ext.hadoopVersion = '2.4.1'
 
 dependencies {
     compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
     compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
     compile( group: 'cascading', name: 'cascading-jdbc-redshift', version: redshiftVersion )
-//
-//    provided( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client', version: hadoopVersion )
-//    provided( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion )
+
 }
 
 jar {

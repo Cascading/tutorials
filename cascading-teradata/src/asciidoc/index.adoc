@@ -1,5 +1,6 @@
 # Integrating Cascading with Teradata
 
+
 Introduction
 ------------
 
@@ -16,14 +17,11 @@ Prerequisites
 -------------
 
 . In order to follow the tutorial, you will need to have Java 6+, as well as
-Hadoop (any version will work) and Gradle v1.x installed on your computer.
+Hadoop (any version will work) and Gradle v1.x installed on your computer. You will also
+need CRUD permissions and connection credentials to a Teradata Database. If you do not
+have a live Teradata instance please see ==Setting up Teradata==.
 
-
-. The code of this tutorial is hosted on https://github.com/Cascading/tutorials/tree/master/cascading-teradata[GitHub]. Clone the code onto your local disk:
-
-    $ git clone https://github.com/Cascading/tutorials.git
-    $ cd tutorials
-    $ gradle :cascading-teradata:jar
+**Note:** Please ensure that you are using Gradle v1.x.
 
 . If you do not already have the two necessary Teradata jar files on hand, go to
 https://downloads.teradata.com/download/connectivity/jdbc-driver[TeraJDBC] and download them
@@ -31,19 +29,20 @@ to your local machine. This tutorial assumes the usage of version 14.10.00.39 fo
 tdgssconfig.jar and terajdbc4.jar.
 
 **Note:** If you will be using a different version of the Teradata jar files
-then update the **"ext.teradataVersion"** variable in `./cascading-teradata/build.gradle` as well as 
+then update the **"ext.teradataVersion"** variable in `./cascading-teradata/build.gradle` as well as
 the **"-Dversion"** variable in the following commands. Also note that version 14+ is required.
 
 . Run the following commands to install the Teradata jars to your local maven repository.
 
-    $ mvn install:install-file -Dfile={path-to-terajdbc4.jar} -DgroupId=com.teradata  
-        -DartifactId=terajdbc -Dversion=14.10.00.39 -Dpackaging=jar
+    $ mvn install:install-file -Dfile={path-to-terajdbc4.jar} -DgroupId=com.teradata
+      -DartifactId=terajdbc4 -Dversion=15.00.00.20 -Dpackaging=jar
 
-    $ mvn install:install-file -Dfile={path-to-tdgssconfig.jar} -DgroupId=com.teradata  
-        -DartifactId=teragssconfig -Dversion=14.10.00.39 -Dpackaging=jar
+    $ mvn install:install-file -Dfile={path-to-tdgssconfig.jar} -DgroupId=com.teradata
+      -DartifactId=tdgssconfig -Dversion=15.00.00.20 -Dpackaging=jar
 
+. This tutorial depends on cascading-jdbc-teradata. To use this please clone the tutorials repository from
+https://github.com/Cascading/tutorials[GitHub] and build it on your machine.
 
-. The code for cascading-jdbc, and it's subproject on cascading-jdbc-teradata is hosted on https://github.com/Cascading/cascading-jdbc/tree/2.5/cascading-jdbc-teradata[GitHub].
 Clone the code onto your local disk:
 
     $ git clone https://github.com/Cascading/cascading-jdbc.git
@@ -51,12 +50,22 @@ Clone the code onto your local disk:
 
 . Ensure that the code compiles the cascading-jdbc-teradata subproject by running:
 
-    $ gradle build -Dcascading.jdbc.url.teradata=
+    **Note:** If you Teradata instance is not accessible, or you have the incorrect connection parameters the following command
+    will fail.
+
+    $ gradle clean install -Dcascading.jdbc.url.teradata=
         "jdbc:teradata://{td.instance.hostname}/USER={user},PASSWORD={pass}" -i
 
         .. This step will take a few minutues to build and run all the tests.
         .. This step will fail if your Teradata instance has not been set up
            (**see Setting up Teradata**) or the instance is currently unreachable.
+
+. The sample code for this tutorial is hosted on https://github.com/Cascading/tutorials/tree/master/cascading-teradata[GitHub].
+Clone the code onto your local disk:
+
+    $ git clone https://github.com/Cascading/tutorials.git
+    $ cd tutorials
+    $ gradle :cascading-teradata:jar
 
 . Start your local hadoop installation. If you do not have a local hadoop environment
 you can use our Vagrant setup here: https://github.com/Cascading/vagrant-cascading-hadoop-cluster[Cascading Hadoop Vagrant]

@@ -76,17 +76,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Ogp03AccountTaxData", propOrder = {
-  "ogp03TaxReliefTypeInd",
-  "ogp03Earner",
-  "ogp03TaxcertHeld",
-  "ogp03VatMarker",
-  "ogp03PartiesToAccount",
-  "ogp03IntCertIss",
-  "ogp03OresCode"
-})
-public class Ogp03AccountTaxData
-  implements Serializable
+@XmlType(name = "Ogp03AccountTaxData", propOrder = {"ogp03TaxReliefTypeInd", "ogp03Earner", "ogp03TaxcertHeld", "ogp03VatMarker", "ogp03PartiesToAccount", "ogp03IntCertIss", "ogp03OresCode"})
+public class Ogp03AccountTaxData implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

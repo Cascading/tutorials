@@ -11,27 +11,7 @@ public class Field5 extends Fields
 
   public Field5()
     {
-    super(
-      new Comparable[]{
-        "Ogp04LbloanMat"
-        , "Ogp04Repamt"
-        , "Ogp04Repfreq"
-        , "Ogp04Repdte"
-        , "Ogp04Reptyp"
-        , "Ogp04Borrow"
-        , "Ogp04Amtsanc"
-        , "Ogp04MirasDate"
-      }, new Type[]{
-        java.lang.String.class
-        , java.math.BigDecimal.class
-        , short.class
-        , java.lang.String.class
-        , short.class
-        , short.class
-        , java.math.BigDecimal.class
-        , java.lang.String.class
-      }
-    );
+    super( new Comparable[]{"Ogp04LbloanMat", "Ogp04Repamt", "Ogp04Repfreq", "Ogp04Repdte", "Ogp04Reptyp", "Ogp04Borrow", "Ogp04Amtsanc", "Ogp04MirasDate"}, new Type[]{java.lang.String.class, java.math.BigDecimal.class, short.class, java.lang.String.class, short.class, short.class, java.math.BigDecimal.class, java.lang.String.class} );
     }
 
   }

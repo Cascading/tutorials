@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
  * Fields are assembled from a series of Fields classes each corresponding to a
  * physical record of interest (we ignore header and trailer records)
  */
-public class CopybookScheme
-  extends
-  Scheme<Properties, InputStream, OutputStream, CopybookSourceContext, PrintWriter>
+public class CopybookScheme extends Scheme<Properties, InputStream, OutputStream, CopybookSourceContext, PrintWriter>
   {
 
   private static final long serialVersionUID = -4185569791736405311L;
@@ -42,21 +40,14 @@ public class CopybookScheme
    */
   public CopybookScheme()
     {
-    super( Fields.merge(
-      new Fields( "BdfoKey" ),
-      Fields.merge( COPYBOOK_CONFIG.getFields().values()
-        .toArray( new Fields[ COPYBOOK_CONFIG.getFields().size() ] ) ) ) );
+    super( Fields.merge( new Fields( "BdfoKey" ), Fields.merge( COPYBOOK_CONFIG.getFields().values().toArray( new Fields[ COPYBOOK_CONFIG.getFields().size() ] ) ) ) );
     }
 
-  public void sourceConfInit( FlowProcess<Properties> flowProcess,
-                              Tap<Properties, InputStream, OutputStream> tap,
-                              Properties conf )
+  public void sourceConfInit( FlowProcess<Properties> flowProcess, Tap<Properties, InputStream, OutputStream> tap, Properties conf )
     {
     }
 
-  public void sinkConfInit( FlowProcess<Properties> flowProcess,
-                            Tap<Properties, InputStream, OutputStream> tap,
-                            Properties conf )
+  public void sinkConfInit( FlowProcess<Properties> flowProcess, Tap<Properties, InputStream, OutputStream> tap, Properties conf )
     {
     }
 
@@ -68,21 +59,17 @@ public class CopybookScheme
     }
 
   @Override
-  public void sourcePrepare( FlowProcess<Properties> flowProcess,
-                             SourceCall<CopybookSourceContext, InputStream> sourceCall )
-    throws IOException
+  public void sourcePrepare( FlowProcess<Properties> flowProcess, SourceCall<CopybookSourceContext, InputStream> sourceCall ) throws IOException
     {
 
-    CopybookSourceContext context = new CopybookSourceContext(COPYBOOK_CONFIG);
+    CopybookSourceContext context = new CopybookSourceContext( COPYBOOK_CONFIG );
 
     sourceCall.setContext( context );
 
     sourceCall.getIncomingEntry().setTuple( TupleViews.createObjectArray() );
     }
 
-  public boolean source( FlowProcess<Properties> flowProcess,
-                         SourceCall<CopybookSourceContext, InputStream> sourceCall )
-    throws IOException
+  public boolean source( FlowProcess<Properties> flowProcess, SourceCall<CopybookSourceContext, InputStream> sourceCall ) throws IOException
     {
 
     log.debug( "Source called" );
@@ -183,8 +170,7 @@ public class CopybookScheme
         }
       logRecLen += bdfoLen;
 
-      log.debug( "Processed physical record type {}",
-        bdfoParmNo );
+      log.debug( "Processed physical record type {}", bdfoParmNo );
 
       }
     while( bdfoParmNo != 83 ); // Signals end of physical
@@ -214,11 +200,9 @@ public class CopybookScheme
    * @return the tuple entry that corresponds to the common data sub record
    * @throws IOException if transformation fails
    */
-  private TupleEntry getCommonDataTupleEntry( CopybookSourceContext context,
-                                              InputStream is ) throws IOException
+  private TupleEntry getCommonDataTupleEntry( CopybookSourceContext context, InputStream is ) throws IOException
     {
-    boolean tupleSet = context.getTransformer().set( is, COPYBOOK_CONFIG.getBdfoCommonDataLen(),
-      BdfoCommonData.class, context.getCommonDataTupleEntry() );
+    boolean tupleSet = context.getTransformer().set( is, COPYBOOK_CONFIG.getBdfoCommonDataLen(), BdfoCommonData.class, context.getCommonDataTupleEntry() );
     return tupleSet ? context.getCommonDataTupleEntry() : null;
     }
 
@@ -231,16 +215,12 @@ public class CopybookScheme
    * @param recordName the name of the sub record
    * @throws IOException if transformation fails
    */
-  private void set( CopybookSourceContext context, InputStream is,
-                    int subRecLen, String recordName ) throws IOException
+  private void set( CopybookSourceContext context, InputStream is, int subRecLen, String recordName ) throws IOException
     {
-    context.getTransformer().set( is, subRecLen,
-      COPYBOOK_CONFIG.getBeans().get( recordName ),
-      context.getTupleEntries().get( recordName ) );
+    context.getTransformer().set( is, subRecLen, COPYBOOK_CONFIG.getBeans().get( recordName ), context.getTupleEntries().get( recordName ) );
     }
 
-  private void skip( CopybookSourceContext context, InputStream is,
-                     int subRecLen ) throws IOException
+  private void skip( CopybookSourceContext context, InputStream is, int subRecLen ) throws IOException
     {
     context.getTransformer().skip( is, subRecLen );
     }

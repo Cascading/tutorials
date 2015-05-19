@@ -1,4 +1,4 @@
-= Data Processing on Amazon Web Services (AWS)
+= Cascading on Amazon Web Services
 
 == Introduction
 
@@ -6,11 +6,11 @@ Modern data workflows never exist in isolation -- often, they are written in mul
 and orchestrated using a variety of tools and services that best fit the needs. These applications need to read
 from and write to a wide array data stores and warehouses. They also need to be deployed across a 
 number of environments, and once deployed they then require performance tuning and monitoring products to provide 
-compliance for SLAs, cluster governance. Cascading and Driven provides a comprehensive solution for building, deploying, 
+compliance for SLAs and cluster governance. Cascading and Driven provide a comprehensive solution for building, deploying,
 running and managing this new class of enterprise applications. 
 
 In this multi-part tutorial we will walk through the creation of end-to-end data processing workflows in AWS environments using
-popular big data processing technologies. AWS users will be able to use Cascading and Lingual (a Cascading DSL that provides
+popular big data processing technologies. AWS users will be able to use Cascading and Lingual (a Cascading DSL that provides an
 ANSI-SQL compliant interface to run map reduce applications) to orchestrate a workflow
 that migrates data between S3 and Redshift, and another example using Lingual on AWS EMR for scalable data processing.
 The tutorial also shows how to quickly bootstrap EMR clusters and how to gain operational visibility into your
@@ -21,6 +21,7 @@ application with Driven.
 * http://aws.amazon.com/elasticmapreduce/[AWS Elastic MapReduce] for bootstrapping scalable processing clusters
 * http://aws.amazon.com/redshift/[AWS Redshift] for scalable data warehousing
 * http://aws.amazon.com/s3/[AWS S3] for scalable data storage
+* http://aws.amazon.com/cli/ [AWS CLI] as a unified tool to manage all AWS services we will leverage
 * http://www.cascading.org/projects/lingual/[Lingual & Lingual JDBC] for writing ETL-like MapReduce jobs with SQL
 * https://github.com/Cascading/cascading-jdbc[Cascading-JDBC] for accessing data in Cascading from AWS Redshift
 * https://github.com/Cascading/CascadingSDK[Cascading SDK] To pre-install (bootstrap) Cascading tools on new instances of AWS EMR

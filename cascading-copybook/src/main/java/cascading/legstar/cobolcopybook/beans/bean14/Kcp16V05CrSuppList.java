@@ -50,13 +50,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp16V05CrSuppList", propOrder = {
-  "kcp16V05SuppCrPrt",
-  "kcp16V05NoOfCrTypes",
-  "kcp16V05SuppListCrtypes"
-})
-public class Kcp16V05CrSuppList
-  implements Serializable
+@XmlType(name = "Kcp16V05CrSuppList", propOrder = {"kcp16V05SuppCrPrt", "kcp16V05NoOfCrTypes", "kcp16V05SuppListCrtypes"})
+public class Kcp16V05CrSuppList implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

@@ -79,18 +79,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Ogp06ReferralData", propOrder = {
-  "ogp06FhReferStreamNo",
-  "ogp06ReferDueDate",
-  "ogp06Refind",
-  "ogp06ReferReason",
-  "ogp06ReferReasonDesc",
-  "ogp06ReferMonthDay",
-  "ogp06ReferFreq",
-  "ogp06ReferDayOfWeek"
-})
-public class Ogp06ReferralData
-  implements Serializable
+@XmlType(name = "Ogp06ReferralData", propOrder = {"ogp06FhReferStreamNo", "ogp06ReferDueDate", "ogp06Refind", "ogp06ReferReason", "ogp06ReferReasonDesc", "ogp06ReferMonthDay", "ogp06ReferFreq", "ogp06ReferDayOfWeek"})
+public class Ogp06ReferralData implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

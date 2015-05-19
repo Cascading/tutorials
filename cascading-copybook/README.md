@@ -27,8 +27,8 @@ To build the sample app from the command line use:
     gradle clean fatjar
 
 
-Execution Instructions
-======================
+Execution Instructions for Local Mode
+=====================================
 
 To run the application from within directory:
 
@@ -64,3 +64,35 @@ You should see output similar to what's shown below. This data was generated ran
     8744669117912,=cL2n&szr7H8(0# <*V$,-93071,0,-785,-0.05,-893,0.04
     8402832501551,zRv8He"gE?`AU8#>9>w,-14999,0,-345,-0.07,777,0.00
     3815250249692,|Unf$>|RQqQtl;T[.4f2,-40813,0,-202,-0.06,580,-0.06
+
+
+Execution Instructions for Hadoop
+=================================
+
+hadoop jar ./build/libs/cascading-copybook-fat.jar cascading.hadoop.legstar.cobol.hadoop.app.Main /tmp/ZOS.FCUSTDAT.RDW.bin output/custdat.csv
+
+Verification Instructions
+=========================
+
+You should see output similar to what's shown below.
+
+    15/02/12 16:08:49 INFO flow.Flow: [Cascading Cobol]  parallel execution is enabled: true
+    15/02/12 16:08:49 INFO flow.Flow: [Cascading Cobol]  starting jobs: 1
+    15/02/12 16:08:49 INFO flow.Flow: [Cascading Cobol]  allocating threads: 1
+    15/02/12 16:08:49 INFO flow.FlowStep: [Cascading Cobol] starting step: (1/1) output/custdat.csv
+    15/02/12 16:08:49 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+    15/02/12 16:08:50 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+    15/02/12 16:08:50 INFO mapred.FileInputFormat: Total input paths to process : 1
+    15/02/12 16:08:50 INFO mapreduce.JobSubmitter: number of splits:2
+    15/02/12 16:08:51 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1423764112257_0007
+    15/02/12 16:08:51 INFO impl.YarnClientImpl: Submitted application application_1423764112257_0007
+    15/02/12 16:08:51 INFO mapreduce.Job: The url to track the job: http://machine.local:8088/proxy/application_1423764112257_0007/
+    15/02/12 16:08:51 INFO flow.FlowStep: [Cascading Cobol] submitted hadoop job: job_1423764112257_0007
+    15/02/12 16:08:51 INFO flow.FlowStep: [Cascading Cobol] tracking url: http://machine.local:8088/proxy/application_1423764112257_0007/
+    15/02/12 16:09:18 INFO util.Hadoop18TapUtil: deleting temp path output/custdat.csv/_temporary
+    15/02/12 16:09:18 INFO state.AppStats: shutdown finalizing app status
+    15/02/12 16:09:18 INFO state.AppStats: shutdown hook finished.
+    15/02/12 16:09:19 INFO rest.DrivenDocumentService: https://driven.cascading.io/driven/6628F19494964C95A4327543B402A298
+    15/02/12 16:09:19 INFO rest.DrivenDocumentService: plugin version 1.2-eap-5
+    15/02/12 16:09:19 INFO rest.DrivenDocumentService: stopped document service
+    15/02/12 16:09:19 INFO util.Update: newer Cascading release available: 2.5.6

@@ -23,7 +23,6 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 
 apply from: "../etc/providedCompile.gradle"
-ext.teradataVersion = "14.10.00.39"
 archivesBaseName = 'cascading-teradata-sample'
 
 repositories {
@@ -32,17 +31,17 @@ repositories {
     maven { url 'http://conjars.org/repo/' }
 }
 
-ext.cascadingVersion = '2.5.6'
-ext.cascadingJDBCVersion = '2.5.4'
-ext.hadoopVersion = '2.2.0'
+ext.cascadingVersion = '2.7.0'
+ext.cascadingJDBCVersion = '3.0.0-wip-dev'
+ext.hadoopVersion = '2.4.1'
+ext.teradataVersion = "15.00.00.20"
 
 dependencies {
     compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
     compile( group: 'cascading', name: 'cascading-local', version: cascadingVersion )
     compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
-    compile( group: 'com.teradata', name: 'teradata_jdbc', version: teradataVersion )
-    compile( group: 'com.teradata', name: 'teradata_gssconfig', version: teradataVersion )
-    // consistency with tutorial: The underscores should be removed
+    compile( group: 'com.teradata', name: 'terajdbc4', version: teradataVersion )
+    compile( group: 'com.teradata', name: 'tdgssconfig', version: teradataVersion )
     compile( group: 'cascading', name: 'cascading-jdbc-teradata', version: cascadingJDBCVersion )
 
     providedCompile( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion )

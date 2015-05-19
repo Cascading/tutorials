@@ -127,16 +127,17 @@ public class Main
 
     // Creates the flow definition by connecting the taps and pipes
     FlowDef flowDef = FlowDef.flowDef()
+      .setName("part 6")
       .addSource( transformPipe, inTap )
-      .addTailSink( join, outTap )
-      .setName( "part 6" );
+      .addTailSink( join, outTap ) ;
 
     // Creates a planner for executing the flow
     Properties properties = AppProps.appProps()
-      .setName( "ETL" )
+      .setName( "etl-part6-join" )
       .buildProperties();
 
-    AppProps.addApplicationTag( properties, "ETL Tutorial" );
+    AppProps.addApplicationTag( properties, "tutorials" );
+    AppProps.addApplicationTag( properties, "cluster:development" );
 
     // Create a Hadoop Flow Connector
     Flow parsedLogFlow = new HadoopFlowConnector( properties ).connect( flowDef );

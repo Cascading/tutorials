@@ -75,7 +75,9 @@ public class Main
     Properties properties = new Properties();
     AppProps.setApplicationJarClass( properties, Main.class );
     // add ApplicationTag for Driven identification and search functionality
-    AppProps.addApplicationTag( properties, "Cascading-Hive Demo Part3" );
+    AppProps.addApplicationTag( properties, "tutorials" );
+    AppProps.addApplicationTag( properties, "cluster:development" );
+    AppProps.setApplicationName( properties, "Cascading-Hive Part3 TPC-DS" );
     HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
 
     List<Flow> queryFlows = new ArrayList<Flow>();

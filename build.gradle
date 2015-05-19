@@ -35,9 +35,10 @@ buildscript {
 }
 
 ext.redshiftPostgresVersion = '8.0-318.jdbc3'
+ext.redshiftVersion = '2.7.0'
 ext.hadoopVersion = "1.2.1"
-ext.cascadingVersion = '2.5.5'
-ext.cascadingJDBCVersion = '2.5.4'
+ext.cascadingVersion = '2.7.0'
+ext.cascadingJDBCVersion = '2.7.0'
 ext.slf4jVersion = '1.7.2'
 
 apply plugin: 'idea'
@@ -60,7 +61,7 @@ subprojects { subproject ->
 
   dependencies {
 
-    compile group: 'cascading', name: 'cascading-jdbc-redshift', version: cascadingJDBCVersion
+    compile group: 'cascading', name: 'cascading-jdbc-redshift', version: redshiftVersion
     /*compile group: 'cascading', name: 'cascading-jdbc-teradata', version: cascadingJDBCVersion*/
     compile group: 'postgresql', name: 'postgresql', version: redshiftPostgresVersion
 

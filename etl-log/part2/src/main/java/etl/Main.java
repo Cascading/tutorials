@@ -50,7 +50,9 @@ public class Main
     AppProps.setApplicationJarClass( properties, Main.class );
     HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
 
-    AppProps.addApplicationTag( properties, "ETL Tutorial" );
+    AppProps.addApplicationTag( properties, "tutorials" );
+    AppProps.addApplicationTag( properties, "cluster:development" );
+    AppProps.setApplicationName( properties, "etl-part2-filters") ;
 
     // Input file
     String inputPath = args[ 0 ];
@@ -85,7 +87,7 @@ public class Main
 
     // connect the taps, pipes, etc., into a flow
     FlowDef flowDef = FlowDef.flowDef()
-      .setName( "part2" )
+      .setName("part 2")
       .addSource( processPipe, inTap )
       .addTailSink( processPipe, outTap );
 

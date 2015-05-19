@@ -39,12 +39,41 @@ URL from your console or log into the Driven application.
     14/08/28 12:01:53 INFO rest.DrivenDocumentService: *http://localhost:8080/driven/3B8BE330F87B4DF9BA9C7CABB3E1BC16* +
     14/08/28 12:01:53 INFO rest.DrivenDocumentService: messaging version 1.0-eap-57:JSON
  
-Attached is a live https://driven.cascading.io/driven/8777DC6180F44623B65DE50B33311E2B[link]
+Attached is a live http://showcase.cascading.io/index.html#/apps/12561E6ACB07406ABF949B309CFB07CF[Driven link]
  to execute Part 2 exercise on the Driven cloud service.
  
 image:etl-part-2.png[]
 
 *Figure 1: An example of the performance view in Driven.*
+
+1. The first thing you will see is a graph -- Directed Acyclic Graph (DAG) in
+formal parlance -- that shows all the steps in your code, and the dependencies.
+The circles represent the Tap, and you can now inspect the function, Group by,
+and the count function used by your code by clicking on each step.
+2. Click on each step of the DAG. You will see additional details about the specific
+operator, and the reference to  the line of the code where the that step was
+invoked.
+3. The timeline chart visualizes how the application executed in your environment. You
+can see details about the time taken by the flow to execute, and get additional
+insights by clicking on "Add Columns" button.
+4. If you executed your application on the Hadoop cluster in a distributed mode,
+you will get additional insights regarding how your Cascading flows mapped into mappers
+and reducers. Note, that the 'Performance View' is only available if you ran your
+application on Hadoop (distributed mode)
+5. In the timeline view, click on the your flow name link. You will see how
+ your application logic got decomposed into mappers and reducers. You can also see the 
+ numbers of tasks created for each step, which is important to understanding performance
+ bottlenecks.
+
+ As your applications become more complex, the 'Performance View' becomes seminal in
+understanding the behavior of your application.
+
+*If you registered and configured the Driven API key*, you will also have an
+“All Application” view, where we can see all the applications that are
+running, or have run in the Hadoop cluster for a given user. You can customize
+the view to display additional attributes such as application name, ID,
+owner. In addition, you can customize the view to filter the information
+based on status and dates.
 
 *Step 5:* View contents of the tab-separated data does not contain any rows with zero size
  

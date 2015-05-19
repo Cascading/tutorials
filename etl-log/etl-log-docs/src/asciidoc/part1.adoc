@@ -38,12 +38,24 @@ URL from your console or log into the Driven application.
     14/08/28 12:01:53 INFO rest.DrivenDocumentService: messaging version 1.0-eap-57:JSON
  
 Attached is a live 
-https://driven.cascading.io/index.html#/apps/218B79888187458A9FF7BBE938717263[link] 
+http://showcase.cascading.io/index.html#/apps/156B0F3DBCE440F6A40B35D0AC6D3E9F[Driven link] 
 to execute Part 1 exercise on the Driven cloud service.
  
 image:etl-part-1.png[]
 
 *Figure 1: An example of the performance view in Driven with details of a tuple.*
+
+We will get additional insights in later parts as we create more complex applications.
+From the screenshot, you will see two key components as part of the application developer
+view. The top half will help you visualize the graph associated with your application, showing
+you all the dependencies between different Cascading steps and flows. Clicking on the two
+taps (green circles) will give you additional attribute information, including reference to
+the source code where the Tap was defined.
+
+The bottom half of the screen contains the 'Timeline View', which will give details associated
+with each flow run. You can click on the 'Add Columns' to explore other counters too. As your
+applications get more complex, these counters will help you gain insights if a particular
+run-time behavior is caused by code, the infrastructure, or the network.
  
 *Step 5:* Validate output data in stored in tab separated format (binned by day)
  

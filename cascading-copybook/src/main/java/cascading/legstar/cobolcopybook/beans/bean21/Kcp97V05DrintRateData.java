@@ -35,12 +35,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp97V05DrintRateData", propOrder = {
-  "kcp97V05NoOfTiers",
-  "kcp97V05InterestRateData"
-})
-public class Kcp97V05DrintRateData
-  implements Serializable
+@XmlType(name = "Kcp97V05DrintRateData", propOrder = {"kcp97V05NoOfTiers", "kcp97V05InterestRateData"})
+public class Kcp97V05DrintRateData implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

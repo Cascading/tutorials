@@ -30,6 +30,7 @@ archivesBaseName = 'cascading-aws-tutorials'
 
 buildscript {
     repositories {
+        mavenLocal()
         maven { url 'http://repo.spring.io/plugins-release' }
         maven{ url 'http://jcenter.bintray.com' }
     }
@@ -39,13 +40,13 @@ buildscript {
 }
 
 repositories {
-  mavenLocal()
+/*  mavenLocal() */
   mavenCentral()
   maven{ url 'http://conjars.org/repo/' }
 }
 
-ext.cascadingVersion = '2.6.1'
-ext.redshiftVersion = '2.6.0'
+ext.cascadingVersion = '2.7.0'
+ext.redshiftVersion = '2.7.0'
 ext.hadoopVersion = '2.4.1'
 ext.lingualVersion = '1.2.0'
 

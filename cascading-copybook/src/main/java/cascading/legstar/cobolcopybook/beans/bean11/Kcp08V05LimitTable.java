@@ -50,13 +50,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp08V05LimitTable", propOrder = {
-  "kcp08V05LimitIdent",
-  "kcp08V05Limit",
-  "kcp08V05LimitSubCode"
-})
-public class Kcp08V05LimitTable
-  implements Serializable
+@XmlType(name = "Kcp08V05LimitTable", propOrder = {"kcp08V05LimitIdent", "kcp08V05Limit", "kcp08V05LimitSubCode"})
+public class Kcp08V05LimitTable implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

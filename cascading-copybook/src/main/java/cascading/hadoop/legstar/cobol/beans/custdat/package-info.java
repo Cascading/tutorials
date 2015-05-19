@@ -1,0 +1,1 @@
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://beans.cobol.legstar.cascading/custdat", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED) package cascading.hadoop.legstar.cobol.beans.custdat;

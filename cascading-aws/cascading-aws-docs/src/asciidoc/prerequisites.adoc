@@ -2,8 +2,8 @@
 
 == Prerequisites
 
-In these tutorials, you will be developing data flows with Cascading framework
-and executing them on Hadoop; it is important that your environment
+In these tutorials, you will be developing data flows with the Cascading framework
+and executing them on Hadoop and AWS Elastic MapReduce; it is important that your environment
 is configured correctly before we get started. Here are the components that
 we want to make sure that you have installed correctly before we get started with
 development:

@@ -36,11 +36,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp05V10Profile5Dgts", propOrder = {
-  "kcp05V10Prof1324"
-})
-public class Kcp05V10Profile5Dgts
-  implements Serializable
+@XmlType(name = "Kcp05V10Profile5Dgts", propOrder = {"kcp05V10Prof1324"})
+public class Kcp05V10Profile5Dgts implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

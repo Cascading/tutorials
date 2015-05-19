@@ -14,14 +14,12 @@ public class LegStarUtils
     {
     }
 
-  public static ICobolBinding createBinding( String beanClassName )
-    throws HostTransformException
+  public static ICobolBinding createBinding( String beanClassName ) throws HostTransformException
     {
     return (ICobolBinding) create( getBindingClassName( beanClassName ) );
     }
 
-  public static IHostTransformers createTransformers( String beanClassName )
-    throws HostTransformException
+  public static IHostTransformers createTransformers( String beanClassName ) throws HostTransformException
     {
     return (IHostTransformers) create( getTransformersClassName( beanClassName ) );
     }
@@ -52,8 +50,7 @@ public class LegStarUtils
     return sb.toString();
     }
 
-  private static Object create( String className )
-    throws HostTransformException
+  private static Object create( String className ) throws HostTransformException
     {
     try
       {
@@ -74,11 +71,9 @@ public class LegStarUtils
       }
     }
 
-  private static Class<?> loadClass( final String qualifiedClassName )
-    throws ClassNotFoundException
+  private static Class<?> loadClass( final String qualifiedClassName ) throws ClassNotFoundException
     {
-    ClassLoader contextClassLoader = Thread.currentThread()
-      .getContextClassLoader();
+    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
     if( contextClassLoader == null )
       {
       return Class.forName( qualifiedClassName );

@@ -143,28 +143,8 @@ import com.legstar.coxb.CobolType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kcp16V05NotificationTable", propOrder = {
-  "kcp16V05NotificatTypeCode",
-  "kcp16V05NotificatSubTypeCd",
-  "kcp16V05NotificationProdDat",
-  "kcp16V05StmtFirstSheet",
-  "kcp16V05StmtLastSheet",
-  "kcp16V05SpecialSheetNumber",
-  "kcp16V05StmtDest",
-  "kcp16V05StmtDupDest",
-  "kcp16V05StmtStdte",
-  "kcp16V05StmtEnddte",
-  "kcp16V05StmtCind",
-  "kcp16V05Dissenter",
-  "kcp16V05StmtReasno",
-  "kcp16V05StmtIssreas",
-  "kcp16V05DrSuppListno",
-  "kcp16V05DrSuppList",
-  "kcp16V05CrSuppListno",
-  "kcp16V05CrSuppList"
-})
-public class Kcp16V05NotificationTable
-  implements Serializable
+@XmlType(name = "Kcp16V05NotificationTable", propOrder = {"kcp16V05NotificatTypeCode", "kcp16V05NotificatSubTypeCd", "kcp16V05NotificationProdDat", "kcp16V05StmtFirstSheet", "kcp16V05StmtLastSheet", "kcp16V05SpecialSheetNumber", "kcp16V05StmtDest", "kcp16V05StmtDupDest", "kcp16V05StmtStdte", "kcp16V05StmtEnddte", "kcp16V05StmtCind", "kcp16V05Dissenter", "kcp16V05StmtReasno", "kcp16V05StmtIssreas", "kcp16V05DrSuppListno", "kcp16V05DrSuppList", "kcp16V05CrSuppListno", "kcp16V05CrSuppList"})
+public class Kcp16V05NotificationTable implements Serializable
   {
 
   private final static long serialVersionUID = 1L;

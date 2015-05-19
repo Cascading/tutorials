@@ -1,4 +1,4 @@
-= Java Developers Guide to ETL with Cascading
+= The Scalding QuickStart Tutorial
 
 == Prerequisites
 
@@ -68,7 +68,7 @@ Use Driven to develop and debug Scalding flows. You do not need to make any chan
 to your existing Cascading applications to integrate with the Driven application.
 
 The cloud version of Driven is free to use for development. Visit
-http://cascading.io/try/[Try Driven] to access all the
+http://www.cascading.org/driven/[Try Driven] to access all the
 developer features and gain visibility into your ETL flows.
 
 NOTE: We will use the cloud-based Driven product for the purposes of this
@@ -82,7 +82,7 @@ Cascading will be the only Java process attempting to make a remote network
 connection.
 
 You can learn more about using Driven for your Cascading application
-at http://docs.cascading.io/driven/1.1/getting-started/[Getting Started with Driven].
+at http://www.cascading.org/driven/[Getting Started with Driven].
 
 === JDK
 
@@ -107,5 +107,5 @@ If you prefer https://www.eclipse.org/[eclipse], you can run:
 $ gradle eclipse
 ----
 
-== Next:
-link:part1.html[Part 1: Data Input and Cleaning]
+== Next: Part 1: Importing & Validating Data
+link:part1.html[Part 1: Importing & Validating Data]

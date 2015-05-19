@@ -10,6 +10,8 @@ projects. In contains the following tutorials right now:
 * Cascading-Hive
 * Cascading-Copybook
 * Cascading-AWS
+* ETL-Log
+* Scalding
 
 This project is meant to make it simple to add new tutorials without dealing
 with the setup of asciidoctor too much. All common parts such as CSS and the

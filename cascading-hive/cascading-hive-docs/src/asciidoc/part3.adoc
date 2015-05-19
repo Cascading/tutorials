@@ -40,6 +40,9 @@ it at http://localhost:8080/index.html
 14/08/28 12:01:53 INFO rest.DrivenDocumentService: messaging version 1.0-eap-57:JSON
 ----
 
+You can also use this live http://showcase.cascading.io/index.html#/apps/282A9F99CE8549EA902415B26BA02B59?view=element[link] to view the
+application in Driven.
+
 image:part3.png[]
  
 === What’s Going On?
