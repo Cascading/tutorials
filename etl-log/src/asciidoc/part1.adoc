@@ -230,13 +230,13 @@ For more details about the particular operations or to understand how some
 of these steps can be modified for your use case, use the 
 following resources:
  
-*Taps:* http://docs.cascading.org/cascading/2.5/userguide/html/ch03s05.html
+*Taps:* http://docs.cascading.org/cascading/3.0/userguide/ch09-local.html#source-sink
  
-*Failure Traps:* http://docs.cascading.org/cascading/2.5/userguide/html/ch08s03.html
+*Failure Traps:* http://docs.cascading.org/cascading/3.0/userguide/ch15-advanced.html#failure-traps
  
-*Flows:* http://docs.cascading.org/cascading/2.5/userguide/html/ch03s08.html
+*Flows:* http://docs.cascading.org/cascading/3.0/userguide/ch06-flows.html#_flows
 
-*Running ETL flows on Hadoop:* http://docs.cascading.org/cascading/2.5/userguide/html/ch04.html
+*Running ETL flows on Hadoop:* http://docs.cascading.org/cascading/3.0/userguide/ch10-hadoop-common.html#executing
 
 == Next
 link:part2.html[Part 2 - Using Filters to extract data patterns]

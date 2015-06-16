@@ -76,11 +76,9 @@ sortedCountByIpPipe = new Each( sortedCountByIpPipe, new Fields( "IPcount" ), ne
 For more details about the particular operations or to understand how some 
 of these steps can be modified for your use case, use the following resources:
  
-*Each and Every Pipes:* http://docs.cascading.org/cascading/2.5/userguide/html/ch03s03.html#N20438
+*Each and Every Pipes:* http://docs.cascading.org/cascading/3.0/userguide/ch05-pipe-assemblies.html#each-every
  
-*Count:* http://docs.cascading.org/cascading/2.5/userguide/html/ch10.html#N21BD6
- 
-*Limit:* http://docs.cascading.org/cascading/2.5/userguide/html/ch09s03.html
+*Limit:* http://docs.cascading.org/cascading/3.0/userguide/ch16-operations.html#_sample_and_limit_functions
 
 == Next
 link:part5.html[Part 5 - Advanced Aggregation: Implementing moving averages]

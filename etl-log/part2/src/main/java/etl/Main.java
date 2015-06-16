@@ -22,7 +22,7 @@ package etl;
 
 import cascading.flow.Flow;
 import cascading.flow.FlowDef;
-import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop2.Hadoop2MR1FlowConnector;
 import cascading.operation.AssertionLevel;
 import cascading.operation.regex.RegexParser;
 import cascading.pipe.Each;
@@ -48,11 +48,11 @@ public class Main
 
     Properties properties = new Properties();
     AppProps.setApplicationJarClass( properties, Main.class );
-    HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
+    Hadoop2MR1FlowConnector flowConnector = new Hadoop2MR1FlowConnector( properties );
 
     AppProps.addApplicationTag( properties, "tutorials" );
     AppProps.addApplicationTag( properties, "cluster:development" );
-    AppProps.setApplicationName( properties, "etl-part2-filters") ;
+    AppProps.setApplicationName( properties, "etl-part2-filters" );
 
     // Input file
     String inputPath = args[ 0 ];
@@ -81,15 +81,11 @@ public class Main
     Pipe processPipe = new Each( "processPipe", new Fields( "line" ), parser, Fields.RESULTS );
 
     // We have to filter out the tuples with no size (- instead) such as the one with 404 and 30x response codes
-    ExpressionFilter filterResponse =
-      new ExpressionFilter( "size.equals(\"-\")", String.class );
+    ExpressionFilter filterResponse = new ExpressionFilter( "size.equals(\"-\")", String.class );
     processPipe = new Each( processPipe, new Fields( "size" ), filterResponse );
 
     // connect the taps, pipes, etc., into a flow
-    FlowDef flowDef = FlowDef.flowDef()
-      .setName("part 2")
-      .addSource( processPipe, inTap )
-      .addTailSink( processPipe, outTap );
+    FlowDef flowDef = FlowDef.flowDef().setName( "part 2" ).addSource( processPipe, inTap ).addTailSink( processPipe, outTap );
 
     // Run the flow
     Flow wcFlow = flowConnector.connect( flowDef );

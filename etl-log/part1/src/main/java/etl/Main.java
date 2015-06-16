@@ -23,7 +23,7 @@ package etl;
 import cascading.flow.Flow;
 import cascading.flow.FlowDef;
 import cascading.flow.FlowProcess;
-import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop2.Hadoop2MR1FlowConnector;
 import cascading.operation.AssertionLevel;
 import cascading.operation.BaseOperation;
 import cascading.operation.Function;
@@ -57,11 +57,11 @@ public class Main
 
     Properties properties = new Properties();
     AppProps.setApplicationJarClass( properties, Main.class );
-    HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
+    Hadoop2MR1FlowConnector flowConnector = new Hadoop2MR1FlowConnector( properties );
 
     AppProps.addApplicationTag( properties, "tutorials" );
     AppProps.addApplicationTag( properties, "cluster:development" );
-    AppProps.setApplicationName( properties, "etl-part1-filecopy") ;
+    AppProps.setApplicationName( properties, "etl-part1-filecopy" );
 
     // Input file
     String inputPath = args[ 0 ];
@@ -113,11 +113,7 @@ public class Main
     Tap trapTap = new Hfs( new TextDelimited( true, "\t" ), outputPath + "/trap", SinkMode.REPLACE );
 
     // connect the taps, pipes, etc., into a flow
-    FlowDef flowDef = FlowDef.flowDef()
-      .setName("part 1")
-      .addSource( processPipe, inTap )
-      .addTailSink( processPipe, daysTap )
-      .addTrap( "processPipe", trapTap );
+    FlowDef flowDef = FlowDef.flowDef().setName( "part 1" ).addSource( processPipe, inTap ).addTailSink( processPipe, daysTap ).addTrap( "processPipe", trapTap );
 
     // Run the flow
     Flow wcFlow = flowConnector.connect( flowDef );

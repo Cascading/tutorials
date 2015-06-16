@@ -24,42 +24,41 @@ import com.twitter.scalding._
 import cascading.tuple.{Fields, TupleEntry}
 import scala.util.matching.Regex
 
-class Main(args: Args) extends Job(args) {
+class Main( args: Args ) extends Job( args )
+  {
 
-  val input = TextLine(args("input"))
-  val output= Tsv(args("output"))
+  val input = TextLine( args( "input" ) )
+  val output = Tsv( args( "output" ) )
 
   val inputFields = 'line
   val regexFields = ('ip, 'time, 'request, 'response, 'size)
 
-  val filteredInput = input.read.mapTo('line -> regexFields) {
-    te: TupleEntry =>
-      val regex = new Regex("^([^ ]*) \\S+ \\S+ \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) ([^ ]*).*$")
-      val split = regex.findFirstMatchIn(te.getString("line")).get.subgroups
-      (split(0), split(1), split(2), split(3), split(4))
-  }.filterNot('size) { size: String => size == "-" }
+  val filteredInput = input.read.mapTo( 'line -> regexFields )
+    { te: TupleEntry =>
+      val regex = new Regex( "^([^ ]*) \\S+ \\S+ \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) ([^ ]*).*$" )
+      val split = regex.findFirstMatchIn( te.getString( "line" ) ).get.subgroups
+      (split( 0 ), split( 1 ), split( 2 ), split( 3 ), split( 4 ))
+    }.filterNot( 'size )
+    { size: String => size == "-"}
 
-  val branch1 = new RichPipe(filteredInput)
-  val branch2 = new RichPipe(filteredInput)
+  val branch1 = new RichPipe( filteredInput )
+  val branch2 = new RichPipe( filteredInput )
 
-  val processedBranch1 = branch1.filterNot('request) { req: String => req == "GET /images/" }
-    .project('ip)
-    .unique('ip)
+  val processedBranch1 = branch1.filterNot( 'request )
+    { req: String => req == "GET /images/"}.project( 'ip ).unique( 'ip )
 
-  val processedBranch2 =  branch2
-    .project('ip)
-    .unique('ip)
-    .rename('ip -> 'userip)
-    .map('userip -> 'score) {
-      ip : String =>
+  val processedBranch2 = branch2.project( 'ip ).unique( 'ip ).rename( 'ip -> 'userip ).map( 'userip -> 'score )
+    { ip: String =>
       var i = 0
       var hash = 7
-      for(i <- 0 to ip.length) {
-        hash = hash * 31 + ip.indexOf(i)
-      }
+      for( i <- 0 to ip.length )
+        {
+        hash = hash * 31 + ip.indexOf( i )
+        }
       hash % 100
-    }.filterNot('score) { score : Int => score < 60 }
+    }.filterNot( 'score )
+    { score: Int => score < 60}
 
-  processedBranch2.write(output)
-}
+  processedBranch2.write( output )
+  }
 

@@ -22,32 +22,12 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'cascadingasciidoc'
 
 buildscript {
   repositories {
+    jcenter()
     mavenLocal()
     mavenCentral()
-    maven{ url 'http://conjars.org/repo/' }
-    maven{ url 'http://jcenter.bintray.com' }
+    maven { url 'http://conjars.org/repo/' }
   }
-
-  dependencies {
-    classpath 'concurrentinc:cascading-asciidoc:1.0.0-wip-6'
-  }
-
-}
-
-
-createDocs {
-     sourceDir = new File( project.projectDir, 'etl-log-docs/src/asciidoc' )
-     def attributes = [
-            stylesdir: "src/site/stylesheets/",
-            stylesheet: 'cascading.css',
-            imagesdir: "etl-log-docs/src/asciidoc/images/"
-    ]
-    options = [
-            template_dir: 'src/templates/',
-            attributes: attributes
-    ]
 }

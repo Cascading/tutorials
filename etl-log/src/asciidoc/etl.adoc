@@ -156,7 +156,7 @@ comprehensive framework for developing ETL flows is providing rich set of out-of
 data, and the ease to add custom data transformation functions. Cascading has developed a robust 
 set of data transformation functions as part of supporting the community to develop ETL flows since 2007. For more 
 information about the availability of the 
-functions, visit the *http://docs.cascading.org/cascading/2.5/userguide/html[Cascading Users Guide]*. 
+functions, visit the *http://docs.cascading.org/cascading/3.0/userguide/[Cascading Users Guide]*.
 
 In addition, with the “pipes” metaphor and Java APIs, it is very easy to add custom functions. Unlike writing 
 user-defined functions (UDF) for scripting languages, the entire Cascading application, including custom functions, 

@@ -21,58 +21,33 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'cascadingasciidoc'
+apply plugin: 'provided-base'
 
 buildscript {
-    repositories {
-        mavenCentral()
-        maven{ url 'http://conjars.org/repo/' }
-        maven { url 'http://repo.spring.io/plugins-release' }
-    }
+  repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'http://conjars.org/repo/' }
+    maven { url 'http://repo.spring.io/plugins-release' }
+  }
 
-    dependencies {
-        classpath 'concurrentinc:cascading-asciidoc:1.0.0-wip-6'
-    }
-
+  dependencies {
+    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.1'
+  }
 }
 
 archivesBaseName = 'cascading-aws-tutorials'
 
 repositories {
-    mavenCentral()
-    maven{ url 'http://conjars.org/repo/' }
-}
-
-ext.cascadingVersion = '2.7.0'
-ext.redshiftVersion = '2.7.0'
-ext.hadoopVersion = '2.4.1'
-
-dependencies {
-    compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
-    compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
-    compile( group: 'cascading', name: 'cascading-jdbc-redshift', version: redshiftVersion )
-
+  mavenCentral()
+  maven { url 'http://conjars.org/repo/' }
 }
 
 jar {
-    description = "Assembles a Hadoop ready jar file"
-    doFirst {
-        into( 'lib' ) {
-            from configurations.compile
-        }
+  description = "Assembles a Hadoop ready jar file"
+  doFirst {
+    into( 'lib' ) {
+      from { configurations.compile.minus( [configurations.provided] ) }
     }
-}
-
-
-createDocs {
-    sourceDir = new File( "${projectDir}/cascading-aws-docs/src/asciidoc/" )
-    def attributes = [
-            imagesdir: "cascading-aws-docs/src/asciidoc/",
-            stylesdir: "../src/site/stylesheets/",
-            stylesheet: 'cascading.css',
-    ]
-    options = [
-            template_dir: 'src/templates/',
-            attributes: attributes
-    ]
+  }
 }

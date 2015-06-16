@@ -102,7 +102,7 @@ For more details about the particular operations or to understand how some
 of these steps can be modified for your use case, use the 
 following resources:
  
-*Sorting using GroupBy and CoGroup* - http://docs.cascading.org/cascading/2.5/userguide/html/ch03s03.html#N205A3
+*Sorting using GroupBy and CoGroup* - http://docs.cascading.org/cascading/3.0/userguide/ch05-pipe-assemblies.html#_groupby
 
 == Next
 link:part4.html[Part 4 - Implement Count and “Top 10” aggregation function]

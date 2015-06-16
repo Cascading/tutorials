@@ -157,13 +157,13 @@ following resources:
 
 * Cascading-Hive* http://www.cascading.org/2014/05/22/cascading-hive/
  
-*Taps:* http://docs.cascading.org/cascading/2.5/userguide/html/ch03s05.html
+*Taps:* http://docs.cascading.org/cascading/3.0/userguide/ch09-local.html#source-sink
  
 *HiveTap:* https://github.com/Cascading/cascading-hive/blob/wip-1.0/src/main/java/cascading/tap/hive/HiveTap.java
  
-*Flows:* http://docs.cascading.org/cascading/2.5/userguide/html/ch03s08.html
+*Flows:* http://docs.cascading.org/cascading/3.0/userguide/ch03-basic-concepts.html#flows
 
-*Running ETL flows on Hadoop:* http://docs.cascading.org/cascading/2.5/userguide/html/ch04.html
+*Running ETL flows on Hadoop:* http://docs.cascading.org/cascading/3.0/userguide/ch10-hadoop-common.html#executing
 
 == Next
 link:part2.html[Part 2 - Intro to HiveFlow]

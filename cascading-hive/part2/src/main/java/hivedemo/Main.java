@@ -26,7 +26,9 @@ import java.util.Properties;
 import cascading.cascade.Cascade;
 import cascading.cascade.CascadeConnector;
 import cascading.flow.Flow;
-import cascading.flow.hadoop.HadoopFlowConnector;
+//import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop2.Hadoop2MR1FlowConnector;
+import cascading.flow.process.ProcessFlow;
 import cascading.flow.hive.HiveFlow;
 import cascading.pipe.Pipe;
 import cascading.pipe.assembly.Discard;
@@ -65,7 +67,7 @@ public class Main
     AppProps.addApplicationTag( properties, "cluster:development" );
     AppProps.setApplicationName( properties, "Cascading-Hive Part2 Hive Flow" );
 
-    HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
+    Hadoop2MR1FlowConnector flowConnector = new Hadoop2MR1FlowConnector( properties );
 
     // create source Hfs taps for catalog_sales, catalog_returns data
     Tap salesHdfsTap = new Hfs( new TextDelimited( CATALOG_SALES_FIELDS, "|" ), "/tpcds/data/catalog_sales.dat" );

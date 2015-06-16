@@ -22,7 +22,7 @@ package etl;
 
 import cascading.flow.Flow;
 import cascading.flow.FlowDef;
-import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop2.Hadoop2MR1FlowConnector;
 import cascading.operation.AssertionLevel;
 import cascading.operation.regex.RegexParser;
 import cascading.pipe.Each;
@@ -48,7 +48,7 @@ public class Main
     {
     Properties properties = new Properties();
     AppProps.setApplicationJarClass( properties, Main.class );
-    HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
+    Hadoop2MR1FlowConnector flowConnector = new Hadoop2MR1FlowConnector( properties );
 
     // Input file (s)
     String inputPath1 = args[ 0 ];
@@ -85,13 +85,10 @@ public class Main
 
     AppProps.addApplicationTag( properties, "tutorials" );
     AppProps.addApplicationTag( properties, "cluster:development" );
-    AppProps.setApplicationName( properties, "etl-part3-merge") ;
+    AppProps.setApplicationName( properties, "etl-part3-merge" );
 
     // connect the taps, pipes, etc., into a flow
-    FlowDef flowDef = FlowDef.flowDef()
-      .setName("part 3")
-      .addSource( processPipe, sourceTap )
-      .addTailSink( processPipe, outTap );
+    FlowDef flowDef = FlowDef.flowDef().setName( "part 3" ).addSource( processPipe, sourceTap ).addTailSink( processPipe, outTap );
 
     // Run the flow
     Flow wcFlow = flowConnector.connect( flowDef );

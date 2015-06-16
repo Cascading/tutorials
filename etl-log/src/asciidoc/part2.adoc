@@ -83,7 +83,7 @@ based on status and dates.
  
 We will only cover the parts in the code that are different from the previous section.
  
-A http://docs.cascading.org/cascading/2.5/javadoc/cascading/operation/Filter.html[filter] is 
+A http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/operation/Filter.html[filter] is
 responsible for testing teach tuple to see if it should be removed from the stream. A filter 
 either discards the input tuple or returns it intact.
  
@@ -101,11 +101,11 @@ processPipe = new Each(processPipe, new Fields("size"), filterResponse);
 For more details about the particular operations or to understand how 
 some of these steps can be modified for your use case, use the following resources:
  
-*Filters:* http://docs.cascading.org/cascading/2.5/userguide/html/ch05s03.html
+*Filters:* http://docs.cascading.org/cascading/3.0/userguide/ch13-using-operations.html#filters
  
-*Expression Filters:* http://docs.cascading.org/cascading/1.2/javadoc/cascading/operation/expression/ExpressionFilter.html
+*Expression Filters:* http://docs.cascading.org/cascading/3.0/userguide/ch16-operations.html#_regular_expression_operations
  
-*Java Expressions and Cascading:* http://docs.cascading.org/cascading/2.1/userguide/html/ch08s07.html
+*Java Expressions and Cascading:* http://docs.cascading.org/cascading/3.0/userguide/ch16-operations.html#operation-expression
 
 == Next
 link:part3.html[Part 3 - Merging multiple source in an ETL flow]

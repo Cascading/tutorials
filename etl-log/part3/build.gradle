@@ -21,50 +21,46 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'propdeps'
-apply plugin: 'propdeps-maven'
-apply plugin: 'propdeps-idea'
-apply plugin: 'propdeps-eclipse'
+apply plugin: 'provided-base'
 
 archivesBaseName = 'etl'
 
-buildscript {
-    repositories {
-        maven { url 'http://repo.spring.io/plugins-release' }
-    }
-    dependencies {
-        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.5'
-    }
-}
+ext.cascadingVersion = '3.0.0'
+ext.hadoopVersion = '2.6.0'
 
+buildscript {
+  repositories {
+    maven { url 'http://repo.spring.io/plugins-release' }
+  }
+  dependencies {
+    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.1'
+  }
+}
 
 repositories {
- //   mavenLocal()
-    mavenCentral()
-    maven { url 'http://conjars.org/repo/' }
+  mavenCentral()
+  maven { url 'http://conjars.org/repo/' }
 }
 
-ext.cascadingVersion = '2.7.0'
-ext.hadoopVersion = '2.2.0'
-
 dependencies {
-    compile(group: 'cascading', name: 'cascading-core', version: cascadingVersion)
-    compile(group: 'cascading', name: 'cascading-local', version: cascadingVersion)
-    compile(group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion)
+  compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
+  compile( group: 'cascading', name: 'cascading-local', version: cascadingVersion )
+  compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
 
-    provided(group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client', version: hadoopVersion)
-    provided(group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion)
+  provided( group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoopVersion )
+  provided( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client', version: hadoopVersion )
+  provided( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion )
 }
 
 jar {
-    description = "Assembles a Hadoop ready jar file"
-    doFirst {
-        into('lib') {
-            from configurations.compile
-        }
+  description = "Assembles a Hadoop ready jar file"
+  doFirst {
+    into( 'lib' ) {
+      from { configurations.compile.minus( [configurations.provided] ) }
     }
+  }
 
-    manifest {
-        attributes("Main-Class": "etl/Main")
-    }
+  manifest {
+    attributes( "Main-Class": "etl/Main" )
+  }
 }

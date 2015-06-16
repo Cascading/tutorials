@@ -20,7 +20,7 @@ import cascading.cascade.Cascade;
 import cascading.cascade.CascadeConnector;
 import cascading.flow.Flow;
 import cascading.flow.FlowDef;
-import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop2.Hadoop2MR1FlowConnector;
 import cascading.flow.hive.HiveFlow;
 import cascading.operation.regex.RegexFilter;
 import cascading.pipe.CoGroup;
@@ -78,7 +78,7 @@ public class Main
     AppProps.addApplicationTag( properties, "tutorials" );
     AppProps.addApplicationTag( properties, "cluster:development" );
     AppProps.setApplicationName( properties, "Cascading-Hive Part3 TPC-DS" );
-    HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
+    Hadoop2MR1FlowConnector flowConnector = new Hadoop2MR1FlowConnector( properties );
 
     List<Flow> queryFlows = new ArrayList<Flow>();
 

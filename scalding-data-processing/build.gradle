@@ -22,40 +22,19 @@
 apply plugin: 'scala'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'cascadingasciidoc'
 
 buildscript {
   repositories {
+    jcenter()
     mavenLocal()
     mavenCentral()
-    maven{ url 'http://conjars.org/repo/' }
-    maven{ url 'http://jcenter.bintray.com' }
+    maven { url 'http://conjars.org/repo/' }
   }
-
-  dependencies {
-    classpath 'concurrentinc:cascading-asciidoc:1.0.0-wip-6'
-  }
-
-}
-
-repositories {
-   mavenCentral()
 }
 
 dependencies {
-     compile 'org.scala-lang:scala-compiler:2.9.2'
-     compile 'org.scala-lang:scala-library:2.9.2'
+  compile 'org.scala-lang:scala-compiler:2.9.2'
+  compile 'org.scala-lang:scala-library:2.9.2'
 }
 
-createDocs {
-     sourceDir = new File( project.projectDir, 'scalding-docs/src/asciidoc' )
-     def attributes = [
-            stylesdir: "src/site/stylesheets/",
-            stylesheet: 'cascading.css',
-            imagesdir: "scalding-docs/src/asciidoc/images/"
-    ]
-    options = [
-            template_dir: 'src/templates/',
-            attributes: attributes
-    ]
-}
+

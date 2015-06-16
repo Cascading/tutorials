@@ -43,23 +43,24 @@ public class CopybookScheme extends Scheme<Properties, InputStream, OutputStream
     super( Fields.merge( new Fields( "BdfoKey" ), Fields.merge( COPYBOOK_CONFIG.getFields().values().toArray( new Fields[ COPYBOOK_CONFIG.getFields().size() ] ) ) ) );
     }
 
-  public void sourceConfInit( FlowProcess<Properties> flowProcess, Tap<Properties, InputStream, OutputStream> tap, Properties conf )
+  @Override
+  public void sourceConfInit( FlowProcess<? extends Properties> flowProcess, Tap<Properties, InputStream, OutputStream> tap, Properties conf )
     {
     }
 
-  public void sinkConfInit( FlowProcess<Properties> flowProcess, Tap<Properties, InputStream, OutputStream> tap, Properties conf )
+  @Override
+  public void sinkConfInit( FlowProcess<? extends Properties> flowProcess, Tap<Properties, InputStream, OutputStream> tap, Properties conf )
     {
     }
 
-  public void sink( FlowProcess<Properties> flowProcess,
-
-                    SinkCall<PrintWriter, OutputStream> sinkCall ) throws IOException
+  @Override
+  public void sink( FlowProcess<? extends Properties> flowProcess, SinkCall<PrintWriter, OutputStream> sinkCall ) throws IOException
     {
 
     }
 
   @Override
-  public void sourcePrepare( FlowProcess<Properties> flowProcess, SourceCall<CopybookSourceContext, InputStream> sourceCall ) throws IOException
+  public void sourcePrepare( FlowProcess<? extends Properties> flowProcess, SourceCall<CopybookSourceContext, InputStream> sourceCall ) throws IOException
     {
 
     CopybookSourceContext context = new CopybookSourceContext( COPYBOOK_CONFIG );
@@ -69,7 +70,8 @@ public class CopybookScheme extends Scheme<Properties, InputStream, OutputStream
     sourceCall.getIncomingEntry().setTuple( TupleViews.createObjectArray() );
     }
 
-  public boolean source( FlowProcess<Properties> flowProcess, SourceCall<CopybookSourceContext, InputStream> sourceCall ) throws IOException
+  @Override
+  public boolean source( FlowProcess<? extends Properties> flowProcess, SourceCall<CopybookSourceContext, InputStream> sourceCall ) throws IOException
     {
 
     log.debug( "Source called" );

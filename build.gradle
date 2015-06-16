@@ -21,109 +21,61 @@
 
 buildscript {
   repositories {
+    jcenter()
     mavenLocal()
     mavenCentral()
-    maven{ url 'http://conjars.org/repo/' }
-    maven{ url 'http://jcenter.bintray.com' }
+    maven { url 'http://conjars.org/repo/' }
   }
 
   dependencies {
-    classpath 'concurrentinc:cascading-asciidoc:1.0.0-wip-6'
+    classpath 'concurrentinc:documentation-plugin:1.1.1-14'
     classpath 'eu.appsatori:gradle-fatjar-plugin:0.2'
   }
 
 }
 
-ext.redshiftPostgresVersion = '8.0-318.jdbc3'
-ext.redshiftVersion = '2.7.0'
-ext.hadoopVersion = "1.2.1"
-ext.cascadingVersion = '2.7.0'
-ext.cascadingJDBCVersion = '2.7.0'
-ext.slf4jVersion = '1.7.2'
-
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply from: "${rootDir}/etc/s3Upload.gradle"
 
-subprojects { subproject ->
+allprojects {
   apply plugin: 'java'
-  apply plugin: 'cascadingasciidoc'
   apply plugin: 'idea'
   apply plugin: 'eclipse'
   apply plugin: 'fatjar'
+}
+
+subprojects { subproject ->
+
+  apply plugin: 'documentation-plugin'
 
   repositories {
+    jcenter()
     mavenLocal()
     mavenCentral()
-    maven{ url 'http://conjars.org/repo/' }
-    maven{ url 'http://jcenter.bintray.com' }
-  }
-
-  dependencies {
-
-    compile group: 'cascading', name: 'cascading-jdbc-redshift', version: redshiftVersion
-    /*compile group: 'cascading', name: 'cascading-jdbc-teradata', version: cascadingJDBCVersion*/
-    compile group: 'postgresql', name: 'postgresql', version: redshiftPostgresVersion
-
-    compile group: 'cascading', name: 'cascading-core', version: cascadingVersion
-    compile group: 'cascading', name: 'cascading-hadoop', version: cascadingVersion
-    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
-
-    compile( group: 'org.apache.hadoop', name: 'hadoop-core', version: hadoopVersion ) {
-      exclude group: 'ant'
-      exclude group: 'junit'
-      exclude group: 'hsqldb'
-      exclude group: 'oro'
-    }
-
+    maven { url 'http://conjars.org/repo/' }
   }
 
   createDocs {
-  def attributes = [
-            stylesdir: "${project.rootDir}/src/site/stylesheets/",
-            stylesheet: 'cascading.css',
-            imagesdir: "src/site/images/"
-    ]
-    options = [
-            template_dir: 'src/templates/',
-            attributes: attributes
-    ]
+    targetStyle = "cascading"
 
+    sourceDir = file( "${subproject.projectDir}/src/asciidoc" )
+    imagesDir = file( "${subproject.projectDir}/src/asciidoc/images" )
+
+    options = [doctype: "book",]
+
+    attributes = [revnumber: "3.0.0",]
   }
 
-  if (subproject.name == 'etl-log') {
-    createDocs {
-       File sourceDir = new File('etl-log/etl-log-docs/src/asciidoc')
-    }
-  }
-
-  if (subproject.name == 'cascading-hive') {
-    createDocs {
-       File sourceDir = new File('cascading-hive/cascading-hive-docs/src/asciidoc')
-    }
-  }
-
-  if (subproject.name == 'cascading-copybook') {
-   createDocs {
-     File sourceDir = new File('cascading-copybook/src/asciidoc/')
-   }
-  }
-
-  if (subproject.name == 'scalding-data-processing') {
-    createDocs {
-      File sourceDir = new File('scalding-data-processing/scalding-docs/src/asciidoc')
-    }
-  }
-
-  task zipDocs( type: Zip, dependsOn: createDocs ){
+  task zipDocs( type: Zip, dependsOn: createDocs ) {
     baseName = "${project.name}"
-    from (createDocs.outputDir){
-        include '*.*'
+    from( createDocs.outputDir ) {
+      include '*.*'
     }
     into "${project.name}"
   }
 
-  task docDist( type: Copy, dependsOn: [ createDocs, zipDocs ] ) {
+  task docDist( type: Copy, dependsOn: [createDocs, zipDocs] ) {
     description = "publish documentation"
 
     from createDocs.outputDir
@@ -133,3 +85,8 @@ subprojects { subproject ->
     rootProject.s3UploadDocs.dependsOn docDist
   }
 }
+
+task createDocs {
+  dependsOn << subprojects.createDocs
+}
+

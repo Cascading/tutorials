@@ -23,7 +23,7 @@ package etl;
 import cascading.flow.Flow;
 import cascading.flow.FlowDef;
 import cascading.flow.FlowProcess;
-import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop2.Hadoop2MR1FlowConnector;
 import cascading.operation.BaseOperation;
 import cascading.operation.Function;
 import cascading.operation.FunctionCall;
@@ -126,21 +126,16 @@ public class Main
     join = new GroupBy( join, new Fields( "score" ), true );
 
     // Creates the flow definition by connecting the taps and pipes
-    FlowDef flowDef = FlowDef.flowDef()
-      .setName("part 6")
-      .addSource( transformPipe, inTap )
-      .addTailSink( join, outTap ) ;
+    FlowDef flowDef = FlowDef.flowDef().setName( "part 6" ).addSource( transformPipe, inTap ).addTailSink( join, outTap );
 
     // Creates a planner for executing the flow
-    Properties properties = AppProps.appProps()
-      .setName( "etl-part6-join" )
-      .buildProperties();
+    Properties properties = AppProps.appProps().setName( "etl-part6-join" ).buildProperties();
 
     AppProps.addApplicationTag( properties, "tutorials" );
     AppProps.addApplicationTag( properties, "cluster:development" );
 
     // Create a Hadoop Flow Connector
-    Flow parsedLogFlow = new HadoopFlowConnector( properties ).connect( flowDef );
+    Flow parsedLogFlow = new Hadoop2MR1FlowConnector( properties ).connect( flowDef );
 
     // Runs the flow
     parsedLogFlow.complete();

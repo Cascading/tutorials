@@ -43,7 +43,7 @@ The coding examples in each part refers to a commonly-used operation in ETL,
 and can be referred directly; you do not need to complete previous parts to
 use a given example.
 
-Also, while we give references to http://docs.cascading.org/cascading/2.5/userguide/html[Cascading Users Guide]
+Also, while we give references to http://docs.cascading.org/cascading/3.0/userguide/[Cascading Users Guide]
 for the APIs used to implement these tasks, this tutorial is not intended to
 serve as an introduction to Cascading. For that, we recommend that you follow
 the http://docs.cascading.org/tutorials/etl-log[Java Developers Guide to ETL with Cascading] tutorial.

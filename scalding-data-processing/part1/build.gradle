@@ -21,63 +21,56 @@
 apply plugin: 'scala'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'propdeps'
-apply plugin: 'propdeps-maven'
-apply plugin: 'propdeps-idea'
-apply plugin: 'propdeps-eclipse'
 apply plugin: 'eu.appsatori.fatjar'
-
-buildscript {
-    repositories {
-        jcenter()
-        maven { url 'http://repo.spring.io/plugins-release' }
-    }
-    dependencies {
-        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.5'
-        classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
-    }
-}
-
-
-repositories {
- //   mavenLocal()
-    mavenCentral()
-    maven { url 'http://conjars.org/repo/' }
-    maven { url 'http://maven.twttr.com/' }
-}
+apply plugin: 'provided-base'
 
 ext.scalaVersion = '2.10.0'
 ext.scaldingVersion = '0.13.1'
-ext.cascadingVersion = '2.7.0'
-ext.hadoopVersion = '2.4.1'
+ext.cascadingVersion = '3.0.0'
+ext.hadoopVersion = '2.6.0'
 
+buildscript {
+  repositories {
+    maven { url 'http://repo.spring.io/plugins-release' }
+  }
+  dependencies {
+    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.1'
+    classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
+  }
+}
 
+repositories {
+  mavenCentral()
+  maven { url 'http://conjars.org/repo/' }
+  maven { url 'http://maven.twttr.com/' }
+}
 
 dependencies {
 
-    compile(group:'org.scala-lang', name:'scala-library', version:scalaVersion)
-    compile(group:'org.scala-lang', name:'scala-compiler', version:scalaVersion)
+  compile( group: 'org.scala-lang', name: 'scala-library', version: scalaVersion )
+  compile( group: 'org.scala-lang', name: 'scala-compiler', version: scalaVersion )
 
-    compile(group:'com.twitter', name:'scalding-core_2.10', version:scaldingVersion) {
-      exclude group: 'cascading', module: 'cascading-hadoop'
-    }
+  compile( group: 'com.twitter', name: 'scalding-core_2.10', version: scaldingVersion ) {
+    exclude group: 'cascading', module: 'cascading-hadoop'
+  }
 
-    compile(group: 'cascading', name: 'cascading-core', version: cascadingVersion)
-    compile(group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion)
+  compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
+  compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
 
-    provided(group:'org.apache.hadoop', name:'hadoop-common' , version:hadoopVersion)
-    provided(group:'org.apache.hadoop', name:'hadoop-mapreduce-client-core' , version:hadoopVersion)
+  provided( group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoopVersion )
+  provided( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion )
 
-    compile(group: 'com.twitter', name: 'chill_2.10', version: '0.3.6')
+  compile( group: 'com.twitter', name: 'chill_2.10', version: '0.3.6' )
 }
 
 
 fatJar {
   classifier 'fat'
   manifest {
-    attributes("Main-Class": "com/twitter/scalding/Tool")
+    attributes( "Main-Class": "com/twitter/scalding/Tool" )
 
   }
+
   exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
 }
 

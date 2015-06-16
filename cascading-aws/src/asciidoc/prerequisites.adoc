@@ -121,7 +121,7 @@ over port 443 (the default SSL port for HTTP). Note that the client side of
 Cascading will be the only Java process attempting to make a remote network
 connection.
 
-image:images/part_3.png[]
+image:part_3.png[]
 
 You can learn more about using Driven for your Cascading application
 at http://docs.cascading.io[Driven Documentation].

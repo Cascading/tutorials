@@ -29,7 +29,7 @@ import java.util.Properties;
 import cascading.cascade.Cascade;
 import cascading.cascade.CascadeConnector;
 import cascading.flow.Flow;
-import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop2.Hadoop2MR1FlowConnector;
 import cascading.pipe.Pipe;
 import cascading.property.AppProps;
 import cascading.scheme.hadoop.TextDelimited;
@@ -73,7 +73,7 @@ public class Main
     // create simple Pipe for copying data from HDFS to Hive
     Pipe copyPipe = new Pipe( "copyPipe" );
 
-    HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
+    Hadoop2MR1FlowConnector flowConnector = new Hadoop2MR1FlowConnector( properties );
 
     // create flow using HadoopFlowConnector, inTapCallCenter(HfsTap) as source, sinkTap (HIveTap) as sink and copyPipe to copy
     Flow flow1 = flowConnector.connect( "flow1", inTapCallCenter, sinkTap, copyPipe );

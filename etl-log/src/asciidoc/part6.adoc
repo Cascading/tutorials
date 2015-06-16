@@ -5,7 +5,7 @@
 === What You Will See
 In Part 6 of the tutorial, we will demonstrate a design pattern that 
 branches a pipe and performs joins. For that, we will create two 
-branches using Cascading http://docs.cascading.org/cascading/2.5/javadoc/cascading/pipe/HashJoin.html[HashJoin] to join them.
+branches using Cascading http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/pipe/HashJoin.html[HashJoin] to join them.
 
 * The first branch uses filtering to find the users who have accessed a given page.
 * The second branch creates a subset of users and associates a randomly generated number.
@@ -153,7 +153,7 @@ Checkpoint userPipeCheckpoint = new Checkpoint( "checkpoint", userPipe ) ;
 
 *Step 4:* Perform HashJoin
 
-http://docs.cascading.org/cascading/2.5/javadoc/cascading/pipe/HashJoin.html[HashJoin] performs a 
+http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/pipe/HashJoin.html[HashJoin] performs a
 join on two or more streams based on join fields. 
 The output is the combined tuple joined on field(s) that contain fields 
 from all of the input streams. HashJoin are optimized for joining one or more 
@@ -177,9 +177,9 @@ Pipe join = new HashJoin( filteredPipe, new Fields( "ip" ), userPipe, new Fields
 For more details about the particular operations or to understand how some of these steps can be 
 modified for your use case, use the following resources:
  
-*HashJoin* - http://docs.cascading.org/cascading/2.5/userguide/html/ch03s03.html#N2078B
+*HashJoin* - http://docs.cascading.org/cascading/3.0/userguide/ch05-pipe-assemblies.html#_hashjoin
  
-*GroupBy* - http://docs.cascading.org/cascading/2.5/userguide/html/ch03s03.html#N205A3
+*GroupBy* - http://docs.cascading.org/cascading/3.0/userguide/ch05-pipe-assemblies.html#_groupby
  
-*Checkpoints* - http://docs.cascading.org/cascading/2.0/userguide/htmlsingle/#N213AE
+*Checkpoints* - http://docs.cascading.org/cascading/3.0/userguide/ch15-advanced.html#_checkpointing
  

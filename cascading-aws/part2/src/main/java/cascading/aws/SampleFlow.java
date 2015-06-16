@@ -10,7 +10,7 @@ import cascading.cascade.Cascade;
 import cascading.cascade.CascadeConnector;
 import cascading.flow.Flow;
 import cascading.flow.FlowDef;
-import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop2.Hadoop2MR1FlowConnector;
 import cascading.jdbc.AWSCredentials;
 import cascading.jdbc.RedshiftScheme;
 import cascading.jdbc.RedshiftTableDesc;
@@ -127,10 +127,10 @@ public class SampleFlow
     flowDef.addAssemblyPlanner( sqlPlanner );
 
     // create flows
-    Flow flow1 = new HadoopFlowConnector( properties ).connect( flowDefSales );
-    Flow flow2 = new HadoopFlowConnector( properties ).connect( flowDefItems );
-    Flow flow3 = new HadoopFlowConnector( properties ).connect( flowDefDates );
-    Flow flow4 = new HadoopFlowConnector( properties ).connect( flowDef );
+    Flow flow1 = new Hadoop2MR1FlowConnector( properties ).connect( flowDefSales );
+    Flow flow2 = new Hadoop2MR1FlowConnector( properties ).connect( flowDefItems );
+    Flow flow3 = new Hadoop2MR1FlowConnector( properties ).connect( flowDefDates );
+    Flow flow4 = new Hadoop2MR1FlowConnector( properties ).connect( flowDef );
 
     List<Flow> queryFlows = new ArrayList<Flow>();
     queryFlows.add( flow1 );

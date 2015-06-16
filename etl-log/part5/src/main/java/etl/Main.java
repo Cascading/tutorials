@@ -23,7 +23,7 @@ package etl;
 import cascading.flow.Flow;
 import cascading.flow.FlowDef;
 import cascading.flow.FlowProcess;
-import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop2.Hadoop2MR1FlowConnector;
 import cascading.operation.BaseOperation;
 import cascading.operation.Buffer;
 import cascading.operation.BufferCall;
@@ -54,7 +54,7 @@ public class Main
 
     Properties properties = new Properties();
     AppProps.setApplicationJarClass( properties, Main.class );
-    HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
+    Hadoop2MR1FlowConnector flowConnector = new Hadoop2MR1FlowConnector( properties );
 
     AppProps.addApplicationTag( properties, "ETL Tutorial" );
 
@@ -93,8 +93,7 @@ public class Main
 
     // We have to filter out the tuples with no size (- instead) such as the one with 404 and 30x response codes
     Pipe filterResponsePipe = new Pipe( "filterResponsePipe", transformPipe );
-    ExpressionFilter filterResponse =
-      new ExpressionFilter( "size.equals(\"-\")", String.class );
+    ExpressionFilter filterResponse = new ExpressionFilter( "size.equals(\"-\")", String.class );
     filterResponsePipe = new Each( filterResponsePipe, new Fields( "size" ), filterResponse );
 
     // Create a new Each named moving_avgSizeByMinPipe to augment the tuple with hour of the day for time
@@ -103,18 +102,14 @@ public class Main
     // Calculates moving average 60 mins based on bandwith
     // Groups by min, calculates 60 mins moving average on field size
     moving_avgSizeByMinPipe = new GroupBy( moving_avgSizeByMinPipe, new Fields( "day" ) );
-    moving_avgSizeByMinPipe = new Every( moving_avgSizeByMinPipe, new Fields( "size", "time" ),
-                            new MovingAverageBuffer( new Fields( "min", "moving_average" ) ), Fields.RESULTS );
+    moving_avgSizeByMinPipe = new Every( moving_avgSizeByMinPipe, new Fields( "size", "time" ), new MovingAverageBuffer( new Fields( "min", "moving_average" ) ), Fields.RESULTS );
 
     AppProps.addApplicationTag( properties, "tutorials" );
     AppProps.addApplicationTag( properties, "cluster:development" );
-    AppProps.setApplicationName( properties, "etl-part5-moving-average") ;
+    AppProps.setApplicationName( properties, "etl-part5-moving-average" );
 
     // connect the taps, pipes, etc., into a flow
-    FlowDef flowDef = FlowDef.flowDef()
-      .setName("part 5")
-      .addSource( regexImport, inTap )
-      .addTailSink( moving_avgSizeByMinPipe, outTap );
+    FlowDef flowDef = FlowDef.flowDef().setName( "part 5" ).addSource( regexImport, inTap ).addTailSink( moving_avgSizeByMinPipe, outTap );
 
     // Run the flow
     Flow wcFlow = flowConnector.connect( flowDef );

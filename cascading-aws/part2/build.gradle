@@ -21,48 +21,44 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'propdeps'
-apply plugin: 'propdeps-maven'
-apply plugin: 'propdeps-idea'
-apply plugin: 'propdeps-eclipse'
+apply plugin: 'provided-base'
+
 
 archivesBaseName = 'cascading-aws-tutorials'
 
 buildscript {
-    repositories {
-        mavenLocal()
-        maven { url 'http://repo.spring.io/plugins-release' }
-        maven{ url 'http://jcenter.bintray.com' }
-    }
-    dependencies {
-        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.5'
-    }
+  repositories {
+    jcenter()
+    mavenLocal()
+    maven { url 'http://repo.spring.io/plugins-release' }
+  }
+  dependencies {
+    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.1'
+  }
 }
 
 repositories {
-/*  mavenLocal() */
   mavenCentral()
-  maven{ url 'http://conjars.org/repo/' }
+  maven { url 'http://conjars.org/repo/' }
 }
 
-ext.cascadingVersion = '2.7.0'
-ext.redshiftVersion = '2.7.0'
-ext.hadoopVersion = '2.4.1'
-ext.lingualVersion = '1.2.0'
+ext.cascadingVersion = '3.0.0'
+ext.redshiftVersion = '3.0.0'
+ext.hadoopVersion = '2.6.0'
+ext.lingualVersion = '2.0.0-wip-60'
 
 dependencies {
-  compile( group: 'cascading', name: 'lingual-hadoop2-mr1', version: '1.2.0-wip-45')
-  compile( group: 'cascading', name: 'lingual-platform', version: '1.2.0-wip-44')
-  compile( group: 'cascading', name: 'lingual-core', version: '1.2.0-wip-44')
+  compile( group: 'cascading', name: 'lingual-hadoop2-mr1', version: lingualVersion )
+  compile( group: 'cascading', name: 'lingual-platform', version: lingualVersion )
+  compile( group: 'cascading', name: 'lingual-core', version: lingualVersion )
   compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
-  compile( group: 'cascading', name: 'cascading-local', version: cascadingVersion )
   compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
   compile( group: 'cascading', name: 'cascading-jdbc-redshift', version: redshiftVersion )
-  compile( group: 'xerces',    name: 'xercesImpl', version: '2.11.0')
-  compile( group: 'xalan',     name: 'xalan', version: '2.7.1')
+  compile( group: 'xerces', name: 'xercesImpl', version: '2.11.0' )
+  compile( group: 'xalan', name: 'xalan', version: '2.7.1' )
 
-
-  provided( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion )
+  provided( group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoopVersion )
+  provided( group: 'org.apache.hadoop', name: 'hadoop-client', version: hadoopVersion )
 
 }
 
@@ -70,7 +66,7 @@ jar {
   description = "Assembles a Hadoop ready jar file"
   doFirst {
     into( 'lib' ) {
-      from configurations.compile
+      from { configurations.compile.minus( [configurations.provided] ) }
     }
   }
 

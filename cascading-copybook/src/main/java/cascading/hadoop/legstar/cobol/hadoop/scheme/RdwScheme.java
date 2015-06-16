@@ -57,14 +57,14 @@ public abstract class RdwScheme extends Scheme<JobConf, RecordReader<ArrayPrimit
     }
 
   @Override
-  public void sourcePrepare( FlowProcess<JobConf> flowProcess, SourceCall<RdwSourceContext, RecordReader<ArrayPrimitiveWritable, ArrayPrimitiveWritable>> sourceCall )
+  public void sourcePrepare( FlowProcess<? extends JobConf> flowProcess, SourceCall<RdwSourceContext, RecordReader<ArrayPrimitiveWritable, ArrayPrimitiveWritable>> sourceCall )
     {
 
     RdwSourceContext context = new RdwSourceContext( beanClass );
     sourceCall.setContext( context );
     }
 
-  public boolean source( FlowProcess<JobConf> flowProcess, SourceCall<RdwSourceContext, RecordReader<ArrayPrimitiveWritable, ArrayPrimitiveWritable>> sourceCall ) throws IOException
+  public boolean source( FlowProcess<? extends JobConf> flowProcess, SourceCall<RdwSourceContext, RecordReader<ArrayPrimitiveWritable, ArrayPrimitiveWritable>> sourceCall ) throws IOException
     {
 
     log.debug( "Source called" );
@@ -96,11 +96,13 @@ public abstract class RdwScheme extends Scheme<JobConf, RecordReader<ArrayPrimit
     return true;
     }
 
-  public void sinkConfInit( FlowProcess<JobConf> flowProcess, Tap<JobConf, RecordReader<ArrayPrimitiveWritable, ArrayPrimitiveWritable>, OutputCollector<Object, Object>> tap, JobConf conf )
+  @Override
+  public void sinkConfInit( FlowProcess<? extends JobConf> flowProcess, Tap<JobConf, RecordReader<ArrayPrimitiveWritable, ArrayPrimitiveWritable>, OutputCollector<Object, Object>> tap, JobConf conf )
     {
     }
 
-  public void sink( FlowProcess<JobConf> flowProcess, SinkCall<PrintWriter, OutputCollector<Object, Object>> sinkCall ) throws IOException
+  @Override
+  public void sink( FlowProcess<? extends JobConf> flowProcess, SinkCall<PrintWriter, OutputCollector<Object, Object>> sinkCall ) throws IOException
     {
     throw new IOException( "This scheme cannot be used as a sink" );
 

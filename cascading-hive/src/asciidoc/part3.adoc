@@ -75,8 +75,8 @@ AppProps.addApplicationTag( properties, "Cascading-Hive Demo Part3" );
 HadoopFlowConnector flowConnector = new HadoopFlowConnector( properties );
 ----
 
-*Step 3:* Filter data using http://docs.cascading.org/cascading/1.2/javadoc/cascading/operation/regex/RegexFilter.html[RegexFilter]
-and http://docs.cascading.org/cascading/2.1/javadoc/cascading/pipe/Each.html[Each] pipes - Source from HDFS sink to Hive
+*Step 3:* Filter data using http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/operation/regex/RegexFilter.html[RegexFilter]
+and http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/pipe/Each.html[Each] pipes - Source from HDFS sink to Hive
 
 [source,java]
 ----
@@ -110,7 +110,7 @@ queryFlows.add( flowConnector.connect( dateDimFilterFlow ) );
 // ...
 ----
 
-*Step 4:* Perform a series of http://docs.cascading.org/cascading/2.0/javadoc/cascading/pipe/HashJoin.html[HashJoins]
+*Step 4:* Perform a series of http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/pipe/HashJoin.html[HashJoins]
 
 [source,java]
 ----
@@ -139,7 +139,7 @@ Pipe storeSalesItemJoin = new HashJoin( "StoreSalesItemJoin", storeSalesPipe, ne
 queryFlows.add( flowConnector.connect( "JoinStoreSales (Hive Sources)", sources, sinks, storeSalesItemJoin, storeSalesDateDimJoin, storeSalesCustomerDemographicsJoin, storeSalesStoreJoin ) );
 ----
 
-*Step 5:* Strip out extraneous fields using http://docs.cascading.org/cascading/2.0/javadoc/cascading/pipe/assembly/Retain.html[Retain]
+*Step 5:* Strip out extraneous fields using http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/pipe/assembly/Retain.html[Retain]
 
 [source,java]
 ----
@@ -178,8 +178,8 @@ queryFlows.add( avgQuantityHiveFlow );
 // ...
 ----
 
-*Step 7:* Join averages using http://docs.cascading.org/cascading/2.0/javadoc/cascading/pipe/CoGroup.html[CoGroup] and
-discard unwanted fields using http://docs.cascading.org/cascading/2.0/javadoc/cascading/pipe/assembly/Discard.html[Discard]
+*Step 7:* Join averages using http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/pipe/CoGroup.html[CoGroup] and
+discard unwanted fields using http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/pipe/assembly/Discard.html[Discard]
 
 [source,java]
 ----
@@ -240,7 +240,7 @@ HiveFlow finalHiveFlow = new HiveFlow( "Hive Flow - Format Report", queries, Arr
 queryFlows.add( finalHiveFlow );
 ----
 
-*Step 9:* Connect all flows and complete http://docs.cascading.org/cascading/2.1/javadoc/cascading/cascade/Cascade.html[Cascade]
+*Step 9:* Connect all flows and complete http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/cascade/Cascade.html[Cascade]
 
 [source,java]
 ----
@@ -257,7 +257,7 @@ of these steps can be modified for your use case, use the
 following resources:
 
 
-*Sorting using GroupBy and CoGroup* - http://docs.cascading.org/cascading/2.5/userguide/html/ch03s03.html#N205A3
+*Sorting using GroupBy and CoGroup* - http://docs.cascading.org/cascading/3.0/userguide/ch05-pipe-assemblies.html#_groupby
 
 
  

@@ -30,11 +30,10 @@ public class CustdatScheme extends RdwScheme
     super( new Custdat(), CustomerData.class );
     }
 
-  public void sourceConfInit( FlowProcess<JobConf> flowProcess, Tap<JobConf, RecordReader<ArrayPrimitiveWritable, ArrayPrimitiveWritable>, OutputCollector<Object, Object>> tap, JobConf conf )
+  @Override
+  public void sourceConfInit( FlowProcess<? extends JobConf> flowProcess, Tap<JobConf, RecordReader<ArrayPrimitiveWritable, ArrayPrimitiveWritable>, OutputCollector<Object, Object>> tap, JobConf conf )
     {
-
     conf.setInputFormat( CustdatInputFormat.class );
-
     }
 
   }

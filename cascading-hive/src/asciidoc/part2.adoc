@@ -47,10 +47,10 @@ image:part2.png[]
 We will only cover the parts in the code that are different from the previous section.
  
 In part 2 we introduce the HiveFlow. https://github.com/Cascading/cascading-hive/blob/wip-1.0/src/main/java/cascading/flow/hive/HiveFlow.java[HiveFlow]
-is a subclass of http://docs.cascading.org/cascading/2.2/javadoc/cascading/flow/hadoop/ProcessFlow.html[ProcessFlow] for running Hive queries.
+is a subclass of http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/flow/process/ProcessFlow.html[ProcessFlow] for running Hive queries.
 
 In this example we will create two new Hive tables, populate them with data, and run Hive queries against them within a Hive Flow. We
-will also use the http://docs.cascading.org/cascading/2.0/javadoc/cascading/pipe/assembly/Discard.html[Discard] subassembly to trim unwanted trailing fields.
+will also use the http://docs.cascading.org/cascading/3.0/javadoc/cascading-core/cascading/pipe/assembly/Discard.html[Discard] subassembly to trim unwanted trailing fields.
 
 [source,java]
 ----

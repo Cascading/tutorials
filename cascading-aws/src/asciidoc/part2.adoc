@@ -28,8 +28,8 @@ When the compiled jar file is being executed on the EMR cluster the following wi
 
 . Source data files from S3 bucket
 
-. Strip extraneous fields from the data using
-http://docs.cascading.org/cascading/2.6/javadoc/cascading/pipe/assembly/Retain.html[Cascading Retain subassembly]
+. Strip extraneous fields from the data using Retain -
+http://docs.cascading.org/cascading/3.0/userguide/ch15-advanced.html#subassemblies[Cascading Subassemblies]
 
 . Perform an aggregation and joining operation on the data using SQL via Cascading Lingual-JDBC
 
@@ -81,7 +81,7 @@ If the task completes successfully, you will have a new table in Redshift "part2
 You can also use this live http://showcase.cascading.io/index.html#/apps/082A21818D8548C5A0BF62FD4504DCED?view=element[link] to view the
 application in Driven.
 
-image:images/part_2.png[]
+image:part_2.png[]
 
 === What’s Going On?
 
@@ -303,7 +303,7 @@ Congratulations, you just ran SQL on Hadoop using Lingual-JDBC and Cascading!
 . Cascading SDK - http://www.cascading.org/sdk/
 . Lingual home page - http://www.cascading.org/projects/lingual/
 . AWS Command Line Interface - http://aws.amazon.com/cli/
-. Cascading Retain - http://docs.cascading.org/cascading/2.6/javadoc/cascading/pipe/assembly/Retain.html
+. Cascading SubAssemblies - http://docs.cascading.org/cascading/3.0/userguide/ch15-advanced.html#subassemblies
 
 == Next:
 === Part 3

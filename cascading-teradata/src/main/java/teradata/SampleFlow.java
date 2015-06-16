@@ -25,7 +25,7 @@ import java.util.Properties;
 import cascading.cascade.Cascade;
 import cascading.cascade.CascadeConnector;
 import cascading.flow.Flow;
-import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop2.Hadoop2MR1FlowConnector;
 import cascading.jdbc.JDBCScheme;
 import cascading.jdbc.JDBCTap;
 import cascading.jdbc.TableDesc;
@@ -80,7 +80,7 @@ public class SampleFlow
     Pipe sinkCopyPipe = new Pipe( "sinkPipe" );
 
     // Create and connect flows
-    HadoopFlowConnector flowConnector = new HadoopFlowConnector();
+    Hadoop2MR1FlowConnector flowConnector = new Hadoop2MR1FlowConnector();
     Flow flow1 = flowConnector.connect( "UploadFlow", inTap, uploadTeradataTap, sourceCopyPipe );
     Flow flow2 = flowConnector.connect( "ExportFlow", exportTeradataTap, sinkTap, sinkCopyPipe );
 

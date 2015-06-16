@@ -21,42 +21,57 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+apply plugin: 'provided-base'
 
-apply from: "../etc/providedCompile.gradle"
 archivesBaseName = 'cascading-teradata-sample'
 
-repositories {
+buildscript {
+  repositories {
+    jcenter()
     mavenLocal()
     mavenCentral()
     maven { url 'http://conjars.org/repo/' }
+  }
+
+  dependencies {
+    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.1'
+  }
 }
 
-ext.cascadingVersion = '2.7.0'
-ext.cascadingJDBCVersion = '3.0.0-wip-dev'
-ext.hadoopVersion = '2.4.1'
+ext.cascadingVersion = '3.0.0'
+ext.cascadingJDBCVersion = '3.0.0'
+ext.hadoopVersion = '2.6.0'
 ext.teradataVersion = "15.00.00.20"
 
 dependencies {
-    compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
-    compile( group: 'cascading', name: 'cascading-local', version: cascadingVersion )
-    compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
-    compile( group: 'com.teradata', name: 'terajdbc4', version: teradataVersion )
-    compile( group: 'com.teradata', name: 'tdgssconfig', version: teradataVersion )
-    compile( group: 'cascading', name: 'cascading-jdbc-teradata', version: cascadingJDBCVersion )
+  compile( group: 'cascading', name: 'cascading-core', version: cascadingVersion )
+  compile( group: 'cascading', name: 'cascading-local', version: cascadingVersion )
+  compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
+  compile( group: 'com.teradata', name: 'terajdbc4', version: teradataVersion )
+  compile( group: 'com.teradata', name: 'tdgssconfig', version: teradataVersion )
+  compile( group: 'cascading', name: 'cascading-jdbc-teradata', version: cascadingJDBCVersion )
 
-    providedCompile( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion )
+  provided( group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoopVersion )
+  provided( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoopVersion )
 
 }
 
 jar {
-    description = "Assembles a Hadoop ready jar file"
-    doFirst {
-        into( 'lib' ) {
-            from configurations.compile
-        }
+  description = "Assembles a Hadoop ready jar file"
+  doFirst {
+    into( 'lib' ) {
+      from { configurations.compile.minus( [configurations.provided] ) }
     }
+  }
 
-    manifest {
-        attributes( "Main-Class": "teradata/SampleFlow" )
-    }
+  manifest {
+    attributes( "Main-Class": "teradata/SampleFlow" )
+  }
+}
+
+createDocs {
+
+  // either 'cascading' or 'concurrent'
+  targetStyle = 'cascading'
+  options = [doctype: "book",]
 }
