@@ -24,7 +24,7 @@ the specific content for that tutorial, i.e. the asciidoc
 
 The command line to produce all tutorials is:
 
-    > gradle docDist
+    > ./gradlew docDist
 
 This will render all tutorials and put them in the
 `<rootproject>/build/documentation/` directory. Each tutorial has its own
