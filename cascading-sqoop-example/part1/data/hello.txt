@@ -1,0 +1,4 @@
+id	name	rating
+11111	joe	0.8
+22222	bob	0.4
+33333	jane	0.6

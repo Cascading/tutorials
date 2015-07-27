@@ -1,0 +1,173 @@
+= Integrating Cascading with a Sqoop Custom Flow
+
+== Introduction
+Creating a custom flow is useful when you want to execute an external command or API as the last flow in a Cascade.
+For example, processing data into an HDFS file, then kicking off a Sqoop job to process the result file into a database.
+This tutorial will show how to create a custom Flow to trigger an external Sqoop job.
+
+== Design
+A custom flow will be created, which will be triggered after a data processing flow in a Cascade.
+dataPrepFlow will do the main data processing (a simple file copy),
+then sqoopFlow will be the custom Flow that triggers the external Sqoop job.
+Both flows will be connected in a Cascade, executing dataPrepFlow then sqoopFlow.
+The custom flow is created by extending ProcessFlow, and associating it with a custom class annotated with Riffle.
+Riffle is a lightweight Java library for executing collections of dependent processes as a single process.
+This allows us to use a regular Java class to integrate into a Cascade Flow. Any custom processing to
+external command or API will be done in this class.
+
+See link:https://github.com/cwensel/riffle[Riffle] for more info on how to use Riffle Annotations.
+
+== Prerequisites
+* Java 7
+* Gradle 2.x
+* Hadoop 2.6 local cluster
+* Sqoop Server properly configured jobs and running
+* Sqoop job configured to read from the output file of dataPrepFlow
+* Driven (Optional). See link:http://docs.cascading.io/driven/1.2/getting-started/cascading-io.html[Getting Started with Driven]
+
+== Preparing data files
+
+[source,bash]
+----
+$ cd cascading-sqoop-example/part1
+$ hadoop dfs -mkdir data/
+$ hadoop dfs -mkdir output/
+$ hadoop dfs -put data/hello.txt data/
+----
+
+== Running the code
+
+*Step 1:* Compile
+[source,bash]
+----
+$ cd cascading-sqoop-example/part1
+$ gradle clean jar
+----
+
+*Step 2:* Run the command
+This command line example takes the following parameters:
+
+<Input file>
+<Output file>
+<Sqoop Destination File>
+<Sqoop service URL (e.g. "http://192.168.59.103:12000/sqoop/")>
+<Sqoop Job ID>
+
+
+[source,bash]
+----
+$ hadoop jar ./build/libs/cascading-sqoop-example.jar data/hello.txt output/hello-output.txt output/hello-output-sqoop.txt "http://192.168.59.103:12000/sqoop/" 1
+----
+
+== Overview of the Code
+
+=== The Sqoop Job Runner class
+This is used to run the Sqoop client and trigger the job asynchronously from an Executor.
+The run() method creates the Sqoop client and triggers the remote Sqoop Server
+[source, java]
+----
+// ...
+  @Override
+  public void run()
+    {
+    // Create sqoop client from Sqop API
+    SqoopClient client = new SqoopClient( this.url );
+    client.setServerUrl( url );
+
+    //Job submission start
+    MSubmission submission = client.startJob( this.jobId );
+
+// ...
+----
+
+=== Annotating the custom Sqoop Riffle class
+
+Here are the required Annotations and methods to implement.
+Also shown is the start() and complete() methods to setup the Future and Executor.
+
+[source,java]
+----
+// ...
+  /**
+   * Custom code we want here. Call external process, APIs, etc.
+   */
+  private synchronized void internalStart()
+    {
+    if( future != null )
+      return;
+
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
+    Callable<Throwable> sqoopJobRunner = new SqoopJobRunner( this.url, this.jobId );
+    future = executorService.submit( sqoopJobRunner );
+    executorService.shutdown();
+
+    }
+
+// ...
+----
+
+=== The Main class
+
+The main class brings the custom Flow and Riffle annotated classes together into Flows and a Cascade.
+
+[source,java]
+----
+// ...
+
+    // create the source tap for <Input file>
+    Tap inTap = new Hfs( new TextDelimited( true, "\t" ), inPath );
+
+    // create the sink tap <Output file>
+    Tap outTap = new Hfs( new TextDelimited( true, "\t" ), outPath );
+
+    // Sqoop Output file <Sqoop Destination File>
+    Tap sqoopOutTap = new Hfs( new TextDelimited( true, "\t" ), sqoopOutPath );
+
+    // specify a pipe to connect the taps, as simple copy
+    Pipe copyPipe = new Pipe( "copy" );
+
+    // connect the taps, pipes, etc., into a flow
+    FlowDef flowDef = FlowDef.flowDef()
+      .addSource( copyPipe, inTap )
+      .addTailSink( copyPipe, outTap )
+      .setName( "Data Prepare" );
+
+    // Connect first part, Flow A
+    Flow dataPrepFlow = flowConnector.connect( flowDef );
+
+    ProcessFlow sqoopFlow = new ProcessFlow( "Run Sqoop Job",
+      new SqoopRiffle( Collections.unmodifiableCollection( Arrays.asList( outTap ) ),
+        sqoopOutTap,
+        url,
+        jobId ) );
+
+    // Connect dataPrepFlow and sqoopFlow using a Cascade
+    CascadeConnector connector = new CascadeConnector();
+    Cascade cascade = connector.connect( dataPrepFlow, sqoopFlow );
+
+    // Run the Cascade
+    cascade.start();
+    cascade.complete();
+
+// ...
+----
+
+== Viewing the app in Driven (Optional)
+Depending on how your Driven installation is configured, you will see a link to your app run in the logs.
+[source,bash]
+----
+15/06/26 13:50:28 INFO rest.DrivenDocumentService: http://localhost:8080/driven/8174A30080E44554BCC86265FA13EEF0
+----
+
+Here is a live link:http://52.5.124.200:8080/index.html#/apps/5CD7E85B09BF43B5AE7E8D5F63472DAF?view=element[Driven link]
+to show the app execution in the Driven development environment.
+
+image:002.png[]
+Flow Timeline
+image:003.png[]
+
+
+
+
+
+

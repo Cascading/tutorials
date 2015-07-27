@@ -18,16 +18,30 @@
  * limitations under the License.
  */
 
-include 'pattern'
-include 'lingual-hbase'
-include 'lingual-oracle'
-include 'cascading-teradata'
-include 'etl-log'
-include 'cascading-hive'
-include 'cascading-copybook'
-include 'cascading-aws'
-include 'scalding-data-processing'
-include 'cascading-mr'
-include 'cascading-sqoop-example'
 
-rootProject.name = 'tutorials'
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+buildscript {
+  repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'http://conjars.org/repo/' }
+  }
+
+  dependencies {
+    classpath 'concurrentinc:cascading-asciidoc:1.1.0'
+    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.+'
+  }
+
+}
+
+subprojects {
+  apply plugin: 'java'
+  apply plugin: 'maven'
+  apply plugin: 'provided-base'
+}
+
+
+
