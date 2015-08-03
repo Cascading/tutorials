@@ -1,11 +1,24 @@
 #!/bin/bash -ex
 
-REDSHIFT_URL=$1
-REDSHIFT_USER=$2
-REDSHIFT_PASSWORD=$3
-BUCKET=$4
-AWS_ACCESS_KEY=$5
-AWS_SECRET_KEY=$6
+# Copyright (c) 2007-2015 Concurrent, Inc. All Rights Reserved.
+#
+#  Project and contact information: http://www.cascading.org/
+#
+#  This file is part of the Cascading project.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+BUCKET=$1
 
 NAME=CascadingKinesis-1.0.jar
 BUILD=build/libs
@@ -46,7 +59,7 @@ aws emr create-cluster \
   --no-termination-protected \
   --log-uri s3n://$BUCKET/logs/ \
   --service-role EMR_DefaultRole --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
-  --steps Type=CUSTOM_JAR,Name=KinesisTest1,ActionOnFailure=TERMINATE_CLUSTER,Jar=s3n://$BUCKET/$NAME,Args=$REDSHIFT_URL,$REDSHIFT_USER,$REDSHIFT_PASSWORD,$AWS_ACCESS_KEY,$AWS_SECRET_KEY,$BUCKET
+  --steps Type=CUSTOM_JAR,Name=KinesisTest1,ActionOnFailure=TERMINATE_CLUSTER,Jar=s3n://$BUCKET/$NAME,Args=$BUCKET
 
 # to run this job as a step on an existing cluster use the following command rather than create-cluster above
 #aws emr add-steps --cluster-id <YOUR_CLUSTER_ID> --steps Type=CUSTOM_JAR,Properties="cascading.management.document.service.apikey=$DRIVEN_API_KEY",Name=Kinesis1,ActionOnFailure=CONTINUE,Jar=s3://$BUCKET/$NAME,Args=$REDSHIFT_URL,$REDSHIFT_USER,$REDSHIFT_PASSWORD,$AWS_ACCESS_KEY,$AWS_SECRET_KEY,$BUCKET

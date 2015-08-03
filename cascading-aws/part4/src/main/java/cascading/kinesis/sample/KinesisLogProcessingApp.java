@@ -1,3 +1,23 @@
+/*
+ * Copyright (c) 2007-2015 Concurrent, Inc. All Rights Reserved.
+ *
+ * Project and contact information: http://www.cascading.org/
+ *
+ * This file is part of the Cascading project.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cascading.kinesis.sample;
 
 import java.io.IOException;
@@ -39,18 +59,29 @@ import cascading.pipe.assembly.Rename;
 
 public class KinesisLogProcessingApp
   {
-  public static void main(String[] args) throws IOException {
+  private static final String CONFIG_FILE = "configuration.properties";
+
+  public static void main( String[] args ) throws IOException
+    {
 
     // Instantiate command line arguments
-    String redshiftJdbcUrl = args[ 0 ];
-    String redshiftUsername = args[ 1 ];
-    String redshiftPassword = args[ 2 ];
-    String accessKey = args[ 3 ];
-    String secretKey = args[ 4 ];
-    String s3Bucket = args[ 5 ];
+    String s3Bucket = args[ 0 ];
 
-    // Create properties, define application jar class as well as application name/tags for Driven
+    // Create properties object
     Properties properties = new Properties();
+
+    // Load configurations
+    properties.load( KinesisLogProcessingApp.class.getClassLoader().getResourceAsStream( CONFIG_FILE ) );
+
+    // instantiate configurations
+    // TODO: PLEASE ENSURE YOU HAVE UPDATED src/main/resources/configuration.properties WITH YOUR CONFIG INFO
+    String accessKey = properties.getProperty( "USER_AWS_ACCESS_KEY" );
+    String secretKey = properties.getProperty( "USER_AWS_SECRET_KEY" );
+    String redshiftJdbcUrl = properties.getProperty( "REDSHIFT_JDBC_URL" );
+    String redshiftUsername = properties.getProperty( "REDSHIFT_USER_NAME" );
+    String redshiftPassword = properties.getProperty( "REDSHIFT_PASSWORD" );
+
+    // Define application jar class as well as application name/tags for Driven
     AppProps.setApplicationJarClass( properties, KinesisLogProcessingApp.class );
     AppProps.addApplicationTag( properties, "Cluster:Dev" );
     AppProps.addApplicationTag( properties, "Technology:Kinesis" );
@@ -69,61 +100,60 @@ public class KinesisLogProcessingApp
     AWSCredentials awsCredentials = new AWSCredentials( accessKey, secretKey );
 
     // instantiate incoming fields, in this case "data" for the Kinesis stream
-    Fields columns = new Fields("data");
+    Fields columns = new Fields( "data" );
     // instantiate KinesisHadoopScheme to be used with KinesisHadoopTap
-    KinesisHadoopScheme scheme = new KinesisHadoopScheme(columns);
+    KinesisHadoopScheme scheme = new KinesisHadoopScheme( columns );
     // set noDateTimeout to true
-    scheme.setNoDataTimeout(1);
+    scheme.setNoDataTimeout( 1 );
     // apply our AWS access and secret keys
-    scheme.setCredentials(accessKey,secretKey);
+    scheme.setCredentials( accessKey, secretKey );
 
     // instantiate Kinesis Tap
-    Tap kinesisSourceTap = new KinesisHadoopTap("AccessLogStream", scheme);
+    Tap kinesisSourceTap = new KinesisHadoopTap( "AccessLogStream", scheme );
 
     // instantiate S3 source Tap using Hfs. This Tap will source a comma delimited file of IP address found at the location of s3InStr
-    Tap s3SourceTap = new Hfs( new TextDelimited( new Fields("ip"), "|" ), s3InStr );
+    Tap s3SourceTap = new Hfs( new TextDelimited( new Fields( "ip" ), "|" ), s3InStr );
     // instantiate S3 trap tap to catch any bad data for later review
-    Tap trapTap = new Hfs(new TextDelimited(true, "\t"),  s3TrapStr, SinkMode.REPLACE);
+    Tap trapTap = new Hfs( new TextDelimited( true, "\t" ), s3TrapStr, SinkMode.REPLACE );
 
     // Fields for redshift Tap
-    Fields rsFields = new Fields("ip", "count" ).applyTypes( String.class, Integer.class );
+    Fields rsFields = new Fields( "ip", "count" ).applyTypes( String.class, Integer.class );
     // Redshift table descriptor
     RedshiftTableDesc redshiftTableDescriptor = new RedshiftTableDesc( "cascading_results", new String[]{"ip", "count"}, new String[]{"varchar(100)", "integer"}, null, null );
     // instantiate RedshiftTap - setting useDirectInsert (COPY) to true
     Tap sinkTap = new RedshiftTap( redshiftJdbcUrl, redshiftUsername, redshiftPassword, s3Path + "cascading_copy_rs", awsCredentials, redshiftTableDescriptor, new RedshiftScheme( rsFields, redshiftTableDescriptor ), SinkMode.REPLACE, false, true );
 
     // instantiate empty processPipe for Kinesis stream
-    Pipe processPipe = new Pipe("process_pipe");
+    Pipe processPipe = new Pipe( "process_pipe" );
     // instantiate empty joinPipe for S3 file join
-    Pipe joinPipe = new Pipe("join_pipe");
+    Pipe joinPipe = new Pipe( "join_pipe" );
     // assert all fields in each tuple of the processPipe are not null
-    processPipe = new Each(processPipe, AssertionLevel.STRICT, new AssertNotNull());
+    processPipe = new Each( processPipe, AssertionLevel.STRICT, new AssertNotNull() );
     // Declare the field names used to parse out of the Kinesis stream
-    Fields apacheFields = new Fields("ip", "time", "request", "response", "size");
+    Fields apacheFields = new Fields( "ip", "time", "request", "response", "size" );
     // Define the regular expression used to parse the log file
     String apacheRegex = "^([^ ]*) \\S+ \\S+ \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) ([^ ]*).*$";
     // Declare the groups from the above regex. Each group will be given a field name from 'apacheFields'
     int[] allGroups = {1, 2, 3, 4, 5};
     // Create the parser
-    RegexParser parser = new RegexParser(apacheFields, apacheRegex, allGroups);
+    RegexParser parser = new RegexParser( apacheFields, apacheRegex, allGroups );
     // apply regex parser to each tuple in the Kinesis stream
-    processPipe = new Each(processPipe, columns, parser);
+    processPipe = new Each( processPipe, columns, parser );
     // retain only the field "ip" from Kinesis stream
-    processPipe = new Retain(processPipe, new Fields("ip"));
+    processPipe = new Retain( processPipe, new Fields( "ip" ) );
     // in anticipation of the upcoming join rename S3 file field to avoid naming collision
     joinPipe = new Rename( joinPipe, new Fields( "ip" ), new Fields( "userip" ) );
     // rightJoin processPipe and joinPipe (IPs in S3 file) on ip (and renamed "userip") in new outputPipe
-    Pipe outputPipe = new HashJoin(processPipe, new Fields("ip"), joinPipe, new Fields("userip"), new RightJoin());
+    Pipe outputPipe = new HashJoin( processPipe, new Fields( "ip" ), joinPipe, new Fields( "userip" ), new RightJoin() );
     // discard unnecessary "userip"
-    outputPipe = new Discard(outputPipe, new Fields("userip"));
+    outputPipe = new Discard( outputPipe, new Fields( "userip" ) );
     // group all by "ip"
-    outputPipe = new GroupBy(outputPipe, new Fields("ip"));
+    outputPipe = new GroupBy( outputPipe, new Fields( "ip" ) );
     // calculate count of every group of IP's
-    outputPipe = new Every(outputPipe, new Count(new Fields("count")));
+    outputPipe = new Every( outputPipe, new Count( new Fields( "count" ) ) );
 
     // define the flow definition
-    FlowDef flowDef = FlowDef.flowDef()
-      .addSource( processPipe, kinesisSourceTap )   // connect processPipe to KinesisTap
+    FlowDef flowDef = FlowDef.flowDef().addSource( processPipe, kinesisSourceTap )   // connect processPipe to KinesisTap
       .addSource( joinPipe, s3SourceTap )           // connect joinPipe to s3Tap
       .addTailSink( outputPipe, sinkTap )           // connect outputPipe to S3 sink Tap
       .setName( "Cascading-Kinesis-Flow" )          // name the flow
@@ -136,8 +166,8 @@ public class KinesisLogProcessingApp
     //  -- Spark and Flink FlowConnectors under development
     Hadoop2MR1FlowConnector flowConnector = new Hadoop2MR1FlowConnector( properties );
     // attach the flow definition to the flow connector
-    Flow kinesisFlow = flowConnector.connect(flowDef);
+    Flow kinesisFlow = flowConnector.connect( flowDef );
     // run the flow
     kinesisFlow.complete();
+    }
   }
-}
