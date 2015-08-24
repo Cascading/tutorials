@@ -20,6 +20,11 @@
 
 echo "Starting Setup"
 
+# Please define a username for Redshift
+REDSHIFT_USER_NAME=
+#Please define a password for Redshift
+REDSHIFT_PASSWORD=
+
 # Create Kinesis stream for sample
 echo "*** Creating Kinesis Stream ***"
 aws kinesis create-stream --stream-name AccessLogStream --shard-count 2
@@ -34,7 +39,7 @@ aws dynamodb create-table --table-name MyEMRKinesisTableIteration --attribute-de
 
 # Create basic Redshift DB where we will sink our results\
 echo "*** Creating Redshift Database ***"
-aws redshift create-cluster --node-type dc1.large --number-of-nodes 2 --master-username adminuser --master-user-password TopSecret1 --cluster-identifier mycluster
+aws redshift create-cluster --node-type dc1.large --number-of-nodes 2 --master-username $REDSHIFT_USER_NAME --master-user-password $REDSHIFT_PASSWORD --cluster-identifier mycluster
 
 # Download sample kinesis stream appender
 echo "*** Downloading publisher/kinesis-log4j-appender-1.0.0.jar ***"
