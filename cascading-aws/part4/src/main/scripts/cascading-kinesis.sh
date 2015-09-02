@@ -49,7 +49,7 @@ INSTANCE_COUNT="1"
 # --bootstrap-actions Path=$INSTALL_PLUGIN_URL,Name=DRIVEN_BOOTSTRAP,Args="--host,${DRIVEN_SERVER_HOSTS}","--api-key,${DRIVEN_API_KEY}" \
 
 aws emr create-cluster \
-  --ami-version 3.7.0 \
+  --ami-version 3.9.0 \
   --instance-type $INSTANCE_TYPE \
   --instance-count $INSTANCE_COUNT \
   --name "cascading-kinesis-example" \
