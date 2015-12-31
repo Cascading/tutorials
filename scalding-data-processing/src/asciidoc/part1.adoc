@@ -235,10 +235,10 @@ image:part1.png[]
 
 *Figure 1: An example of the application's view in Driven.*
 
-Here's a http://showcase.cascading.io/index.html#/apps/7C3B45704B7A416DAA0FFF8F5FB9A21B[Driven link]
+Here's a http://showcase.driven.io/index.html#/apps/7C3B45704B7A416DAA0FFF8F5FB9A21B[Driven link]
 to see this part's execution graph on the Driven cloud service.
 
-If you have not installed the Driven plugin already, you can do it it http://www.cascading.org/driven/[here]
+If you have not installed the Driven plugin already, you can do it it http://www.driven.io/[here]
 
 We will get additional insights in later parts as we create more complex applications.
 From the screenshot, you will see two key components as part of the application developer

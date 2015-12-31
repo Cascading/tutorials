@@ -25,7 +25,7 @@ application with Driven.
 * http://www.cascading.org/projects/lingual/[Lingual & Lingual JDBC] for writing ETL-like MapReduce jobs with SQL
 * https://github.com/Cascading/cascading-jdbc[Cascading-JDBC] for accessing data in Cascading from AWS Redshift
 * https://github.com/Cascading/CascadingSDK[Cascading SDK] To pre-install (bootstrap) Cascading tools on new instances of AWS EMR
-* http://cascading.io/driven/[Driven] for tracking application development and performance monitoring
+* http://www.driven.io/[Driven] for tracking application development and performance monitoring
 
 == link:prerequisites.html[Prerequisites]
 * Install Gradle, Lingual, Cascading-Jdbc, Driven, IDE and other software for running the tutorial

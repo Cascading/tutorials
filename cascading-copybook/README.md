@@ -6,7 +6,7 @@ can use [Legstar](http://www.legsem.com/legstar/) to generate parsers to read EB
 and use them in your [Cascading](http://cascading.io) application for scalable data processing.
 
 
-Please note that while we give references to [Cascading Users Guide](http://docs.cascading.org/cascading/2.5/userguide/html) 
+Please note that while we give references to [Cascading Users Guide](http://docs.cascading.org/cascading/3.0/userguide/) 
 for the APIs used to implement the ETL tasks, this tutorial is not intended to 
 serve as an introduction to Cascading. For that, we recommend that you follow
 the [Cascading for the Impatient](http://docs.cascading.org/impatient) tutorial.
@@ -92,7 +92,7 @@ You should see output similar to what's shown below.
     15/02/12 16:09:18 INFO util.Hadoop18TapUtil: deleting temp path output/custdat.csv/_temporary
     15/02/12 16:09:18 INFO state.AppStats: shutdown finalizing app status
     15/02/12 16:09:18 INFO state.AppStats: shutdown hook finished.
-    15/02/12 16:09:19 INFO rest.DrivenDocumentService: https://driven.cascading.io/driven/6628F19494964C95A4327543B402A298
+    15/02/12 16:09:19 INFO rest.DrivenDocumentService: https://trial.driven.io/driven/6628F19494964C95A4327543B402A298
     15/02/12 16:09:19 INFO rest.DrivenDocumentService: plugin version 1.2-eap-5
     15/02/12 16:09:19 INFO rest.DrivenDocumentService: stopped document service
     15/02/12 16:09:19 INFO util.Update: newer Cascading release available: 2.5.6

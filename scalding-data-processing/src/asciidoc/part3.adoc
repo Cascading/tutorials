@@ -115,7 +115,7 @@ image:part3.png[]
 
 *Figure 1: An example of the application's view in Driven.*
 
-Here's a http://showcase.cascading.io/index.html#/apps/4400B72CBFBF46F6876EAE3F02928265[link]
+Here's a http://showcase.driven.io/index.html#/apps/4400B72CBFBF46F6876EAE3F02928265[link]
 to see this part's execution graph on the Driven cloud service.
 
 *Step 5:* Validate output

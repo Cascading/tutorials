@@ -24,9 +24,9 @@ NAME=CascadingKinesis-1.0.jar
 BUILD=build/libs
 DATA_DIR=data/hashjoin_sample.csv
 
-# Uncomment to use Driven - http://cascading.io/download-driven-server/
+# Uncomment to use Driven - http://www.driven.io/choose-trial/
 #DRIVEN_API_KEY="<YOUR-DRIVEN-API-KEY>"
-#DRIVEN_VERSION="1.2"
+#DRIVEN_VERSION="2.0.3"
 #INSTALL_PLUGIN_URL="s3://files.concurrentinc.com/driven/${DRIVEN_VERSION}/driven-plugin/install-driven-plugin.sh"
 #DRIVEN_SERVER_HOSTS="<YOUR-DRIVEN-SERVER-HOST:8080>"
 

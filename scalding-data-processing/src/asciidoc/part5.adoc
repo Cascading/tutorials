@@ -150,12 +150,12 @@ image:part5.png[]
 
 *Figure 1: An example of the application's view in Driven.*
 
-Here's a http://showcase.cascading.io/index.html#/apps/8F10714F8C384D5C943769C5FC7B51D6[Driven link]
+Here's a http://showcase.driven.io/index.html#/apps/8F10714F8C384D5C943769C5FC7B51D6[Driven link]
 to see this part's execution graph on the Driven cloud service.
 
 [NOTE]
 ===============================
-If you registered at http://cascading.io and installed the Driven API key, you will 
+If you registered at http://driven.io and installed the Driven API key, you will
 have accces to the “All Applications” view that tracks all your historical application
 runs. This view starts becoming interesting over a period of time when you want to 
 track trending, identify outlier behavior, or monitor applications based on their 

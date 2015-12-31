@@ -187,7 +187,7 @@ image:part4.png[]
 
 *Figure 1: An example of the application's view in Driven.*
 
-Here's a http://showcase.cascading.io/index.html#/apps/63427D5E4C704D748B41B2A83D4B9AB6[Driven link]
+Here's a http://showcase.driven.io/index.html#/apps/63427D5E4C704D748B41B2A83D4B9AB6[Driven link]
 to see this part's execution graph on the Driven cloud service.
 
 [NOTE]

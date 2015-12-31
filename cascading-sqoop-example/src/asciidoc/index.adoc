@@ -23,7 +23,7 @@ See link:https://github.com/cwensel/riffle[Riffle] for more info on how to use R
 * Hadoop 2.6 local cluster
 * Sqoop Server properly configured jobs and running
 * Sqoop job configured to read from the output file of dataPrepFlow
-* Driven (Optional). See link:http://docs.cascading.io/driven/1.2/getting-started/cascading-io.html[Getting Started with Driven]
+* Driven (Optional). See link:http://www.driven.io/documentation/[Getting Started with Driven]
 
 == Preparing data files
 
@@ -159,7 +159,7 @@ Depending on how your Driven installation is configured, you will see a link to 
 15/06/26 13:50:28 INFO rest.DrivenDocumentService: http://localhost:8080/driven/8174A30080E44554BCC86265FA13EEF0
 ----
 
-Here is a live link:http://52.5.124.200:8080/index.html#/apps/5CD7E85B09BF43B5AE7E8D5F63472DAF?view=element[Driven link]
+Here is a live link:http://showcase.driven.io/index.html#/apps/5CD7E85B09BF43B5AE7E8D5F63472DAF?view=element[Driven link]
 to show the app execution in the Driven development environment.
 
 image:002.png[]

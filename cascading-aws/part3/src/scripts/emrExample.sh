@@ -14,7 +14,7 @@ BUILD=part3/build/libs
 #DRIVEN_API_KEY=[YOUR DRIVEN API KEY]
 #DRIVEN_VERSION="1.2"
 #INSTALL_PLUGIN_URL="s3://wip.concurrentinc.com/driven/${DRIVEN_VERSION}/driven-plugin/install-driven-plugin.sh"
-#DRIVEN_SERVER_HOSTS="https://driven.cascading.io"
+#DRIVEN_SERVER_HOSTS="https://trial.driven.io"
 
 # clean and build part 3 application
 gradle :part3:clean :part3:jar

@@ -68,7 +68,7 @@ Use Driven to develop and debug Scalding flows. You do not need to make any chan
 to your existing Cascading applications to integrate with the Driven application.
 
 The cloud version of Driven is free to use for development. Visit
-http://www.cascading.org/driven/[Try Driven] to access all the
+http://www.driven.io/choose-trial/[Try Driven] to access all the
 developer features and gain visibility into your ETL flows.
 
 NOTE: We will use the cloud-based Driven product for the purposes of this
@@ -76,13 +76,13 @@ tutorial. Driven will receive the data from your application to help you
 monitor and visualize the development and the execution of your application.
 To use the cloud version of Driven, the Driven plugin must be visible to your Cascading
 application. In addition, your Cascading application must have network access
-to the Internet so it may send data to the domain name "driven.cascading.io"
+to the Internet so it may send data to the domain name "trial.driven.io"
 over port 443 (the default SSL port for HTTP). Note that the client side of
 Cascading will be the only Java process attempting to make a remote network
 connection.
 
 You can learn more about using Driven for your Cascading application
-at http://www.cascading.org/driven/[Getting Started with Driven].
+at http://www.driven.io/documentation/[Getting Started with Driven].
 
 === JDK
 

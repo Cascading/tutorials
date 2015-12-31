@@ -42,7 +42,7 @@ URL from your console or log into the Driven application.
 14/08/28 12:01:53 INFO rest.DrivenDocumentService: messaging version 1.0-eap-57:JSON
 ----
 
-Attached is a live http://showcase.cascading.io/index.html#/apps/995B685F269E442B961E97F415A504FE[Driven link]
+Attached is a live http://showcase.driven.io/index.html#/apps/995B685F269E442B961E97F415A504FE[Driven link]
  to execute Part 5 exercise on the Concurrent cloud service.
  
 image:etl-part-5.png[]

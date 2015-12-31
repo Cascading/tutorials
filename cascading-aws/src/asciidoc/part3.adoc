@@ -7,7 +7,7 @@ In Part 3 of this tutorial we will change things up a bit and dive into ETL with
 We will use hashjoins, cogroups, filters, each pipes, subassemblies and several flows running within Cascades on
 bootstrap EMR clusters. In the end we will trigger Redshift's COPY command, which is built into Cascading's
 RedshiftTap to push the data to Redshift in bulk. You may also add the Driven bootstrap option to the EMR cluster
-to send your telemetry from EMR to https://driven.cascading.io[https://driven.cascading.io].
+to send your telemetry from EMR to https://trial.driven.io[https://trial.driven.io].
 
 Part 3 of this tutorial also has two components, a shell script that manages the compilation,
 required data transfers and EMR cluster creation, as well as a Java application
@@ -38,7 +38,7 @@ the results to Redshift.
 *Step 1:* If you have not done so already please refer to the prerequsites section for environment setup.
 
 *Step 2:* If you would like to use Driven to visualize and monitor this application please edit part3/src/scripts/emrExample.sh.
-You will need to have a valid http://cascading.io/register/[Driven Cloud Service] account. To use Driven please
+You will need to have a valid https://trial.driven.io/[Driven Cloud Service] account. To use Driven please
 ensure you have modified emrExample.sh like so:
 
 [source,bash]
@@ -47,7 +47,7 @@ ensure you have modified emrExample.sh like so:
 DRIVEN_API_KEY=[YOUR DRIVEN API KEY]
 DRIVEN_VERSION="1.2"
 INSTALL_PLUGIN_URL="s3://wip.concurrentinc.com/driven/${DRIVEN_VERSION}/driven-plugin/install-driven-plugin.sh"
-DRIVEN_SERVER_HOSTS="https://driven.cascading.io"
+DRIVEN_SERVER_HOSTS="https://trial.driven.io"
 ----
 
 Also, further below please add the Driven bootstrap action to the aws emr create-cluster command:
@@ -69,10 +69,10 @@ aws emr create-cluster \
 ----
 
 Now, when your Cascading application is running on the EMR cluster you will be able to visualize it and monitor it in real time.
-Driven has many useful features to successfully scale and productize your data applications. Please see http://cascading.io/try/[Driven]
+Driven has many useful features to successfully scale and productize your data applications. Please see http://www.driven.io/choose-trial/[Driven]
 for further information.
 
-You can use this live http://showcase.cascading.io/index.html#/apps/1A9C4C053BB64C698B0FE01BD700FCBB?view=element[link] to view the
+You can use this live http://showcase.driven.io/index.html#/apps/1A9C4C053BB64C698B0FE01BD700FCBB?view=element[link] to view the
 application in Driven.
 
 image:part_3.png[]
@@ -113,7 +113,7 @@ Driven URL from your console or log into the Driven application.
 
 [source,bash]
 ----
-14/12/20 12:01:53 INFO rest.DrivenDocumentService: *https://driven.cascading.io/index.html#/apps/[APP_ID]?view=element*
+14/12/20 12:01:53 INFO rest.DrivenDocumentService: *https://trial.driven.io/index.html#/apps/[APP_ID]?view=element*
 ----
 
 === What’s Going On?

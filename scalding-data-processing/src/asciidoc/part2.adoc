@@ -104,7 +104,7 @@ image:part2.png[]
 
 *Figure 1: An example of the application's view in Driven.*
 
-Here's a http://showcase.cascading.io/index.html#/apps/4400B72CBFBF46F6876EAE3F02928265[Driven link]
+Here's a http://showcase.driven.io/index.html#/apps/4400B72CBFBF46F6876EAE3F02928265[Driven link]
 to see this part's execution graph on the Driven cloud service.
 
 1. The first thing you will see is a graph -- Directed Acyclic Graph (DAG) in

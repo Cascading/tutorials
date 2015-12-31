@@ -68,8 +68,8 @@ the word count results.
     $ hadoop dfs -cat /wc_output/part-00000
 
 Let's verify that the code was executed as a Cascading flow by 
-following the link available through the http://cascading.io/driven/[Driven plugin]. Here is an 
-http://showcase.cascading.io/index.html#/apps/082721CCAFED46688ADA9C9751892705[example]
+following the link available through http://www.driven.io/[Driven]. Here is an
+http://showcase.driven.io/index.html#/apps/082721CCAFED46688ADA9C9751892705[example]
 of how the flow would render 
 
 Understanding the Code

@@ -46,7 +46,7 @@ URL from your console or log into the Driven application.
 14/08/28 12:01:53 INFO rest.DrivenDocumentService: messaging version 1.0-eap-57:JSON
 ----
 
-Attached is a live http://showcase.cascading.io/index.html#/apps/D6BFDB8C225C428C96535B6B212EDBCA[Driven link]
+Attached is a live http://showcase.driven.io/index.html#/apps/D6BFDB8C225C428C96535B6B212EDBCA[Driven link]
  to execute Part 6 exercise on the Concurrent cloud service.
  
 image:etl-part-6.png[]
@@ -55,7 +55,7 @@ image:etl-part-6.png[]
 
 [NOTE]
 ===============================
-If you registered at http://cascading.io and installed the Driven API key, you will 
+If you registered at http://driven.io and installed the Driven API key, you will
 have accces to the “All Applications” view that tracks all your historical application
 runs. This view starts becoming interesting over a period of time when you want to 
 track trending, identify outlier behavior, or monitor applications based on their 

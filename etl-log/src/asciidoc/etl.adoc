@@ -87,7 +87,7 @@ image:driven-part2.png[]
 
 *Figure 1: A simple ontology of a word count application rendered through
 Driven. You can explore this particular application by clicking on this 
-https://driven.cascading.io/driven/56AB59A8C83E4ABAB50A617B2512600F[link]*.
+https://driven.driven.io/driven/56AB59A8C83E4ABAB50A617B2512600F[link]*.
 
 === Orchestration framework to sense dependencies
 
@@ -146,8 +146,8 @@ manages these dependencies) This collection of flows is called a *Cascade*.
 image:driven1.png[“Driven”,height=126]
 
 *Figure 2: Visualization of an ETL application constructed of different 
-flows with their associated dependencies. Play with live Driven at 
-http://driven.cascading.io/index.html#/apps/EDBCF3EA41E645FEBD2583005BE2AFB5[link].*  
+flows with their associated dependencies. You can experiment with a live hosted version of Driven at
+http://showcase.driven.io/index.html[link].*
 
 === Cascading provides rich capabilities to develop ETL flows
 
@@ -203,12 +203,12 @@ image:driven-part4-b.png[]
 *Figure 3: An example of the performance view in Driven that provides
 visibility from the logical flow down to operational insights. You can
 explore interactively the performance view of this application by clicking
-this https://driven.cascading.io/driven/1AE69BD0641146EFB926DE7AC83B94B0[link].*
+this http://showcase.driven.io/index.html#/apps/C2C31290F16C415AAA1C0181B15EABDC/FE93D6677B3E4F8EA9E47C4DC3DB00A3[link].*
  
 You can register 
-to use the service from *http://cascading.io/driven*. Also, 
+to use the service from *http://driven.io*. Also,
 you can watch (screencast) tutorials of Driven at 
-*http://www.cascading.org/driven/*.
+*http://www.driven.io/resources/*.
 
 == Next: 
 link:prerequisites.html[Checking for Prerequisites]
